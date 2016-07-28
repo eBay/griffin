@@ -62,4 +62,4 @@ For data processing, bark provides several model libraries for various data qual
 
 After appending business rules into those models, bark will deploy related jobs in spark cluster.
 
-For more details of the design, please refer to https://github.corp.ebay.com/bark/models/blob/master/README.md
+For more details of the design, please refer to https://github.com/eBay/DQSolution/blob/master/bark-doc/models.md

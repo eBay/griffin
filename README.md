@@ -8,7 +8,7 @@ Bark is a Data Quality Service that provides one set of tools to build data qual
 [Slack](https://ebay-eng.slack.com/messages/ebaysf-bark/)
 
 ### How to build
-1. git clone the project of https://github.corp.ebay.com/bark/Bark
+1. git clone the project of https://github.com/eBay/DQSolution
 2. run "mvn install"
 
 ### How to run
@@ -24,7 +24,7 @@ Bark is a Data Quality Service that provides one set of tools to build data qual
 Make sure you have the permission to use command "hadoop"
 6. Install [Spark](http://www.webhostingjams.com/mirror/apache/spark/spark-2.0.0/spark-2.0.0-bin-hadoop2.7.tgz) (version 2.0.0), if you want to install Pseudo Distributed/Single Node Cluster, you can get some help [here](http://why-not-learn-something.blogspot.com/2015/06/spark-installation-pseudo.html)
 7. Install [Hive](http://mirrors.koehn.com/apache/hive/hive-2.1.0/apache-hive-2.1.0-bin.tar.gz) (version 2.1.0), you can get some help [here](https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHive)
-8. Put your data into Hive. You can get sample data [here](https://github.corp.ebay.com/bark/Bark/tree/master/bark-doc/hive), then put them into hive as following
+8. Put your data into Hive. You can get sample data [here](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive), then put them into hive as following
 
     ```
     CREATE TABLE movie_source (
@@ -34,9 +34,9 @@ Make sure you have the permission to use command "hadoop"
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY '\;'
     STORED AS TEXTFILE;
-    
+
     LOAD DATA LOCAL INPATH '<your hdfs table path>/movie_source/MovieLensSample_Source.dat' OVERWRITE INTO TABLE movie_source;
-    
+
     CREATE TABLE movie_target (
       movieid STRING,
       title STRING,
@@ -44,7 +44,7 @@ Make sure you have the permission to use command "hadoop"
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY '\;'
     STORED AS TEXTFILE;
-    
+
     LOAD DATA LOCAL INPATH '<your hdfs table path>/movie_target/MovieLensSample_Target.dat' OVERWRITE INTO TABLE movie_target;
     ```  
     if you use hive cmdline to input data, remember to create _SUCCESS file in the hdfs path
@@ -52,39 +52,39 @@ Make sure you have the permission to use command "hadoop"
     hadoop fs -touchz <your hdfs table path>/movie_source/_SUCCESS
     hadoop fs -touchz <your hdfs table path>/movie_target/_SUCCESS
     ```
-    
+
 9. Edit your own script files to run the jobs automatically, you can edit the lines of demo ones as below for your environment
-    
-    [bark_jobs.sh](https://github.corp.ebay.com/bark/Bark/blob/master/bark-doc/hive/script/bark_jobs.sh)
+
+    [bark_jobs.sh](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive/script/bark_jobs.sh)
     ```
     runningdir=<your hdfs empty path>/running
     lv1tempfile=<your local path>/temp.txt
     lv2tempfile=<your local path>/temp2.txt
     logfile=<your local path>/log.txt
     ```
-    if you set "runningdir" to your own hdfs path, you should keep it the same with "job.hdfs.folder" in [application.properties](https://github.corp.ebay.com/bark/Bark/blob/master/bark-core/src/main/resources/application.properties) (the modification of this file needs your rebuild of bark-core and redeploy)
-    
+    if you set "runningdir" to your own hdfs path, you should keep it the same with "job.hdfs.folder" in [application.properties](https://github.com/eBay/DQSolution/tree/master/bark-core/src/main/resources/application.properties) (the modification of this file needs your rebuild of bark-core and redeploy)
+
     ```
     spark-submit --class com.ebay.bark.Accu33 --master yarn --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
-    spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/ 
+    spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
     ```
     these commands submit the jobs to spark, if you want to try your own model or modify some parameters, you can edit it
-    
-    [bark_regular_run.sh](https://github.corp.ebay.com/bark/Bark/blob/master/bark-doc/hive/script/bark_regular_run.sh)
+
+    [bark_regular_run.sh](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive/script/bark_regular_run.sh)
     ```
     <your local path contain this file bark_jobs.sh>/bark_jobs.sh 2>&1
-    
+
     <your local path>/nohup.out
     ```
     then run the script file bark_regular_run.sh
     ```
     nohup ./bark_regular_run.sh
     ```
-    
-10. Now the environment and data is ready, just follow the [userGuide](https://github.corp.ebay.com/bark/Bark/blob/master/bark-doc/userguide.md), enjoy your journey!
+
+10. Now the environment and data is ready, just follow the [userGuide](https://github.com/eBay/DQSolution/tree/master/bark-doc/userguide.md), enjoy your journey!
 
 ### How to develop
-In dev environment, you can run backend REST service and frontend UI seperately. The majority of the backend code logics are in the [Bark](https://github.corp.ebay.com/bark/Bark) project. So, to start backend, please import maven project Bark into eclipse, right click ***bark-core->Run As->Run On Server***
+In dev environment, you can run backend REST service and frontend UI seperately. The majority of the backend code logics are in the [Bark](https://github.com/eBay/DQSolution/tree/master/bark-core) project. So, to start backend, please import maven project Bark into eclipse, right click ***bark-core->Run As->Run On Server***
 
 To start frontend, please follow up the below steps.
 

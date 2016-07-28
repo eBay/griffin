@@ -1,6 +1,6 @@
 #Bark Introduction
 
-![bark logo](https://github.corp.ebay.com/bark/bark.github.corp.ebay.com/blob/master/img/bark-sm.gif)
+![bark logo](https://ebay.github.io/DQSolution/img/bark-sm.gif)
 
 Bark is a Data Quality Service Platform on the eBay cloud which provides:
 * Automatic quality validation of your data
@@ -45,7 +45,7 @@ The following are the main problems in big data flow across multi platforms
 ### How will the developer, customer experience change as a result?
 Bark will provide a set of tool and service to help user build a data quality control pipeline as the diagram below. It will change the traditional way how we control data quality and user can be focus on developing business logic on validating the data quality and doing root cause analysis.
 
-![data quality flow](https://github.corp.ebay.com/bark/bark.github.corp.ebay.com/blob/master/img/data%20quality%20Flow.png)
+![data quality flow](https://ebay.github.io/DQSolution/img/data%20quality%20Flow.png)
 
 ## Initial Goals
 MVP Use Cases:
