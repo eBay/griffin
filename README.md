@@ -1,6 +1,6 @@
 ## Bark
 
-Bark is a Data Quality solution for distributed data systems at any scale in both streaming or batch data context. It provides a framework process for defining data quality model, executing data quality measurement, automating data profiling and validation, as well as a unified data quality visualization across multiple data systems. More introduction can be found [here](https://ebay.github.io/DQSolution/).
+Bark is a Data Quality solution for distributed data systems at any scale in both streaming or batch data context. It provides a framework process for defining data quality model, executing data quality measurement, automating data profiling and validation, as well as a unified data quality visualization across multiple data systems. You can access our home page [here](https://ebay.github.io/DQSolution/).
 
 
 ### Contact us
@@ -9,23 +9,21 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
 [Slack](https://ebay-eng.slack.com/messages/ebaysf-bark/)
 
 ### How to build
-1. git clone the project of https://github.com/eBay/DQSolution
+1. git clone the repository of https://github.com/eBay/DQSolution
 2. run "mvn install"
 
 ### How to run
-1. Please deploy bark-core/target/ROOT.war to tomcat
-2. Install MongoDB and import the collections
-
+1. Install jdk (1.7 or later versions)
+2. Install Tomcat (7.0 or later versions)
+3. Install MongoDB and import the collections
 	```
 	mongorestore /db:unitdb0 /dir:<dir of bark-doc>/db/unitdb0
 	```
-3. Install Tomcat (version 7 and later)
-4. Then you can review the RESTful APIs through http://localhost:8080/api/v1/application.wadl
-5. Install [Hadoop](http://mirror.stjschools.org/public/apache/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz) (version 2.7 and later), you can get some help [here](https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html)
-Make sure you have the permission to use command "hadoop"
-6. Install [Spark](http://www.webhostingjams.com/mirror/apache/spark/spark-2.0.0/spark-2.0.0-bin-hadoop2.7.tgz) (version 2.0.0), if you want to install Pseudo Distributed/Single Node Cluster, you can get some help [here](http://why-not-learn-something.blogspot.com/2015/06/spark-installation-pseudo.html)
-7. Install [Hive](http://mirrors.koehn.com/apache/hive/hive-2.1.0/apache-hive-2.1.0-bin.tar.gz) (version 2.1.0), you can get some help [here](https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHive)
-8. Put your data into Hive. You can get sample data [here](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive), then put them into hive as following
+
+4. Install [Hadoop](http://mirror.stjschools.org/public/apache/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz) (2.7 or later versions), you can get some help [here](https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html). Make sure you have the permission to use command "hadoop"
+5. Install [Spark](http://www.webhostingjams.com/mirror/apache/spark/spark-2.0.0/spark-2.0.0-bin-hadoop2.7.tgz) (version 2.0.0), if you want to install Pseudo Distributed/Single Node Cluster, you can get some help [here](http://why-not-learn-something.blogspot.com/2015/06/spark-installation-pseudo.html)
+6. Install [Hive](http://mirrors.koehn.com/apache/hive/hive-2.1.0/apache-hive-2.1.0-bin.tar.gz) (version 2.1.0), you can get some help [here](https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHive)
+7. Put your data into Hive. You can get sample data [here](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive), then put them into hive as following
 
     ```
     CREATE TABLE movie_source (
@@ -54,7 +52,7 @@ Make sure you have the permission to use command "hadoop"
     hadoop fs -touchz <your hdfs table path>/movie_target/_SUCCESS
     ```
 
-9. Edit your own script files to run the jobs automatically, you can edit the lines of demo ones as below for your environment
+8. Edit your own script files to run the jobs automatically, you can edit the lines of demo ones as below for your environment
 
     [bark_jobs.sh](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive/script/bark_jobs.sh)
     ```
@@ -82,7 +80,9 @@ Make sure you have the permission to use command "hadoop"
     nohup ./bark_regular_run.sh
     ```
 
-10. Now the environment and data is ready, just follow the [userGuide](https://github.com/eBay/DQSolution/tree/master/bark-doc/userguide.md), enjoy your journey!
+9. Open [application.properties](https://github.com/eBay/DQSolution/tree/master/bark-core/src/main/resources/application.properties) file, read the comments and specify the properties correctly.
+10. Build the whole project and deploy bark-core/target/ROOT.war to tomcat
+11. Then you can review the RESTful APIs through http://localhost:8080/api/v1/application.wadl
 
 ### How to develop
 In dev environment, you can run backend REST service and frontend UI seperately. The majority of the backend code logics are in the [bark-core](https://github.com/eBay/DQSolution/tree/master/bark-core) project. So, to start backend, please import maven project Bark into eclipse, right click ***bark-core->Run As->Run On Server***
@@ -104,7 +104,7 @@ To start frontend, please follow up the below steps.
    - bower install
    - npm start
 
-4. Then the UI will be opened in browser automatically
+4. Then the UI will be opened in browser automatically, please follow the [userGuide](https://github.com/eBay/DQSolution/tree/master/bark-doc/userguide.md), enjoy your journey!
 
 **Note**: The front-end UI is still under development, you can only access some basic features currently.
 
