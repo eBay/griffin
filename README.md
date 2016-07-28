@@ -84,7 +84,7 @@ Make sure you have the permission to use command "hadoop"
 10. Now the environment and data is ready, just follow the [userGuide](https://github.com/eBay/DQSolution/tree/master/bark-doc/userguide.md), enjoy your journey!
 
 ### How to develop
-In dev environment, you can run backend REST service and frontend UI seperately. The majority of the backend code logics are in the [Bark](https://github.com/eBay/DQSolution/tree/master/bark-core) project. So, to start backend, please import maven project Bark into eclipse, right click ***bark-core->Run As->Run On Server***
+In dev environment, you can run backend REST service and frontend UI seperately. The majority of the backend code logics are in the [bark-core](https://github.com/eBay/DQSolution/tree/master/bark-core) project. So, to start backend, please import maven project Bark into eclipse, right click ***bark-core->Run As->Run On Server***
 
 To start frontend, please follow up the below steps.
 
