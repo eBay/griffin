@@ -1,3 +1,5 @@
+![bark logo](https://ebay.github.io/DQSolution/img/bark-sm.gif)
+
 ## Abstract
 Bark is a Data Quality Service platform built on Apache Hadoop and Apache Spark. It provides a framework process for defining data quality model, executing data quality measurement, automating data profiling and validation, as well as a unified data quality visualization across multiple data systems.  It tries to address the data quality challenges in big data and streaming context.
 
@@ -102,10 +104,10 @@ eBay invested in Bark as a company-wide data quality service platform and some o
 Bark has a strong relationship and dependency with Apache Hadoop, Apache HBase, Apache Spark, Apache Kafka and Apache Storm, Apache Hive. In addition, since there is a growing need for data quality solution for open source platform (e.g. Hadoop, Kafka, Spark etc), being part of Apache’s Incubation community, could help with a closer collaboration among these four projects and as well as others.
 
 ##Documentation
-Information about Bark can be found at https://github.com/eBay/Bark.  
+Information about Bark can be found at https://github.com/eBay/DQSolution.  
 
 ##Initial Source
-Bark has been under development since early 2016 by a team of engineers at eBay Inc. It is currently hosted on Github.com under an Apache license 2.0 at https://github.com/eBay/Bark. Once in incubation we will be moving the code base to apache git library.  
+Bark has been under development since early 2016 by a team of engineers at eBay Inc. It is currently hosted on Github.com under an Apache license 2.0 at https://github.com/eBay/DQSolution. Once in incubation we will be moving the code base to apache git library.  
 
 ##External Dependencies
 Bark has the following external dependencies.
