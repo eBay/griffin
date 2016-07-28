@@ -1,0 +1,140 @@
+<!--
+	Copyright (c) 2016 eBay Software Foundation.
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+	    http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="/img/favicon.ico"> -->
+
+    <title>Bark - Data Quality Service</title>
+    <link rel="icon" href="/img/favicon.ico">
+    <!-- Bootstrap Core CSS -->
+    <link href="../bower_components/bootswatch/cyborg/bootstrap.css" rel="stylesheet">
+    <link href="login.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <!-- <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+	<div id="containerDiv">
+		<div id="content" class="container-fluid">
+			<div class="col-lg-5 col-md-5 col-sm-5" style="padding-right: 0px">
+                <div id="circular" style="border: 1px solid; border-color:transparent;">
+                    <div class="container-fluid" id="loginInput">
+                        <div class="col-lg-2 col-md-2 col-sm-2"></div>
+                        <div class="col-lg-8 col-md-8 col-sm-8">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <img src="../img/logo.gif" class="img-rounded" width="100%">
+                                </div>
+                                <div class="row">
+                                    <hr style="border: 1px solid #9F95A0">
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <!-- <input type="input" class="form-control" placeholder="Username" data-toggle="tooltip" data-placement="left" title="Please login with your NT account" style="border-radius: 20px; background: inherit;"> -->
+                                        <input type="input" class="form-control" placeholder="Corp id" autocomplete="on" style="border-radius: 20px; background: inherit;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" >
+                                        <input type="password" class="form-control" placeholder="Corp password" autocomplete="on" style="border-radius: 20px; background: inherit;">
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row">
+                                    <div class="col-lg-9 col-md-9 col-sm-9">
+                                      <input type="checkbox" name="remember" checked> Remember me
+                                      <p id="loginMsg" style="color:#f00;display:none">Login failed. Try again.</p>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-3" style="padding:0px;">
+
+                                        <button type="button" class="btn btn-default btn-sm" style="border-radius: 20px;width: 100%">Log in</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2"></div>
+                    </div>
+                </div>
+			</div>
+			<div class="col-lg-7 col-md-7 col-sm-7" style="padding-left: 0px;margin-top:80px">
+                <div id="explaination">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <h4>
+                                    Bark is a Data Quality Service Platform on the eBay cloud.
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-1"></div>
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <p class="text-left" style="font-size: 16px;">
+                                   - Automates your data quality validation
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-1"></div>
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <p class="text-left" style="font-size: 16px;">
+                                   - Health monitoring, Profiling and detection
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-1"></div>
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <p class="text-left" style="font-size: 16px;">
+                                   - Unified Visualization
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-1"></div>
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <p class="text-left" style="font-size: 16px;">
+                                   - One set of tools to build data quality pipelines
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="login.js"></script>
+</body>
+
+</html>

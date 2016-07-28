@@ -1,0 +1,30 @@
+{
+  "source": "movie_source",
+  "target": "movie_target",
+  "accuracyMapping": [
+    {
+      "sourceColId": 0,
+      "sourceColName": "movieid",
+      "targetColId": 0,
+      "targetColName": "movieid",
+      "matchFunction": "true",
+      "isPK": true
+    },
+    {
+      "sourceColId": 1,
+      "sourceColName": "title",
+      "targetColId": 1,
+      "targetColName": "title",
+      "matchFunction": "false",
+      "isPK": false
+    },
+    {
+      "sourceColId": 2,
+      "sourceColName": "genres",
+      "targetColId": 2,
+      "targetColName": "genres",
+      "matchFunction": "false",
+      "isPK": false
+    }
+  ]
+}

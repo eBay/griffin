@@ -1,0 +1,59 @@
+{
+	"dataSet": "movie_source",
+	"validityReq": [
+		{
+			"colId": 0,
+			"colName": "movieid",
+			"metrics": [
+				{
+					"name": 1
+				},
+				{
+					"name": 2
+				},
+				{
+					"name": 3
+				},
+				{
+					"name": 4
+				}
+			]
+		},
+		{
+			"colId": 1,
+			"colName": "title",
+			"metrics": [
+				{
+					"name": 1
+				},
+				{
+					"name": 2
+				},
+				{
+					"name": 3
+				},
+				{
+					"name": 4
+				}
+			]
+		},
+		{
+			"colId": 2,
+			"colName": "genres",
+			"metrics": [
+				{
+					"name": 1
+				},
+				{
+					"name": 2
+				},
+				{
+					"name": 3
+				},
+				{
+					"name": 4
+				}
+			]
+		}
+	]
+}
