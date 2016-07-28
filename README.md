@@ -1,6 +1,7 @@
 ## Bark
 
-Bark is a Data Quality Service that provides one set of tools to build data quality health monitoring, detection, and rapid troubleshooting for your data application.
+Bark is a Data Quality solution for distributed data systems at any scale in both streaming or batch data context. It provides a framework process for defining data quality model, executing data quality measurement, automating data profiling and validation, as well as a unified data quality visualization across multiple data systems. More introduction can be found [here](https://ebay.github.io/DQSolution/).
+
 
 ### Contact us
 [DL-eBay-bark-dev@ebay.com](mailto://DL-eBay-bark-dev@ebay.com)
