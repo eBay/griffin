@@ -66,12 +66,12 @@ You can create your own model, build your jar file, and put it in your local pat
     If you set "runningdir" to your own hdfs path, you should keep it the same with "job.hdfs.folder" in [application.properties](https://github.com/eBay/DQSolution/tree/master/bark-core/src/main/resources/application.properties) (the modification of this file needs your rebuild of bark-core and redeploy)
 
     ```
-    spark-submit --class com.ebay.bark.Accu33 --master yarn --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
-    spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
+    spark-submit --class com.ebay.bark.Accu33 --master yarn --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
+    spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
     ```
 
     These commands submit the jobs to spark, if you want to try your own model or modify some parameters, you can edit it. 
-    If you try to use your own model, change "accuracy-1.0-SNAPSHOT.jar" to "your path/your model.jar"
+    If you try to use your own model, change "bark-models-0.0.1-SNAPSHOT.jar" to "your path/your model.jar"
 
     [bark_regular_run.sh](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive/script/bark_regular_run.sh)
 
