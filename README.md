@@ -45,14 +45,16 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
     STORED AS TEXTFILE;
 
     LOAD DATA LOCAL INPATH '<your hdfs table path>/movie_target/MovieLensSample_Target.dat' OVERWRITE INTO TABLE movie_target;
-    ```  
-    if you use hive cmdline to input data, remember to create _SUCCESS file in the hdfs path
+    ```
+    Make sure you can get the data with hive command in your working path. 
+    If you use hive cmdline to input data, remember to create _SUCCESS file in the hdfs path
     ```
     hadoop fs -touchz <your hdfs table path>/movie_source/_SUCCESS
     hadoop fs -touchz <your hdfs table path>/movie_target/_SUCCESS
     ```
-
-8. Edit your own script files to run the jobs automatically, you can edit the lines of demo ones as below for your environment
+8. If you want to use our default models, please skip this step.
+You can create your own model, build your jar file, and put it in your local path
+9. Edit your own script files to run the jobs automatically, you can edit the lines of demo ones as below for your environment
 
     [bark_jobs.sh](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive/script/bark_jobs.sh)
     ```
@@ -61,15 +63,18 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
     lv2tempfile=<your local path>/temp2.txt
     logfile=<your local path>/log.txt
     ```
-    if you set "runningdir" to your own hdfs path, you should keep it the same with "job.hdfs.folder" in [application.properties](https://github.com/eBay/DQSolution/tree/master/bark-core/src/main/resources/application.properties) (the modification of this file needs your rebuild of bark-core and redeploy)
+    If you set "runningdir" to your own hdfs path, you should keep it the same with "job.hdfs.folder" in [application.properties](https://github.com/eBay/DQSolution/tree/master/bark-core/src/main/resources/application.properties) (the modification of this file needs your rebuild of bark-core and redeploy)
 
     ```
     spark-submit --class com.ebay.bark.Accu33 --master yarn --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
     spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
     ```
-    these commands submit the jobs to spark, if you want to try your own model or modify some parameters, you can edit it
+
+    These commands submit the jobs to spark, if you want to try your own model or modify some parameters, you can edit it. 
+    If you try to use your own model, change "accuracy-1.0-SNAPSHOT.jar" to "your path/your model.jar"
 
     [bark_regular_run.sh](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive/script/bark_regular_run.sh)
+
     ```
     <your local path contain this file bark_jobs.sh>/bark_jobs.sh 2>&1
 
@@ -80,9 +85,9 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
     nohup ./bark_regular_run.sh
     ```
 
-9. Open [application.properties](https://github.com/eBay/DQSolution/tree/master/bark-core/src/main/resources/application.properties) file, read the comments and specify the properties correctly.
-10. Build the whole project and deploy bark-core/target/ROOT.war to tomcat
-11. Then you can review the RESTful APIs through http://localhost:8080/api/v1/application.wadl
+10. Open [application.properties](https://github.com/eBay/DQSolution/tree/master/bark-core/src/main/resources/application.properties) file, read the comments and specify the properties correctly.
+11. Build the whole project and deploy bark-core/target/ROOT.war to tomcat
+12. Then you can review the RESTful APIs through http://localhost:8080/api/v1/application.wadl
 
 ### How to develop
 In dev environment, you can run backend REST service and frontend UI seperately. The majority of the backend code logics are in the [bark-core](https://github.com/eBay/DQSolution/tree/master/bark-core) project. So, to start backend, please import maven project Bark into eclipse, right click ***bark-core->Run As->Run On Server***
