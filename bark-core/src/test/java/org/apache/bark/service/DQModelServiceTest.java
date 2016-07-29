@@ -232,7 +232,7 @@ public class DQModelServiceTest {
 
     @Test
     public void testGtGeneralModeltAndEnableSchedule4Model() {
-        String name = "total_count_user_dna";
+        String name = "test_accuracy_1";
         DQModelEntity me = dqModelService.getGeneralModel(name);
         assertNotNull(me);
 

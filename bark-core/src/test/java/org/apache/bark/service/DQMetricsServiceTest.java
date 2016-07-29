@@ -109,7 +109,7 @@ public class DQMetricsServiceTest {
     @Test
     public void testOneDataCompleteDashboard() {
         System.out.println("===== oneDataCompleteDashboard =====");
-        AssetLevelMetrics aslm = dqMetricsService.oneDataCompleteDashboard("accuracy_site_speed_ubi");
+        AssetLevelMetrics aslm = dqMetricsService.oneDataCompleteDashboard("test_accuracy_1");
         assertNotNull(aslm);
         System.out.println(aslm.getName() + " -> " + aslm.getDq());
         System.out.println();
@@ -118,7 +118,7 @@ public class DQMetricsServiceTest {
     @Test
     public void testOneDataBriefDashboard() {
         System.out.println("===== oneDataBriefDashboard =====");
-        AssetLevelMetrics alm1 = dqMetricsService.oneDataBriefDashboard("accuracy_viewitem_queue");
+        AssetLevelMetrics alm1 = dqMetricsService.oneDataBriefDashboard("test_accuracy_1");
         assertNotNull(alm1);
         System.out.println(alm1.getName() + " -> " + alm1.getDq());
         System.out.println();
@@ -127,7 +127,7 @@ public class DQMetricsServiceTest {
     @Test
     public void testMetricsForReport() {
         System.out.println("===== metricsForReport =====");
-        AssetLevelMetrics alm2 = dqMetricsService.metricsForReport("accuracy_search_queue");
+        AssetLevelMetrics alm2 = dqMetricsService.metricsForReport("test_accuracy_1");
         assertNotNull(alm2);
         System.out.println(alm2.getName() + " -> " + alm2.getDq());
         System.out.println();
