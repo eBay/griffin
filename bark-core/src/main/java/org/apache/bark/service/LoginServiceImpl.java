@@ -45,9 +45,11 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public String login(String ntUser, String password) {
+		/*
 		String ldapServer = env.getProperty("ldap.server");
 		int ldapPort = Integer.parseInt(env.getProperty("ldap.port"));
-		String ldapUser = ntUser + "@corp.ebay.com";
+		//String ldapUser = ntUser + "@xxx.com";
+		String ldapUser = ntUser ;
 		String ldapPass = password;
 
 		String ldapFactory = "com.sun.jndi.ldap.LdapCtxFactory";
@@ -67,7 +69,8 @@ public class LoginServiceImpl implements LoginService {
 		try {
 			ctx = new InitialLdapContext(ht, null);
 
-			String ldapSearchBase = "DC=corp,DC=ebay,DC=com";
+
+			String ldapSearchBase = "DC=corp,DC=XXX,DC=com";
 
 			String searchFilter = "(sAMAccountName=" + ntUser + ")";
 
@@ -101,6 +104,9 @@ public class LoginServiceImpl implements LoginService {
 			e.printStackTrace();
 		}
 		return null;
+		*/
+
+		return ntUser;
 	}
 
 }
