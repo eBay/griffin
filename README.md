@@ -108,6 +108,9 @@ Now you can put your data into Hive by running "hive" here. You can get sample d
     ```
     If you set the properties as above, you need to make sure the directory "tmp" exists in your local path
 12. Build the whole project and deploy bark-core/target/ROOT.war to tomcat
+    ```
+    mvn install -DskipTests
+    ```
 13. Then you can review the RESTful APIs through http://localhost:8080/api/v1/application.wadl
 
 ### How to develop
