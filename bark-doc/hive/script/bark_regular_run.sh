@@ -1,13 +1,18 @@
 #!/bin/bash
 
+ROOT_DIR=$(cd $(dirname $0); pwd)
+if [ -f $ROOT_DIR/env.sh ]; then
+  . $ROOT_DIR/env.sh
+fi
+
 set +e
 while true
 do
   echo "start"
-  /home/hduser/bark/bark_jobs.sh 2>&1
+  $ROOT_DIR/bark_jobs.sh 2>&1
   rcode=$?
   echo "end $rcode"
-  rm -rf /home/hduser/bark/nohup.out
+  rm -rf $ROOT_DIR/nohup.out
   sleep 60
 done
 set -e

@@ -1,13 +1,24 @@
 #!/bin/bash
 
-runningdir=/user/test/bark/running
-lv1tempfile=/home/hduser/bark/temp.txt
-lv2tempfile=/home/hduser/bark/temp2.txt
-logfile=/home/hduser/bark/log.txt
+ROOT_DIR=$(cd $(dirname $0); pwd)
+if [ -f $ROOT_DIR/env.sh ]; then
+  . $ROOT_DIR/env.sh
+fi
+
+HDFS_WORKDIR=${HDFS_WORKDIR:-/user/test/bark/running}
+TEMP_DIR=${TEMP_DIR:-$ROOT_DIR/temp}
+LOG_DIR=${LOG_DIR:-$ROOT_DIR/log}
+
+mkdir -p $TEMP_DIR
+mkdir -p $LOG_DIR
+
+lv1tempfile=$TEMP_DIR/temp.txt
+lv2tempfile=$TEMP_DIR/temp2.txt
+logfile=$LOG_DIR/log.txt
 
 set +e
 
-hadoop fs -ls $runningdir > $lv1tempfile
+hadoop fs -ls $HDFS_WORKDIR > $lv1tempfile
 
 rm -rf $logfile
 touch $logfile
@@ -16,20 +27,23 @@ while read line
 do
   lv1dir=${line##* }
   echo $lv1dir
-  hadoop fs -ls $lv1dir/_START
-  rc=$?
-  if [ $rc -ne 0 ] && [ "${lv1dir:0:1}" == "/" ]
+  hadoop fs -test -f $lv1dir/_START
+  if [ $? -ne 0 ] && [ "${lv1dir:0:1}" == "/" ]
   then
-    hadoop fs -cat $lv1dir/_watchfile > $lv2tempfile
+    hadoop fs -test -f $lv2tempfile
+    rc0=$?
+    if [ $rc0 -eq 0 ]
+    then
+        hadoop fs -rm $lv2tempfile
+    fi
+    hadoop fs -get $lv1dir/_watchfile $lv2tempfile
 
     watchfiledone=1
     while read watchline
     do
       echo $watchline >> $logfile
-      hadoop fs -ls $watchline/_SUCCESS
-      rcode=$?
-      echo $rcode
-      if [ $rcode -ne 0 ]
+      hadoop fs -test -f $watchline/_SUCCESS
+      if [ $? -ne 0 ]
       then
         watchfiledone=0
       fi
@@ -38,9 +52,9 @@ do
     if [ $watchfiledone -eq 1 ]
     then
       hadoop fs -touchz $lv1dir/_START
-      hadoop fs -ls $lv1dir/_type_0.done
+      hadoop fs -test -f $lv1dir/_type_0.done
       rc1=$?
-      hadoop fs -ls $lv1dir/_type_1.done
+      hadoop fs -test -f $lv1dir/_type_1.done
       rc2=$?
       if [ $rc1 -eq 0 ]
       then
@@ -59,4 +73,4 @@ do
 
 done < $lv1tempfile
 
-set +e
+set -e
