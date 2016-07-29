@@ -29,7 +29,7 @@ So we conclude 3 data quality problems at eBay:
 
 ## Main business process
 
-![Business_Process_image](img/fsd/Business_Process.png)
+![Business_Process_image](img/Business_Process.png)
 
 ## Feature List
 

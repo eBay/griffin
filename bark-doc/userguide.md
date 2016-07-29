@@ -232,7 +232,7 @@ POST
 **Publish data format:**
 
 Method: POST    
-  &nbsp;&nbsp;&nbsp;&nbsp; Endpoint: [https://bark.vip.ebay.com/api/v1/metrics](https://bark.vip.ebay.com/api/v1/metrics)    
+  &nbsp;&nbsp;&nbsp;&nbsp; Endpoint: [https://localhost:8080/api/v1/metrics](https://localhost:8080/api/v1/metrics)    
   &nbsp;&nbsp;&nbsp;&nbsp; Body:    
   &nbsp;&nbsp;&nbsp;&nbsp; {     
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "metricName": "",   
