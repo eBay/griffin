@@ -1,9 +1,6 @@
 #!/bin/bash
 
 ROOT_DIR=$(cd $(dirname $0); pwd)
-if [ -f $ROOT_DIR/env.sh ]; then
-  . $ROOT_DIR/env.sh
-fi
 
 set +e
 while true

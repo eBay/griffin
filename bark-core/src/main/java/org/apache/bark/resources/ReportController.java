@@ -73,41 +73,41 @@ public class ReportController {
 		if("viewitem".equals(asset)){
 			report.setTitle("Bullseye viewitem daily DQ");
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_viewitem_queue");
 			report.details.add(new BarPoint("Tier2_LVS_Recognized_User", calAvg(metrics)));
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_viewitem_e2e_user");
 			report.details.add(new BarPoint("e2e_user", calAvg(metrics)));
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_viewitem_e2e_visitor");
 			report.details.add(new BarPoint("e2e_visitor", calAvg(metrics)));
 		}else if("search".equals(asset)){
 			report.setTitle("Bullseye search daily DQ");
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_2");
+			metrics = dqMetricsService.metricsForReport("accuracy_search_queue");
 			report.details.add(new BarPoint("Tier2_LVS_Recognized_User", calAvg(metrics)));
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_2");
+			metrics = dqMetricsService.metricsForReport("accuracy_search_e2e_user");
 			report.details.add(new BarPoint("e2e_user", calAvg(metrics)));
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_2");
+			metrics = dqMetricsService.metricsForReport("accuracy_search_e2e_visitor");
 			report.details.add(new BarPoint("e2e_visitor", calAvg(metrics)));
 		}else if("bid_new".equals(asset)){
 			report.setTitle("Bullseye bid_new daily DQ");
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_bid_new_queue");
 			report.details.add(new BarPoint("bid_new", metrics.getDq()));
 
 		}else if("item_watch".equals(asset)){
 			report.setTitle("Bullseye item_watch daily DQ");
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_2");
+			metrics = dqMetricsService.metricsForReport("accuracy_item_watch_queue");
 			report.details.add(new BarPoint("item_watch", metrics.getDq()));
 
 		}else if("transaction_new".equals(asset)){
 			report.setTitle("Bullseye transaction_new daily DQ");
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_viewitem_queue");
 			report.details.add(new BarPoint("transation_new", metrics.getDq()));
 
 		}
@@ -129,7 +129,7 @@ public class ReportController {
 		if("viewitem".equals(asset)){
 			report.setTitle("Bullseye viewitem hourly DQ");
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_viewitem_queue");
 
 			item = new LineItem();
 			item.name = "Tier2_LVS_Recognized_User";
@@ -145,7 +145,7 @@ public class ReportController {
 			/////////////////////////////////////////////////////////////////////////
 
 
-			metrics = dqMetricsService.metricsForReport("test_accuracy_2");
+			metrics = dqMetricsService.metricsForReport("accuracy_viewitem_e2e_user");
 			item = new LineItem();
 			item.name = "e2e_user";
 			item.details = new ArrayList<LinePoint>();
@@ -158,7 +158,7 @@ public class ReportController {
 
 			report.items.add(item);
 			///////////////////////////////////////////////////////////////////////////
-			metrics = dqMetricsService.metricsForReport("test_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_viewitem_e2e_visitor");
 			item = new LineItem();
 			item.name = "e2e_visitor";
 			item.details = new ArrayList<LinePoint>();
@@ -173,7 +173,7 @@ public class ReportController {
 		}else if("search".equals(asset)){
 			report.setTitle("Bullseye search hourly DQ");
 
-			metrics = dqMetricsService.metricsForReport("hadoop_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_search_queue");
 			item = new LineItem();
 			item.name = "Tier2_LVS_Recognized_User";
 			item.details = new ArrayList<LinePoint>();
@@ -188,7 +188,7 @@ public class ReportController {
 			/////////////////////////////////////////////////////////////////////////
 
 
-			metrics = dqMetricsService.metricsForReport("hadoop_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_search_e2e_user");
 			item = new LineItem();
 			item.name = "e2e_user";
 			item.details = new ArrayList<LinePoint>();
@@ -201,7 +201,7 @@ public class ReportController {
 
 			report.items.add(item);
 			///////////////////////////////////////////////////////////////////////////
-			metrics = dqMetricsService.metricsForReport("hadoop_accuracy_1");
+			metrics = dqMetricsService.metricsForReport("accuracy_search_e2e_visitor");
 			item = new LineItem();
 			item.name = "e2e_visitor";
 			item.details = new ArrayList<LinePoint>();

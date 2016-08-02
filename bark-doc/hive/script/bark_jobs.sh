@@ -5,7 +5,7 @@ if [ -f $ROOT_DIR/env.sh ]; then
   . $ROOT_DIR/env.sh
 fi
 
-HDFS_WORKDIR=${HDFS_WORKDIR:-/user/test/bark/running}
+HDFS_WORKDIR=${HDFS_WORKDIR:-/user/bark/running}
 TEMP_DIR=${TEMP_DIR:-$ROOT_DIR/temp}
 LOG_DIR=${LOG_DIR:-$ROOT_DIR/log}
 
@@ -58,12 +58,12 @@ do
       rc2=$?
       if [ $rc1 -eq 0 ]
       then
-        echo "spark-submit --class com.ebay.bark.Accu33 --master yarn --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/ "
-        spark-submit --class com.ebay.bark.Accu33 --master yarn --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
+        echo "spark-submit --class com.ebay.bark.Accu33 --master yarn-client --queue default --executor-memory 1g --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/ "
+        spark-submit --class com.ebay.bark.Accu33 --master yarn-client --queue default --executor-memory 1g --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
       elif [ $rc2 -eq 0 ]
       then
-        echo "spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/ "
-        spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
+        echo "spark-submit --class com.ebay.bark.Vali3 --master yarn-client --queue default --executor-memory 1g --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/ "
+        spark-submit --class com.ebay.bark.Vali3 --master yarn-client --queue default --executor-memory 1g --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
       fi
 
       echo "watch file ready" >> $logfile

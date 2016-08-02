@@ -1,3 +1,3 @@
 #!/bin/bash
 
-HDFS_WORKDIR=/user/test/bark/running
+HDFS_WORKDIR=/user/bark/running
