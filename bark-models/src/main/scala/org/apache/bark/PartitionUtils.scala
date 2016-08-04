@@ -31,7 +31,7 @@ object PartitionUtils {
   def generateTargetSQLClause(targetTable: String, partition: List[List[PartitionConfig]]): String = {
     val builder = StringBuilder.newBuilder
 
-    val parts = if (partition.length == 0) List[PartitionConfig]() :: Nil else List[List[PartitionConfig]]()
+    val parts = if (partition.length == 0) List[PartitionConfig]() :: Nil else partition
 
     for (i <- 0 to parts.length - 1) {
 
