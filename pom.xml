@@ -41,17 +41,6 @@
         </license>
     </licenses>
 
-	<distributionManagement>
-		<repository>
-			<id>raptor.releases</id>
-			<url>http://ebaycentral.qa.ebay.com/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>raptor.snapshots</id>
-			<url>http://ebaycentral.qa.ebay.com/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-
     <prerequisites>
         <maven>${maven.version}</maven>
     </prerequisites>
@@ -89,7 +78,7 @@
 
         <!-- Environment Versions -->
         <hadoop.version>2.2.0</hadoop.version>
-        <!-- 
+        <!--
         <hbase.version>0.98.4.2.2.5.1-3-hadoop2</hbase.version>
         <hive.version>1.2.1</hive.version>
         <spark.core.version>1.4.0</spark.core.version>
@@ -105,13 +94,13 @@
         <commons-beanutils.version>1.8.0</commons-beanutils.version>
         <commons-collections4.version>4.0</commons-collections4.version>
 	 	-->
-        <!-- Configuration 
+        <!-- Configuration
         <archaius.version>0.6.1</archaius.version>
         <typesafe.config.version>1.2.1</typesafe.config.version>
 		-->
         <!-- Serialization -->
         <gson.version>2.2.2</gson.version>
-        <!-- 
+        <!--
         <guava.version>14.0.1</guava.version>
         <fasterxml-jackson.version>2.2.3</fasterxml-jackson.version>
         <codehaus-jackson.version>1.9.13</codehaus-jackson.version>
@@ -138,14 +127,14 @@
         <storm.version>0.9.3</storm.version>
         <curator.version>2.8.0</curator.version>
  -->
-        <!-- Query 
+        <!-- Query
         <tomcat.version>7.0.42</tomcat.version>
         <protobuf-java.version>2.6.1</protobuf-java.version>
         <antlr4.version>4.5</antlr4.version>
         <goovy.version>2.3.4</goovy.version>
         <parsii.version>1.3</parsii.version>
 -->
-        <!-- JDBC 
+        <!-- JDBC
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <javax.persistence.version>2.0.0</javax.persistence.version>
         <mysql-connector-java.version>5.1.34</mysql-connector-java.version>
@@ -161,7 +150,7 @@
         <stax-api.version>1.0.1</stax-api.version>
         <org.mortbay.jetty.version>6.1.26</org.mortbay.jetty.version>
 
-        <!-- Alert Framework 
+        <!-- Alert Framework
         <velocity.version>1.7</velocity.version>
         <javax.mail.version>1.4</javax.mail.version>
         <extcos4.version>0.4b</extcos4.version>
@@ -178,12 +167,12 @@
         <mockito.version>1.8.1-rc1</mockito.version>
         <tomcat.embed.version>7.0.55</tomcat.embed.version> -->
 
-        <!-- Machine Learning 
+        <!-- Machine Learning
         <ejml.version>0.25</ejml.version>
 	-->
         <!-- spring security -->
         <spring.framework.version>3.2.8.RELEASE</spring.framework.version>
-        
+
     </properties>
 
     <dependencyManagement>
@@ -245,7 +234,7 @@
                 <version>${scala-reflect.version}</version>
             </dependency>
 			-->
-            <!-- Configuration 
+            <!-- Configuration
             <dependency>
                 <groupId>com.typesafe</groupId>
                 <artifactId>config</artifactId>
@@ -309,7 +298,7 @@
                 <version>${gson.version}</version>
                 <scope>compile</scope>
             </dependency>
-            <!-- 
+            <!--
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
@@ -452,7 +441,7 @@
                 <version>${curator.version}</version>
             </dependency>
  -->
-           
+
 
             <!--Bark REST Service Dependencies -->
             <dependency>
@@ -627,14 +616,14 @@
                 <version>${curator.version}</version>
             </dependency>
  -->
-            <!-- Machine Learning 
+            <!-- Machine Learning
             <dependency>
                 <groupId>com.googlecode.efficient-java-matrix-library</groupId>
                 <artifactId>ejml</artifactId>
                 <version>${ejml.version}</version>
             </dependency>
             -->
-            
+
             <!-- hadoop-2 -->
             		<dependency>
                         <groupId>org.apache.hadoop</groupId>
@@ -642,7 +631,7 @@
                         <version>${hadoop.version}</version>
                     </dependency>
 
-                   
+
                     <dependency>
                         <groupId>org.apache.hadoop</groupId>
                         <artifactId>hadoop-hdfs</artifactId>
@@ -658,7 +647,7 @@
                         <artifactId>hadoop-auth</artifactId>
                         <version>${hadoop.version}</version>
                     </dependency>
-                    <!-- 
+                    <!--
                     <dependency>
                         <groupId>org.apache.hbase</groupId>
                         <artifactId>hbase-server</artifactId>
