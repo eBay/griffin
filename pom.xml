@@ -23,6 +23,7 @@
     <name>Apache Bark Parent</name>
     <modules>
     	<module>bark-scheduler</module>
+    	<module>bark-models</module>
         <module>bark-core</module>
     </modules>
     <inceptionYear>2016</inceptionYear>
