@@ -22,7 +22,7 @@ The MIT License (http://opensource.org/licenses/mit-license.html)
 The Bark project bundles the following files under the MIT License:
 
 - Angular.JS v1.5.9 (http://angularjs.org) - Copyright (c) 2010-2015 Google, Inc.
-- Angular Smarttable 2.1.6 (https://github.com/lorenzofox3/Smart-Table) 
+- Angular Smarttable 2.1.6 (https://github.com/lorenzofox3/Smart-Table)
 - Angular Spinner 0.8.0 (https://github.com/urish/angular-spinner) - Copyright (C) 2013, 2014, 2015, Uri Shaked and contributors.
 - AngularJS Toaster 1.2.0 (https://github.com/jirikavi/AngularJS-Toaster) - Copyright 2013-2016 Jiri Kavulak.
 - Bootstrap v3.3.6 (http://getbootstrap.com) - Copyright 2011-2015 Twitter, Inc.
@@ -38,12 +38,35 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------------------------
-Creative Commons Attribution-NonCommercial 3.0 License (https://creativecommons.org/licenses/by-nc/3.0/)
+FreeBSD License (https://opensource.org/licenses/BSD-2-Clause)
 ---------------------------------------------------------------------------
+The Bark project bundles the following files under the FreeBSD License:
 
-The Bark project bundles the following files under the CC BY-NC License:
+- echarts (http://echarts.baidu.com/) - Copyright (c) 2013, Baidu Inc.
 
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies,
+either expressed or implied, of the FreeBSD Project.
 
 ---------------------------------------------------------------------------
 SIL Open Font License (https://opensource.org/licenses/OFL-1.1)
@@ -136,5 +159,3 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
-
-
