@@ -30,13 +30,7 @@ do
   hadoop fs -test -f $lv1dir/_START
   if [ $? -ne 0 ] && [ "${lv1dir:0:1}" == "/" ]
   then
-    hadoop fs -test -f $lv2tempfile
-    rc0=$?
-    if [ $rc0 -eq 0 ]
-    then
-        hadoop fs -rm $lv2tempfile
-    fi
-    hadoop fs -get $lv1dir/_watchfile $lv2tempfile
+    hadoop fs -cat $lv1dir/_watchfile > $lv2tempfile
 
     watchfiledone=1
     while read watchline
@@ -58,12 +52,12 @@ do
       rc2=$?
       if [ $rc1 -eq 0 ]
       then
-        echo "spark-submit --class com.ebay.bark.Accu33 --master yarn-client --queue default --executor-memory 1g --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/ "
-        spark-submit --class com.ebay.bark.Accu33 --master yarn-client --queue default --executor-memory 1g --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
+        echo "spark-submit --class com.ebay.bark.Accu33 --master yarn-client --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/ "
+        spark-submit --class com.ebay.bark.Accu33 --master yarn-client --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
       elif [ $rc2 -eq 0 ]
       then
-        echo "spark-submit --class com.ebay.bark.Vali3 --master yarn-client --queue default --executor-memory 1g --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/ "
-        spark-submit --class com.ebay.bark.Vali3 --master yarn-client --queue default --executor-memory 1g --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
+        echo "spark-submit --class com.ebay.bark.Vali3 --master yarn-client --queue default --executor-memory 512m --num-executors 10 accuracy-1.0-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/ "
+        spark-submit --class com.ebay.bark.Vali3 --master yarn-client --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
       fi
 
       echo "watch file ready" >> $logfile

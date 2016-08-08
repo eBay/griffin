@@ -1,87 +1,187 @@
+/**
+  * Accuracy of source data comparing with target data
+  *
+  * Purpose: suppose that each row of source data could be found in target data,
+  * but there exists some errors resulting the data missing, in this progress
+  * we count the missing data of source data set, which is not found in the target data set
+  *
+  *
+  *
+  */
+
 package com.ebay.bark
 
-import scala.annotation.migration
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD.rddToPairRDDFunctions
-import org.apache.spark.sql.{DataFrame, Dataset}
+import org.apache.spark.sql.DataFrame
 
+import scala.collection.immutable.HashSet
 import scala.collection.mutable
-
+import scala.collection.mutable.{MutableList, HashSet => MutableHashSet, Map => MutableMap}
 
 object Accu {
 
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("Acc")
+
+    val input = HdfsUtils.openFile(args(0))
+
+    val outputPath = args(1) + System.getProperty("file.separator")
+
+    //add files for job scheduling
+    val startFile = outputPath + "_START"
+    val resultFile = outputPath + "_RESULT"
+    val doneFile = outputPath + "_FINISHED"
+    val missingFile = outputPath + "missingRec.txt"
+
+    val mapper = new ObjectMapper()
+    mapper.registerModule(DefaultScalaModule)
+
+    //read the config info of comparison
+    val configure = mapper.readValue(input, classOf[AccuracyConf])
+
+    val conf = new SparkConf().setAppName("Accu")
     val sc = new SparkContext(conf)
     val sqlContext = new org.apache.spark.sql.hive.HiveContext(sc)
-    val sojdf = sqlContext.sql("SELECT * FROM soj_view_event where dt ='20160610' and hour = 22").rdd
-    //TODO, call def dropDuplicates(colNames: Array[String]) to filter out some duplicate records in case soj data quality issue 
-    val bedf = sqlContext.sql("SELECT * FROM be_view_event_queue where dt ='20160610' and hour = 22").rdd
-    val sojKeyIndexList = List((0, "uid"), (14, "eventtimestamp"))
-    val beKeyIndexList = List((0, "uid"), (16, "eventtimestamp"))
-    val sojValueIndexList = List((9, "leaf"),(0, "uid"), (14, "eventtimestamp"))
-    val beValueIndexList = List((11, "leaf"),(0, "uid"), (16, "eventtimestamp"))
-    
-    def toTuple[A <: Object](as:List[A]):Product = {
-      val tupleClass = Class.forName("scala.Tuple" + as.size)
-      tupleClass.getConstructors.apply(0).newInstance(as:_*).asInstanceOf[Product]
+
+    //add spark applicationId for debugging
+    val applicationId = sc.applicationId
+    HdfsUtils.writeFile(startFile, applicationId)
+
+    //get source data
+    val sojdf = sqlContext.sql("SELECT * FROM  " + configure.source + PartitionUtils.generateWhereClause(configure.srcPartitions))
+
+    //get target data
+    val bedf = sqlContext.sql(PartitionUtils.generateTargetSQLClause(configure.target, configure.tgtPartitions))
+
+    //-- algorithm --
+    val ((missCount, srcCount), missedList) = calcAccu(sc, configure, sojdf, bedf)
+
+    //record result and notify done
+    HdfsUtils.writeFile(resultFile, ((1 - missCount.toDouble / srcCount) * 100).toString())
+
+    val sb = new StringBuilder
+    missedList.foreach { item =>
+      sb.append(item)
+      sb.append("\n")
     }
+    HdfsUtils.writeFile(missingFile, sb.toString())
 
-    val sojkvs = sojdf.map { row =>
-      //composite key(uid,timestamp)
-      val kk = sojKeyIndexList map { t => row.getString(t._1)}
-      
-      val kkk = toTuple(kk)
-      
-//      val k = (row.get(sojKeyIndexList.head._1), row.get(sojKeyIndexList.last._1))
+    HdfsUtils.createFile(doneFile)
 
-      val v = sojValueIndexList.foldLeft(scala.collection.mutable.Map[String, Any]("__group__" -> "__source__")) { (c, x) => c(x._2) = row.get(x._1); c }
+    sc.stop()
 
-      (kkk, v)
-    }
-    
-    //we can reduce soj first to check soj's own DQ
-    
-    val sojkvsAfterreduce = sojkvs.reduceByKey((s1,s2)=>
-      s1 ++ s2
-      )
-      
+  }
 
-    val bekvs = bedf.map { row =>
-      val kk = beKeyIndexList map { t => row.getString(t._1)}
-      
-      val kkk = toTuple(kk)
+  def calcAccu(sc: SparkContext, configure: AccuracyConf, sojdf: DataFrame, bedf: DataFrame): ((Long, Long), List[String]) = {
+    val mp = configure.accuracyMapping
 
-//      val k = (row.get(beKeyIndexList.head._1), row.get(beKeyIndexList.last._1))
+    //--0. prepare to start job--
 
-      val v = beValueIndexList.foldLeft(scala.collection.mutable.Map[String, Any]("__group__" -> "__target__")) { (c, x) => c(x._2) = row.get(x._1); c }
+    //the key column info, to match different rows between source and target
+    val sojKeyIndexList = MutableList[scala.Tuple2[Int, String]]()
+    val beKeyIndexList = MutableList[scala.Tuple2[Int, String]]()
 
-      (kkk, v)
-    }
+    //the value column info, to be compared with between the match rows
+    val sojValueIndexList = MutableList[scala.Tuple2[Int, String]]()
+    val beValueIndexList = MutableList[scala.Tuple2[Int, String]]()
 
-    val allevents = sojkvs.union(bekvs)
+    //get the key and value column info from config
+    for (i <- mp) {
+      if (i.isPK) {
 
-    val result = allevents.reduceByKey((soje, bee) =>
+        val sojkey = scala.Tuple2(i.sourceColId, i.sourceColName)
+        sojKeyIndexList += sojkey
 
-      if (soje.get("__group__") == Some("__source__")) {
-        if (bee.get("__group__") == Some("__target__")) {
-          //comparing values besides group label
-          if ((bee - "__group__") == (soje - "__group__")) soje + ("__result__" -> "YES")
-          else soje + ("__result__" -> "NO")
-        } else {
-          soje + ("__result__" -> "Duplicates")
-        }
+        val bekey = scala.Tuple2(i.targetColId, i.targetColName)
+        beKeyIndexList += bekey
 
-      } 
-      else {
-        bee /*+ ("__result__" -> "be")*/
       }
-      )
-      
-      val missed = result.filter(x => x._2.get("__result__")== Some("NO") && x._2.get("__group__")== Some("__source__")).count()
-      
-      println("missed count : "+missed)
+
+      val sojValue = scala.Tuple2(i.sourceColId, i.sourceColName)
+      sojValueIndexList += sojValue
+
+      val beValue = scala.Tuple2(i.targetColId, i.sourceColName)
+      beValueIndexList += beValue
+
+    }
+
+    def toTuple[A <: Object](as: MutableList[A]): Product = {
+      val tupleClass = Class.forName("scala.Tuple" + as.size)
+      tupleClass.getConstructors.apply(0).newInstance(as: _*).asInstanceOf[Product]
+    }
+
+    //--1. convert data into same format (key, value)--
+
+    //convert source data rows into (key, ("__source__", valMap)), key is the key column value tuple, valMap is the value map of row
+    val sojkvs = sojdf.map { row =>
+      val kk = sojKeyIndexList map { t => row.get(t._1).asInstanceOf[Object] }
+
+      val kkk = toTuple(kk)
+
+      val len = row.length
+      val v = sojValueIndexList.foldLeft(Map[String, Any]()) { (c, x) => c + (x._2 -> row.get(x._1)) }
+
+      (kkk -> v)
+    }
+
+    //convert source data rows into (key, ("__target__", valMap)), key is the key column value tuple, valMap is the value map of row
+    val bekvs = bedf.map { row =>
+      val kk = beKeyIndexList map { t => row.get(t._1).asInstanceOf[Object] }
+
+      val kkk = toTuple(kk)
+
+      val len = row.length
+      val v = beValueIndexList.foldLeft(Map[String, Any]()) { (c, x) => c + (x._2 -> row.get(x._1)) }
+
+      (kkk -> v)
+    }
+
+    //--2. cogroup src RDD[(k, v1)] and tgt RDD[(k, v2)] into RDD[(k, (Iterable[v1], Iterable[v2]))]
+    val allkvs = sojkvs.cogroup(bekvs)
+
+    //--3. get missed count of source data--
+
+    //with the same key, for each source data in list, if it does not exists in the target set, one missed data found
+    def seqMissed(cnt: ((Long, Long), List[String]), kv: (Product, (Iterable[Map[String, Any]], Iterable[Map[String, Any]]))) = {
+      val ls = kv._2._1
+      val st = kv._2._2
+
+      if (ls.size > 2 && st.size > 4) {
+        val st1 = st.foldLeft(HashSet[Map[String, Any]]())((set, mp) => set + mp)
+        val ss = ls.foldLeft((0, List[String]())) { (c, mp) =>
+          if (st1.contains(mp)) {
+            c
+          } else {
+            (c._1 + 1, mp.toString :: c._2)
+          }
+        }
+        ((cnt._1._1 + ss._1, cnt._1._2 + ls.size), ss._2 ::: cnt._2)
+      } else {
+        val ss = ls.foldLeft((0, List[String]())) { (c, mp) =>
+          if (st.exists(mp.equals(_))) {
+            c
+          } else {
+            (c._1 + 1, mp.toString :: c._2)
+          }
+        }
+        ((cnt._1._1 + ss._1, cnt._1._2 + ls.size), ss._2 ::: cnt._2)
+      }
+    }
+
+    //add missed count of each partition
+    def combMissed(cnt1: ((Long, Long), List[String]), cnt2: ((Long, Long), List[String])) = {
+      ((cnt1._1._1 + cnt2._1._1, cnt1._1._2 + cnt2._1._2), cnt1._2 ::: cnt2._2)
+    }
+
+    //count missed source data
+    val missed = allkvs.aggregate(((0L, 0L), List[String]()))(seqMissed, combMissed)
+
+    //output: need to change
+    println("source count: " + missed._1._2 + " missed count : " + missed._1._1)
+
+    missed
   }
 
 }

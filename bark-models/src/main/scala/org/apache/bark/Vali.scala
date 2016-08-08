@@ -8,15 +8,16 @@ import org.apache.spark.SparkContext
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.catalyst.CatalystTypeConverters
 import org.apache.spark.sql.{DataFrame, Row}
-import org.apache.spark.sql.types.DataType
+import org.apache.spark.sql.types.{DataType, StructField}
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable.{Map, MutableList}
 import scala.collection.{Map, mutable}
 import scala.util.matching.Regex
 
-object Vali3 {
+object Vali {
 
   def main(args: Array[String]): Unit ={
 
@@ -68,15 +69,12 @@ object Vali3 {
     //--1. get all cols name, and types--
     val fnts = sojdf.schema.fields.map(x => (x.name, x.dataType.simpleString)).toMap
 
-    val isNumRegex = "^[Ii]nt|[Ss]hort|[Ll]ong|[Bb]yte|[Ff]loat|[Dd]ouble$"
-    def isNum(tp: String): Boolean = tp.matches(isNumRegex)
-
     //get col type
     val req: List[ValidityReq] = configure.validityReq.map { r =>
       val fv = fnts.getOrElse(r.colName, None)
       if (fv != None) {
         r.colType = fv.toString
-        r.isNum = isNum(r.colType)
+        r.isNum = DataTypeUtils.isNum(r.colType)
       }
       r
     }
@@ -85,11 +83,19 @@ object Vali3 {
     val numcols = req.filter(r => r.isNum)
 
     val numIdx = numcols.map(c => c.colId).toArray
+    val numIdxZip = numIdx.zipWithIndex
+    val numColsCount = numcols.length
 
     //median number function
     def funcMedian(df: DataFrame, col: Int): Double = {
-      val mp = df.rdd.map(v => (v.getString(col).toDouble, 1L)).reduceByKey(_+_)
-      val allCnt = dfCount
+      val dt = sojdf.schema(col).dataType
+      val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
+
+      val mp = df.map { v =>
+        if (v.isNullAt(col)) (0.0, 0L)
+        else (DataConverter.getDouble(getFunc(v, col)), 1L)
+      }.reduceByKey(_+_)
+      val allCnt = mp.aggregate(0L)((c, m) => c + m._2, _+_)
       val cnt = mp.sortByKey().collect()
       var tmp, tmp1 = 0L
       var median, median1 = cnt(0)._1
@@ -129,12 +135,21 @@ object Vali3 {
       }
     }
 
-    if (numcols.length > 0) {
+    if (numColsCount > 0) {
+      val idxType = numIdxZip.map(i => (i._2, i._1, sojdf.schema(i._1).dataType))
+
       //calc metrics of all numeric cols once
-      val numcolVals = sojdf.rdd.map { row =>
-        val vals = numIdx.map(i => row.getString(i).toDouble)
-        Vectors.dense(vals)
+      val numcolVals = sojdf.map { row =>
+        val vals = idxType.foldLeft((List[Int](), List[Double]())) { (arr, i) =>
+          if (row.isNullAt(i._2)) arr
+          else {
+            val v = DataTypeUtils.dataType2RowGetFunc(i._3)(row, i._2)
+            (i._1 :: arr._1, DataConverter.getDouble(v) :: arr._2)
+          }
+        }
+        Vectors.sparse(numColsCount, vals._1.toArray, vals._2.toArray)
       }
+
       val summary = Statistics.colStats(numcolVals)
 
       //get numeric metrics from summary
@@ -150,18 +165,24 @@ object Vali3 {
     }
     //null count function
     def funcNullCount(df: DataFrame, col: Int): Long = {
-      val nullRow = df.rdd.map(row => if (row.isNullAt(col)) 1L else 0)
+      val nullRow = df.map(row => if (row.isNullAt(col)) 1L else 0)
       nullRow.fold(0)((a,b)=>a+b)
     }
     //unique count function
     def funcUniqueCount(df: DataFrame, col: Int): Long = {
-      val mp = df.rdd.map(v=>(v.getString(col)->1L))
+      val dt = sojdf.schema(col).dataType
+      val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
+
+      val mp = df.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
       val rs = mp.reduceByKey(_+_)
       rs.count()
     }
     //duplicate count function
     def funcDuplicateCount(df: DataFrame, col: Int): Long = {
-      val mp = df.rdd.map(v=>(v.getString(col)->1L))
+      val dt = sojdf.schema(col).dataType
+      val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
+
+      val mp = df.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
       val rs = mp.reduceByKey(_+_)
       rs.aggregate(0)((s, v) => if (v._2 == 1) s else s + 1, (s1, s2) => s1 + s2)
     }

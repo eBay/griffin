@@ -1,9 +1,9 @@
 {
-	"dataSet": "movie_source",
+	"dataSet": "users_info_src",
 	"validityReq": [
 		{
 			"colId": 0,
-			"colName": "movieid",
+			"colName": "user_id",
 			"metrics": [
 				{
 					"name": 1
@@ -21,7 +21,7 @@
 		},
 		{
 			"colId": 1,
-			"colName": "title",
+			"colName": "first_name",
 			"metrics": [
 				{
 					"name": 1
@@ -39,7 +39,79 @@
 		},
 		{
 			"colId": 2,
-			"colName": "genres",
+			"colName": "last_name",
+			"metrics": [
+				{
+					"name": 1
+				},
+				{
+					"name": 2
+				},
+				{
+					"name": 3
+				},
+				{
+					"name": 4
+				}
+			]
+		},
+		{
+			"colId": 3,
+			"colName": "address",
+			"metrics": [
+				{
+					"name": 1
+				},
+				{
+					"name": 2
+				},
+				{
+					"name": 3
+				},
+				{
+					"name": 4
+				}
+			]
+		},
+		{
+			"colId": 4,
+			"colName": "email",
+			"metrics": [
+				{
+					"name": 1
+				},
+				{
+					"name": 2
+				},
+				{
+					"name": 3
+				},
+				{
+					"name": 4
+				}
+			]
+		},
+		{
+			"colId": 5,
+			"colName": "phone",
+			"metrics": [
+				{
+					"name": 1
+				},
+				{
+					"name": 2
+				},
+				{
+					"name": 3
+				},
+				{
+					"name": 4
+				}
+			]
+		},
+		{
+			"colId": 6,
+			"colName": "post_code",
 			"metrics": [
 				{
 					"name": 1
