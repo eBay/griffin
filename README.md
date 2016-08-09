@@ -8,11 +8,38 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
 
 [Slack](https://ebay-eng.slack.com/messages/ebaysf-bark/)
 
+### How to run in docker
+1. Install [docker](https://www.docker.com)
+2. Pull pre-built docker image directly and tag it as bark-env
+    ```
+    docker pull lliu13/bark-env
+    docker tag lliu13/bark-env bark-env
+    ```
+    Optionally, you can build docker image yourself.
+    First, build image [bark-base-env](https://github.com/eBay/DQSolution/docker/bark-base)
+    ```
+    docker build -t bark-base-env .
+    ```
+    Second, build image [bark-env](https://github.com/eBay/DQSolution/docker/bark)
+    ```
+    docker build -t bark-env .
+    ```
+3. Run docker image bark-env
+    ```
+    docker run -it -h sandbox --name bark -m 8G --memory-swap -1 \
+    -p 40022:22 -p 47077:7077 -p 48088:8088 -p 48040:8040 -p 48042:8042 \
+    -p 48080:8080 -p 27017:27017 bark-env bash
+    ```
+4. Now you can visit bark UI
+    ```
+    http://[your docker host IP address]:48080/
+    ```
+
 ### How to build
 1. git clone the repository of https://github.com/eBay/DQSolution
 2. run "mvn install"
 
-### How to run
+### How to deploy and run at local
 1. Install jdk (1.7 or later versions)
 2. Install Tomcat (7.0 or later versions)
 3. Install MongoDB and import the collections
