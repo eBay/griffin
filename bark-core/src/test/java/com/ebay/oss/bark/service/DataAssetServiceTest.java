@@ -2,8 +2,10 @@ package com.ebay.oss.bark.service;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +25,7 @@ public class DataAssetServiceTest {
     @Autowired
     private DataAssetService dataAssetService;
 
-    private String assetName = "testAsset_lliu13";
+    private String assetName = "testAsset_";
     private String system = "Bullseye";
     private String owner = "lliu13";
     private String newOwner = "wenzhao";
@@ -41,7 +43,7 @@ public class DataAssetServiceTest {
     private DataAssetInput testCreateDataAsset() {
         try {
             DataAssetInput newData = new DataAssetInput();
-            newData.setAssetName(assetName);
+            newData.setAssetName(assetName + new Date().getTime());
             newData.setAssetType("hdfsfile");
             newData.setSystem(system);
             newData.setAssetHDFSPath("/user/b_des/bark/");

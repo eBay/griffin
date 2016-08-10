@@ -137,7 +137,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 		
 		logger.info("HDFS Path: " + hdfsPath);
 
-		if(!"qa".equals(env.getProperty("env"))){//in prod environment, need to validate the hdfs path
+		if("prod".equals(env.getProperty("env"))){//in prod environment, need to validate the hdfs path
 
 			if (!HDFSUtils.checkHDFSFolder(hdfsPath)) {
 

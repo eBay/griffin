@@ -32,6 +32,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 //import org.springframework.validation.annotation.Validated;
 
@@ -67,7 +68,8 @@ import com.ebay.oss.bark.vo.ValidateHiveJobConfig;
 import com.google.gson.Gson;
 import com.mongodb.DBObject;
 
-@Service ("dqjob")
+@PropertySource("classpath:application.properties")
+@Service ("scheduleService")
 public class DqScheduleServiceImpl implements DqScheduleService {
 	private static Logger logger = LoggerFactory.getLogger(DqScheduleServiceImpl.class);
 

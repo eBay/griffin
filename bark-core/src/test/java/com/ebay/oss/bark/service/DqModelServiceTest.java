@@ -205,6 +205,7 @@ public class DqModelServiceTest {
         testGetModels();
 
         //delete models
+        //TODO:: move to tearDown
         for (int i = 0; i < newModelName.length; i++){
             testDeleteModel(newModelName[i]);
         }
