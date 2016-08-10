@@ -24,23 +24,17 @@
 	<context:annotation-config />
 
 
-	<context:component-scan base-package="org.apache.bark.common" />
- 	<context:component-scan base-package="org.apache.bark.service" /> 
-	<context:component-scan base-package="org.apache.bark.error" />
-	<context:component-scan base-package="org.apache.bark.resources" />
-	
-
-	<!-- <import resource="dao-context.xml"/> 
-	<bean id="dQModelService" class="org.apache.bark.service.DQModelServiceImpl" />
+	<context:component-scan base-package="com.ebay.oss.bark" />
+	<!--
+	<context:component-scan base-package="com.ebay.oss.bark.common" />
+	<context:component-scan base-package="com.ebay.oss.bark.domain" />
+	<context:component-scan base-package="com.ebay.oss.bark.repo" />
+	<context:component-scan base-package="com.ebay.oss.bark.error" />
+ 	<context:component-scan base-package="com.ebay.oss.bark.service" /> 
+	<context:component-scan base-package="com.ebay.oss.bark.ebay" />
+	<context:component-scan base-package="com.ebay.oss.bark.resources" />
 	-->
-	<bean id="loginService" class="org.apache.bark.service.LoginServiceImpl" />
-	<bean id="notificationService" class="org.apache.bark.service.NotificationServiceImpl" />
-	<bean id="dqModelService" class="org.apache.bark.service.DQModelServiceImpl"/>
-	<bean id="dataAssetService" class="org.apache.bark.service.DataAssetServiceImpl"/>
-	<bean id="dqMetricsService" class="org.apache.bark.service.DQMetricsServiceImpl"/>
-
-	<bean id="dqJobSchedulingService" class="org.apache.bark.service.DQJobSchedulingServiceImpl"/>
-	<bean id="subscribeService" class="org.apache.bark.service.SubscribeServiceImpl"/>
+	
 
 	
 </beans>
