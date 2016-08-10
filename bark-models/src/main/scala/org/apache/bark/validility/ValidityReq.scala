@@ -8,12 +8,4 @@ class ValidityReq {
   var isNum: Boolean = false
 
   var metrics: List[MetricsReq] = List()
-
-  override def toString = {
-    " colId: " + colId +
-    " colName: " + colName +
-    " colType: " + colType +
-    " isNum: " + isNum +
-    " metrics: " + metrics
-  }
 }
