@@ -14,180 +14,178 @@
 */
 define(['./module'], function (controllers) {
     'use strict';
-    controllers.controller('HealthCtrl', ['$scope', '$http', '$config', '$location','$timeout', '$route', function ($scope, $http, $config, $location, $timeout, $route) {
+    controllers.controller('HealthCtrl', ['$scope', '$http', '$config', '$location','$timeout', '$route', '$barkChart', '$rootScope', function ($scope, $http, $config, $location, $timeout, $route, $barkChart, $rootScope) {
       console.log('health controller');
       // var url="/js/controllers/heatmap.json";
-      var url = $config.uri.heatmap;
 
+        var echarts = require('echarts');
+        var formatUtil = echarts.format;
 
-    //treemap reference
+        pageInit();
 
-    var data=[];
-    //https://websafecolors.info/color-chart
-    var colors = ["#006699", "#009933", "#00ff66", "#336600", "#33cc00", "#669966", "#ccffcc", "#6666ff"];
-    $http.get(url).success(function(res){
-  		console.log(res);
-      var sysId = 0;
-      var metricId = 0;
-      /*res.forEach(function(sys){
-        data.push({
-          id: 'id_' + sysId,
-          name: sys.name,// + '(' + sys.dq + '%)',
-          sysName: sys.name,
-          // value: sys.dq ,
-          // value:1,
-          // color: sys.dq<90?'#cc6633':'#006633'
-            // color: sys.dq<90?'#ff0000':colors[sysId]
-          color: '#000033'
-        });
+        function pageInit() {
+            $scope.$emit('initReq');
 
-
-        sys.metrics.forEach(function(metric){
-          data.push({
-            id: 'id_' + sysId + '_' + metricId,
-            name: metric.name + '(' + metric.dq.toFixed(2) + '%)',
-            // value: metric.dq,
-            value: 1,
-            parent: 'id_' + sysId,
-            color: metric.dq<90?'#cc6633':'#006633'
-            // color: metric.dq<90?'#ff0000':colors[sysId]
-          });
-            metricId++;
-        });
-
-        sysId ++;
-      });*/
-      angular.forEach(res,function(sys,key){
-        console.log(sys)
-        data.push({
-          id: 'id_' + sysId,
-          name: sys.name,// + '(' + sys.dq + '%)',
-          sysName: sys.name,
-          // value: sys.dq ,
-          // value:1,
-          // color: sys.dq<90?'#cc6633':'#006633'
-            // color: sys.dq<90?'#ff0000':colors[sysId]
-          color: '#000033'
-        });
-
-        angular.forEach(sys.metrics,function(metric,key){
-          data.push({
-            id: 'id_' + sysId + '_' + metricId,
-            name: metric.name,// + '(' + metric.dq + '%)',
-            // value: metric.dq,
-            value: 1,
-            parent: 'id_' + sysId,
-            color: metric.dqfail>0?'#cc6633':'#006633'
-            // color: metric.dq<90?'#ff0000':colors[sysId]
-          });
-            metricId++;
-        })
-        sysId ++;
-      })
-
-      $scope.chartConfig ={
-
-        options: {
-             chart: {
-                 type: 'treemap',
-                //  height: 800,
-                //  height: $(window).innerHeight() - $('.bs-component').offset().top - $('.bs-component').outerHeight() - $('#footerwrap').outerHeight(),
-                 backgroundColor: null,
-                 plotBackgroundColor: 'none'//,
-             },
-
-             tooltip: {
-                enabled: false
-            },
-         },
-        series: [{
-            layoutAlgorithm: 'squarified',
-            allowDrillToNode: true,
-            dataLabels: {
-                enabled: false,
-                allowOverlap: true
-            },
-            levelIsConstant: false,
-            levels: [{
-                level: 1,
-                dataLabels: {
-                    enabled: true,
-                    align: 'left',
-                    verticalAlign: 'top',
-                    style: {
-                        fontSize: '26px',
-                        fontWeight: 'bold',
-                        color: 'black',
-                        fontFamily: 'Arial'
-                    }
-                },
-                borderWidth: 5,
-                borderColor: '#000000'
-            },
-            {
-                level: 2,
-                dataLabels: {
-                    useHTML: true,
-                    enabled: true,
-                    // maxStaggerLines: 1,
-                    rotation: -45,
-                    style: {
-                      // rotation: -45,
-                        fontSize: '16px',
-                        // wordWrap: 'break-word'
-                    },
-                    formatter:function(){
-                      // console.log(this.key + ': ' + JSON.stringify(this.point.shapeArgs));
-                      return this.key;
-                    }
-                }
-            }
-          ],
-          events:{
-            click: function(e){
-              // console.log(e);
-              // console.log('system id is: ' + e.target.point.id);
-              $location.path('/metrics/' + e.target.point.sysName);
-              $scope.$apply();
-              return false;
-            }
-          },
-            data: data
-        }],
-        // subtitle: {
-        //     text: 'Click points to drill down. Source: <a href="http://apps.who.int/gho/data/node.main.12?lang=en">WHO</a>.'
-        // },
-        title: {
-            text: 'Data Quality Metrics Heatmap',
-            style:{
-              color: '#ffffff'
-            }
+            var url = $config.uri.heatmap;
+            $http.get(url).success(function(res) {
+                renderTreeMap(res);
+            });
         }
-      };
-  	});
 
-    $scope.$on('$viewContentLoaded', function(){
-
-      resizeWindow();
-
-      $(window).resize(function(){
-        resizeWindow();
-      });
-      // $('.formStep').css({height: 800});
-    });
-
-    function resizeWindow(){
-      if($route.current.$$route.controller == "HealthCtrl"){
-        $timeout(function() {
-          $('#chart1').height( $(window).innerHeight() - $('.bs-component').offset().top - $('.bs-component').outerHeight() - $('#footerwrap').outerHeight());
-
-        }, 10);
-        // $('.formula-text-mid').css({'padding-top': (($('.formula-text-up').height() - $('.formula-text-mid').height()) + $('.formula-text-mid').height()/2) + 'px'});
-
-      }
-    }
+        function renderTreeMap(res) {
 
 
+                function parseData(data) {
+                    var sysId = 0;
+                    var metricId = 0;
+                    var result = [];
+                    angular.forEach(res,function(sys,key){
+                        console.log(sys);
+
+                        var item = {};
+                        item.id = 'id_'+sysId;
+                        item.name = sys.name;
+
+                        if (sys.metrics != undefined) {
+                            item.children = [];
+                            angular.forEach(sys.metrics,function(metric,key){
+                                var itemChild = {
+                                    id: 'id_' + sysId + '_' + metricId,
+                                    name: metric.name,// + '(' + metric.dq + '%)',
+                                    // value: metric.dq,
+                                    value: 1,
+                                    dq: metric.dq,
+                                    sysName: sys.name,
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#4c8c6f'
+                                        }
+                                    }
+                                };
+                                if (metric.dqfail == 1) {
+                                    itemChild.itemStyle.normal.color = '#ae5732';
+                                } else {
+                                    itemChild.itemStyle.normal.color = '#005732';
+                                }
+                                item.children.push(itemChild);
+                                metricId++;
+                            });
+                        }
+
+                        result.push(item);
+
+                        sysId ++;
+                    });
+                    return result;
+                }
+
+                var data = parseData(res);
+                console.log(data);
+
+                function getLevelOption() {
+                    return [
+                        {
+                            itemStyle: {
+                                normal: {
+                                    borderWidth: 0,
+                                    gapWidth: 6,
+                                    borderColor: '#000'
+                                }
+                            }
+                        },
+
+                        {
+                            itemStyle: {
+                                normal: {
+                                    gapWidth: 1,
+                                    borderColor: '#fff'
+                                }
+                            }
+                        }
+                    ];
+                }
+
+                var option = {
+
+                    title: {
+                        text: 'Data Quality Metrics Heatmap',
+                        left: 'center'
+                    },
+
+                    backgroundColor: 'transparent',
+
+                    tooltip: {
+                        formatter: function(info) {
+                            var dqFormat = info.data.dq>100?'':'%';
+                            return [
+                                '<span style="font-size:1.8em;">' + formatUtil.encodeHTML(info.data.sysName) + ' &gt; </span>', 
+                                '<span style="font-size:1.5em;">' + formatUtil.encodeHTML(info.data.name)+'</span><br>',
+                                '<span style="font-size:1.5em;">dq : '+info.data.dq+dqFormat + '</span>'
+                            ].join('');
+                        }
+                    },
+
+                    series: [
+                        {
+                            name:'System',
+                            type:'treemap',
+                            itemStyle: {
+                                normal: {
+                                    borderColor: '#fff'
+                                }
+                            },
+                            levels: getLevelOption(),
+                            breadcrumb: {
+                                show: false
+                            },
+                            roam: false,
+                            nodeClick: false,
+                            data: data,
+                            // leafDepth: 1,
+                            width: '95%',
+                            bottom : 0
+                        }
+                    ]
+                };
+
+                resizeTreeMap();
+                $scope.myChart = echarts.init(document.getElementById('chart1'), 'dark');
+                $scope.myChart.setOption(option);
+
+                $scope.myChart.on('click', function(param) {
+                    // if (param.data.sysName) {
+                    //     $location.path('/metrics/' + param.data.sysName);
+                    //     $scope.$apply();
+                    //     return false;
+                    // }
+                    // param.event.event.preventDefault();
+                    if (param.data.name) {
+                    
+                        showBig(param.data.name);
+                        // return false;
+                    }
+                });
+
+        }
+
+        var showBig = function(metricName){
+          var metricDetailUrl = $config.uri.metricdetail + '/' + metricName;
+          $http.get(metricDetailUrl).success(function (data){
+            $rootScope.showBigChart($barkChart.getOptionBig(data));
+          });
+        }
+
+        $scope.$on('resizeHandler', function(e) {
+            if($route.current.$$route.controller == 'HealthCtrl'){
+                console.log('health resize');
+                resizeTreeMap();
+                $scope.myChart.resize();
+            }
+        });
+
+        function resizeTreeMap() {
+            $('#chart1').height( $('#mainWindow').height() - $('.bs-component').outerHeight() );
+        }
 
     }]);
 });

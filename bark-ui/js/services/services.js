@@ -19,14 +19,12 @@ define(['./module'], function (services) {
 
     services.factory('$config', function(){
 
-        // var BACKEND_SERVER = '';
-    //  var BACKEND_SERVER = 'http://D-SHC-15008129:8080'; //dev env
 
-      var BACKEND_SERVER = 'http://localhost:8080'; //dev env
-      // var BACKEND_SERVER = 'http://localhost:8080/ROOT';
-      // var BACKEND_SERVER = 'http://phxbark4dq-360927.stratus.phx.ebay.com:8080';
+      // var BACKEND_SERVER = '';
+    //   var BACKEND_SERVER = 'http://localhost:8080'; //dev env
 
-      // var BACKEND_SERVER = 'http://bark4dq.stratus.qa.ebay.com';  //localhost
+     var BACKEND_SERVER = 'http://bark.qa.ebay.com';  //localhost
+
       var API_ROOT_PATH = '/api/v1';
 
       var config = {
@@ -68,8 +66,10 @@ define(['./module'], function (services) {
               metricdetail: BACKEND_SERVER + API_ROOT_PATH + '/metrics/complete',
               rulemetric: BACKEND_SERVER + API_ROOT_PATH + '/metrics/brief',
               dashboard: BACKEND_SERVER + API_ROOT_PATH + '/metrics/dashboard' ,
+
               metricsample: BACKEND_SERVER + API_ROOT_PATH + '/metrics/sample',
               metricdownload: BACKEND_SERVER + API_ROOT_PATH + '/metrics/download',
+
               //Models
               allModels: BACKEND_SERVER + API_ROOT_PATH + '/models' ,
               deleteModel: BACKEND_SERVER + API_ROOT_PATH + '/models',

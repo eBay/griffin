@@ -12,7 +12,11 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
  */
-.thumb-chart {
+.thumb-chart:hover{
     transform: scale(1.05, 1.05);
     box-shadow:  0 1px 2px 2px #ccc;
+}
+
+.side-chart:hover {
+	box-shadow: 0 1px 2px 2px #ccc;
 }

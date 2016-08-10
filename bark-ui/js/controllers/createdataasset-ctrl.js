@@ -24,7 +24,9 @@ define(['./module'], function (controllers) {
 
         $scope.formatTypeOptions = ['yyyyMMdd', 'yyyy-MM-dd','HH'];
 
-        $scope.regex = '^\\/(?:[0-9a-zA-Z\\_\\-]+\\/?)+';
+        $scope.regex = '^\\/(?:[0-9a-zA-Z\\_\\-\\.]+\\/?)+';
+
+        // $scope.regex = new RegExp('^\\/(?:[0-9a-zA-Z\\_\\-\\.]+\\/?)+');
 
         var allModels = $config.uri.dbtree;
         $http.get(allModels).success(function(data) {
@@ -73,25 +75,23 @@ define(['./module'], function (controllers) {
 	    };
 
         $scope.$on('$viewContentLoaded', function() {
+            $scope.$emit('initReq');
             resizeWindow();
-            $(window).resize(function() {
-                resizeWindow();
-            });
-
         });
 
+        $scope.$on('resizeHandler', function(e) {
+            if ($route.current.$$route.controller == "CreateDataAssetCtrl") {
+                resizeWindow();
+            }
+        });
 
         function resizeWindow() {
-            if ($route.current.$$route.controller == "CreateDataAssetCtrl") {
-                $timeout(function() {
-                    $('.formStep').height($(window).innerHeight()  -  $('.formStep').offset().top - $('#footerwrap').outerHeight());
-                    $('fieldset').height($(window).innerHeight()  -  $('fieldset').offset().top - $('#footerwrap').outerHeight()- $('.btn-container').height() -80);
+                    $('.formStep').height(window.innerHeight  -  $('.formStep').offset().top - $('#footerwrap').outerHeight()-20);
+                    $('fieldset').height(window.innerHeight  -  $('fieldset').offset().top - $('#footerwrap').outerHeight()- $('.btn-container').height() -80);
                     $('.y-scrollable').css({
                         'max-height': $('fieldset').height()
                     });
 
-                }, 0);
-            }
         }
 
 	    // Initial Value
@@ -129,48 +129,33 @@ define(['./module'], function (controllers) {
                       basic: this.basic
                     };
                     this.data.basic.path += this.data.basic.path.substring(this.data.basic.path.length-1)=="/"?'':'/';
-                    var originalPath = this.data.basic.path;
-
-                    this.data.basic.path += (this.basic.folderFormat==undefined?"":this.basic.folderFormat);
+                    //this.data.basic.path += (this.basic.folderFormat==undefined?"":this.basic.folderFormat);
 
 
                     $('#confirm-pu').modal('show');
-                    $('#confirm-pu').on('hidden.bs.modal', function(e) {
-                        $('#confirm-pu').off('hidden.bs.modal');
-                        $scope.form.data.basic.path = originalPath;
-                    });
                 }
             },
 
             save: function() {
-                // $('#confirm-pu').on('hidden.bs.modal', function(e) {
-                //     $('#confirm-pu').off('hidden.bs.modal');
-                //     $location.path('/dataassets');
-                //     $scope.$apply();
-                // });
+                $('#confirm-pu').on('hidden.bs.modal', function(e) {
+                    $('#confirm-pu').off('hidden.bs.modal');
+                    $location.path('/dataassets');
+                    $scope.$apply();
+                });
 
                 var msg = {
                 	'system' : $scope.systemOptions[$scope.form.basic.system],
                 	'assetType' : $scope.assetTypeOptions[$scope.form.basic.type],
-                    'assetName' : $scope.form.basic.assetName,
-                	'assetHDFSPath' : $scope.form.data.basic.path,
+                  'assetName' : $scope.form.basic.assetName,
+                	'assetHDFSPath' : $scope.form.data.basic.path + $scope.form.data.basic.folderFormat,
                 	'platform' : $scope.form.basic.platform,
                 	'schema' : $scope.form.basic.schema,
                   'partitions' : $scope.form.basic.partitions,
-                    'owner' : $scope.form.basic.owner
+                  'owner' : $scope.form.basic.owner
                 }
 
                 $http.post($config.uri.adddataasset, msg).success(function() {
-	                // $('#confirm-pu').modal('hide');
-                  //   $location.path('/dataassets');
-                  //   $scope.$apply();
-
-                    $('#confirm-pu').on('hidden.bs.modal', function(e) {
-                        $('#confirm-pu').off('hidden.bs.modal');
-                        $location.path('/dataassets');
-                        $scope.$apply();
-                    });
-                  	$('#confirm-pu').modal('hide');
+	                  $('#confirm-pu').modal('hide');
 
                 }).error(function(data){
                   toaster.pop('error', 'Save data asset failed, please try again!', data.message);

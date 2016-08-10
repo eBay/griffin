@@ -17,7 +17,7 @@
     <a class="btn btn-primary btn-o btn-wide" href="#/createrule0"><i class="fa fa-plus"></i> Create DQ Model</a>
   </p>
 
-  <div id="modelContainer" style="overflow-y:auto; height:600px">
+  <div id="modelContainer">
     <table st-table="displayed" st-pipe="paging" class="table table-striped">
     	<thead>
         <!-- <tr>
@@ -32,7 +32,7 @@
       		<th st-ratio="15">Model Type</th>
       		<th st-ratio="20">Description</th>
           <th st-ratio="15">Create Date</th>
-          <th st-ratio="10">Model Status</th>
+          <th st-ratio="10">Model Stage</th>
           <th st-ratio="5">Owner</th>
       		<th st-ratio="5">Action</th>
       	</tr>
@@ -54,7 +54,7 @@
               <i class="fa fa-pencil"></i>
             </a>
             &nbsp;
-            <a ng-class="ntAccount!=row.owner&&!adminAccess?'disabled':''" href="" ng-click="remove(row)" title="delete">
+            <a ng-class="(!adminAccess && ntAccount!=row.owner)?'disabled':''" href="" ng-click="remove(row)" title="delete">
               <i class="fa fa-trash-o"></i>
             </a>
             &nbsp;

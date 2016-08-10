@@ -12,7 +12,7 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
  -->
-<div class="container-fluid" id="main" style="overflow:auto;">
+<div class="container-fluid" id="main" >
   <div class="row">
     <h5 class="over-title margin-bottom-15">Create DQ Model</h5>
   </div><!--//row-->
@@ -86,14 +86,14 @@
       <div class="col-lg-6 col-md-6 col-sm-6 ruletypes">
         <section id="panel-2"  class="panel panel-primary"  ng-click="click('va')">
           <div class="panel-heading">
-            <span style="font-size:20px">Validity</span>
+            <span style="font-size:20px">Data Profiling</span>
             <span class="pull-right" style="font-size:20px">
                   <span class="fa fa-arrow-circle-right"></span>
             </span>
           </div>
           <div class="swMain panel-body" >
 
-            <label class="label-definition">Definition: Data is valid if it conforms to the syntax(format, type, values) of its definition.</label>
+            <label class="label-definition">Definition: Data profiling is the process of examining the data available in an existing data set and collecting statistics and information about that data</label>
 
             <ul style="border-radius:0; background: none">
                 <li >
@@ -137,8 +137,8 @@
 
             </div>
             <div class="panel-footer stepDesc">
-              <label>Example1:</label> Check the data sype of all records in Column A should be Char(1) in one Dataset
-              <label>Example2:</label> Check the data range(minimum, maximum) within a set of allowable values
+
+              <label>Example:</label> Check the data range(minimum, maximum) within a set of allowable values
             </div>
           </section>
       </div>
@@ -238,7 +238,7 @@
               <div class="panel-footer stepDesc">
                 <label>Example:</label> This example shows how to publish viewitem accuracy result with RESTful service
 <pre style="background-color:transparent;color:inherit;border:none;overflow:hidden;margin:0 0;padding:0 0">Method: POST
-Endpoint: https://dataqualityservice/v1/dqdata
+Endpoint: {{publishURL}}
 Body:{"metricName": "viewitem_accuracy", "timestamp": 1463373496583, "value": "99.9"}</pre>
               </div>
             </section>

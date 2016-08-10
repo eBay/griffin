@@ -14,127 +14,71 @@
 */
 define(['./module'], function(controllers) {
     'use strict';
-    controllers.controller('MyDashboardCtrl', ['$scope', '$http', '$config', '$location', 'toaster', '$timeout', '$route', '$filter', '$compile', '$barkChart', function($scope, $http, $config, $location, toaster, $timeout, $route, $filter, $compile, $barkChart) {
-        var url_dashboard = $config.uri.getmydashboard + $scope.ntAccount;
+    controllers.controller('MyDashboardCtrl', ['$scope', '$http', '$config', '$location', 'toaster', '$timeout', '$route', '$filter', '$compile', '$barkChart', '$rootScope', function($scope, $http, $config, $location, toaster, $timeout, $route, $filter, $compile, $barkChart, $rootScope) {
+
+        var echarts = require('echarts');
+
+        pageInit();
+
+        function pageInit() {
+          $scope.$emit('initReq');
+
+          var url_dashboard = $config.uri.getmydashboard + $scope.ntAccount;
+          $http.get(url_dashboard).success(function(res) {
+              $scope.dashboard = res;
+              angular.forEach(res, function(sys) {
+                angular.forEach(sys.metrics, function(metric) {
+                  var chartData = metric.details;
+                  chartData.sort(function(a, b){
+                    return a.timestamp - b.timestamp;
+                  });
+
+                });
+              });
+              $scope.originalData = angular.copy(res);
+              $timeout(function() {
+                redraw($scope.dashboard);
+              }, 0);
+          });
+
+        }
 
         var redraw = function(data) {
-            angular.forEach(data, function(sys) {
+
+          $scope.chartHeight = $('.chartItem:eq(0)').width()*0.8+'px';
+
+            angular.forEach(data, function(sys, parentIndex) {
+                var parentIndex = parentIndex;
                 angular.forEach(sys.metrics, function(metric, index) {
-                    metric.chartId = $barkChart.genConfigThum(metric, {options:{chart:{width: ($(window).innerWidth() - $('#rightbar').outerWidth())/4.2,height: ($(window).innerWidth() - $('#rightbar').outerWidth())/5.6}}});
+                    $('#thumbnail'+parentIndex+'-'+index).get(0).style.width = $('#thumbnail'+parentIndex+'-'+index).parent().width()+'px';
+                    $('#thumbnail'+parentIndex+'-'+index).get(0).style.height = $scope.chartHeight;
 
+                    var thumbnailChart = echarts.init($('#thumbnail'+parentIndex+'-'+index).get(0), 'dark');
+                    thumbnailChart.setOption($barkChart.getOptionThum(metric));
                 });
             });
-        };
+        }
 
-        $scope.assetOptions = [];
-
-        $http.get(url_dashboard).success(function(res) {
-            $scope.dashboard = res;
-            angular.forEach(res, function(sys) {
-              angular.forEach(sys.metrics, function(metric) {
-                var chartData = metric.details;
-                chartData.sort(function(a, b){
-                  return a.timestamp - b.timestamp;
-                });
-
-              });
-            });
-            $scope.originalData = angular.copy(res);
-            redraw($scope.dashboard);
-        });
-
-        $scope.changeOrg = function() {
-          $scope.selectedAssetIndex = undefined;
-          $scope.assetOptions = [];
-          $scope.dashboard = [];
-          if($scope.selectedOrgIndex == ""){
-            $scope.dashboard = angular.copy($scope.originalData);
-          } else {
-            var org = angular.copy($scope.originalData[$scope.selectedOrgIndex]);
-            $scope.dashboard.push(org);
-            angular.forEach(org.metrics, function(metric, index) {
-              if($scope.assetOptions.indexOf(metric.assetName) == -1) {
-                $scope.assetOptions.push(metric.assetName);
-              }
-            });
-          }
-          redraw($scope.dashboard);
-        };
-
-        $scope.changeAsset = function() {
-          $scope.dashboard = [];
-          if($scope.selectedOrgIndex == ""){
-            $scope.dashboard = angular.copy($scope.originalData);
-          } else {
-            var org = angular.copy($scope.originalData[$scope.selectedOrgIndex]);
-            $scope.dashboard.push(org);
-          }
-          if($scope.selectedAssetIndex != undefined && $scope.selectedAssetIndex != ''){
-            var asset = $scope.assetOptions[$scope.selectedAssetIndex];
-            angular.forEach($scope.dashboard, function(sys) {
-              var oldMetrics = sys.metrics;
-              sys.metrics = [];
-              angular.forEach(oldMetrics, function(metric, index) {
-                if(metric.assetName == asset) {
-                  sys.metrics.push(metric);
-                }
-              });
-            });
-          }
-          redraw($scope.dashboard);
-        };
-
-        $scope.$on('$viewContentLoaded', function() {
-            resizedash();
-            $(window).resize(function() {
-                resizedash();
-            });
-        });
-
-        function resizedash() {
-            if ($route.current.$$route.controller == "MyDashboardCtrl") {
-              $timeout(function() {
-                  $('#mydashboard').css({
-                      height: $(window).innerHeight() - $('#mydashboard').offset().top - $('#footerwrap').outerHeight()
-                  });
-                  if($scope.dashboard){
-                    redraw($scope.dashboard);
-                  }
-              }, 0);
+        $scope.$on('resizeHandler', function() {
+            if($route.current.$$route.controller == 'MyDashboardCtrl') {
+                console.log('mydashboard resize');
+                redraw($scope.dashboard);
             }
-        };
+        });
 
         /*click the chart to be bigger*/
         $scope.showBig = function(t){
           var metricDetailUrl = $config.uri.metricdetail + '/' + t.name;
           // var metricDetailUrl = '/js/mock_data/anom.json';
           $http.get(metricDetailUrl).success(function (data){
-            var newDirective = angular.element('<big-chart/>');
-            angular.element('body').append(newDirective);
-            $compile(newDirective)($scope);
-
-            var config = $barkChart.genConfigBig(data);
-
-            $scope.chartConfig = config;
-
+            $rootScope.showBigChart($barkChart.getOptionBig(data));
           });
 
-        };
+        }
 
         $scope.getSample = function(item) {
-          $scope.selectedModelName = item.name;
-          var sampleUrl = $config.uri.metricsample + '/' + item.name;
-          $http.get(sampleUrl).success(function(data){
-            $scope.sample = data;
-            $('#download-sample').modal('show');
-            $('#viewsample-content').css({
-                'max-height': $(window).innerHeight() - $('.modal-content').offset().top - $('.modal-header').outerHeight() - $('.modal-footer').outerHeight() - 250
-            });
-
-          });
+          $rootScope.$broadcast('downloadSample', item.name);
         };
-
-        $scope.downloadUrl = $config.uri.metricdownload;
 
     }]);
 });

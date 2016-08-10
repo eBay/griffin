@@ -1,11 +1,11 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "BARK API document",
-        "description": "This is the list of Restful web APIs for Bark, you can develop your own client application which consumes these APIs. With these APIs, you can manage your own data assets, models and metrics, etc.",
+        "title": "BARK API",
+        "description": "Restful web APIs for Bark",
         "version": "1.0.0"
     },
-    "host": "localhost:8080",
+    "host": "",
     "basePath": "/api/v1",
     "schemes": [
         "http"
@@ -17,7 +17,7 @@
         "/dataassets/{id}": {
             "delete": {
                 "summary": "Delete a data asset by id",
-                "description": "Input a data asset's id to delete it",
+                "description": "If you want to delete model, just input the model's id.",
                 "parameters": [
                     {
                         "name": "id",
@@ -70,7 +70,7 @@
         "/dataassets": {
             "get": {
                 "summary": "Get all dataassets",
-                "description": "You can get all dataassets with this service",
+                "description": "You can find all dataassets in here",
                 "tags": [
                     "Dataassets"
                 ],
@@ -88,7 +88,7 @@
             },
             "post": {
                 "summary": "Add new dataasset",
-                "description": "If you want to create a data asset, please input object like example",
+                "description": "If you want to create datasets, please input object like example",
                 "parameters": [
                     {
                         "name": "body",
@@ -142,7 +142,7 @@
         "/dataassets/metadata": {
             "get": {
                 "summary": "Metadata information",
-                "description": "Get all metadata definition in a tree view",
+                "description": "Get all metadata definition",
                 "tags": [
                     "Dataassets"
                 ],
@@ -163,7 +163,7 @@
         "/models": {
             "post": {
                 "summary": "Create new model",
-                "description": "Where you can add accuracy, validity, anomaly or publish models. The example is just for accuracy model. If you want to create validity model, please the following tips, REMOVE: 'desc' in 'basic', 'targetDb' and 'targetDataSet' in 'extra', 'mappings', ADD: 'vaType' and 'column' in 'extra'. If you want to create anomaly model, just REMOVE: 'targetDb' in 'extra', 'mappings'. publish model is same as anomaly model.",
+                "description": "Where you can add accuracy, validity, anomaly and publish models. The example is just for accuracy model. If you want to create validity model just operate the following tips, REMOVE: 'desc' in 'basic', 'targetDb' and 'targetDataSet' in 'extra', 'mappings', ADD: 'vaType' and 'column' in 'extra'. If you want to create anomaly model, just REMOVE: 'targetDb' in 'extra', 'mappings'. publish model is the same as anomaly model.",
                 "parameters": [
                     {
                         "name": "body",
@@ -189,7 +189,7 @@
             },
             "get": {
                 "summary": "Get all models",
-                "description": "get all models defined in the system",
+                "description": "get all models",
                 "tags": [
                     "Models"
                 ],
@@ -208,8 +208,8 @@
         },
         "/models/{modelName}": {
             "delete": {
-                "summary": "Delete model by name",
-                "description": "If you want to delete model, input the model's name.",
+                "summary": "Delete model depend on model's name",
+                "description": "If you want to delete model, just input the model's name.",
                 "parameters": [
                     {
                         "name": "modelName",
@@ -232,8 +232,8 @@
                 }
             },
             "get": {
-                "summary": "Get model by name",
-                "description": "You can retrieve the details of a model by its name",
+                "summary": "Get model depend on model's name",
+                "description": "If you want to check model, just input the model's name.",
                 "parameters": [
                     {
                         "name": "modelName",
@@ -262,7 +262,7 @@
         "/metrics":{
           "post": {
               "summary": "Publish metrics",
-              "description": "You can publish your own metric by POSTing JSON data like the example",
+              "description": "You can publish your own metric by POSTing",
               "parameters": [
                   {
                       "name": "body",
@@ -290,7 +290,7 @@
         "/metrics/heatmap": {
             "get": {
                 "summary": "Heatmap",
-                "description": "Get the json object for heatmap",
+                "description": "Heatmap",
                 "tags": [
                     "Metrics"
                 ],
@@ -310,7 +310,7 @@
         "/metrics/briefmetrics": {
             "get": {
                 "summary": "Briefmetrics",
-                "description": "Get the Metrics list for side bar",
+                "description": "Metrics on side bar",
                 "tags": [
                     "Metrics"
                 ],
@@ -330,7 +330,7 @@
         "/metrics/complete/{id}": {
             "get": {
                 "summary": "complete",
-                "description": "Get the full data of a metrics by its id",
+                "description": "Get complete data depend on id",
                 "parameters": [
                     {
                         "name": "id",
@@ -356,19 +356,10 @@
                 }
             }
         },
-        "/metrics/dashboard/{name}": {
+        "/metrics/dashboard/Bullseye": {
             "get": {
-                "summary": "retrieve metrics list by a system name",
-                "description": "Please specify a system name such as Bullseye, Hadoop, etc.",
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "path",
-                        "required": true,
-                        "description": "name like Bullseye, Hadoop, ...",
-                        "type": "string"
-                    }
-                ],
+                "summary": "Bullseye",
+                "description": "Get Bullseye data from server",
                 "tags": [
                     "Metrics"
                 ],
@@ -384,12 +375,11 @@
                     }
                 }
             }
-
         },
         "/metrics/dashboard": {
             "get": {
-                "summary": "get dashboard metrics",
-                "description": "Get the full metrics list to fullfill the dashboard",
+                "summary": "Dashboa",
+                "description": "dashboard",
                 "tags": [
                     "Metrics"
                 ],
@@ -414,7 +404,7 @@
             "properties": {
                 "target": {
                     "type": "string",
-                    "enum": ["sp.key"]
+                    "enum": ["sitespeed.key"]
                 },
                 "src": {
                     "type": "string",
@@ -466,7 +456,7 @@
                         },
                         "dataaset": {
                             "type": "string",
-                            "enum": ["sp"]
+                            "enum": ["sitespeed"]
                         },
                         "dataasetId": {
                             "type": "integer",
@@ -491,7 +481,7 @@
                     "properties": {
                         "srcDb": {
                             "type": "string",
-                            "enum": ["Al"]
+                            "enum": ["Apollo"]
                         },
                         "srcDataSet": {
                             "type": "string",
@@ -499,11 +489,11 @@
                         },
                         "targetDb": {
                             "type": "string",
-                            "enum": ["Al"]
+                            "enum": ["Apollo"]
                         },
                         "targetDataSet": {
                             "type": "string",
-                            "enum": ["Sp"]
+                            "enum": ["SiteSpeed"]
                         },
                         "vaType":{
                             "type": "integer",
@@ -571,7 +561,7 @@
                         },
                         "dataaset": {
                             "type": "string",
-                            "enum": ["sp"]
+                            "enum": ["sitespeed"]
                         },
                         "dataasetId": {
                             "type": "integer",
@@ -584,7 +574,7 @@
                     "properties": {
                         "srcDb": {
                             "type": "string",
-                            "enum": ["Al"]
+                            "enum": ["Apollo"]
                         },
                         "srcDataSet": {
                             "type": "string",
@@ -592,11 +582,11 @@
                         },
                         "targetDb": {
                             "type": "string",
-                            "enum": ["Al"]
+                            "enum": ["Apollo"]
                         },
                         "targetDataSet": {
                             "type": "string",
-                            "enum": ["sp"]
+                            "enum": ["SiteSpeed"]
                         }
                     }
                 },
@@ -619,7 +609,7 @@
                     },
                     "platform":{
                         "type":"string",
-                        "enum":["Al"]
+                        "enum":["Apollo"]
                     },
                     "systems":{
                         "type": "array",
@@ -702,7 +692,7 @@
                 },
                 "platform":{
                     "type":"string",
-                    "enum":["Al"]
+                    "enum":["Apollo"]
                 },
                 "system":{
                     "type":"string",
@@ -710,7 +700,7 @@
                 },
                 "assetName":{
                     "type":"string",
-                    "enum":["b_item_queue"]
+                    "enum":["be_item_watch_event_queue"]
                 },
                 "assetType":{
                     "type":"string",
@@ -718,7 +708,7 @@
                 },
                 "assetHDFSPath":{
                     "type":"string",
-                    "enum":["/var/user/bark/b_item_queue"]
+                    "enum":["/apps/hdmi-technology/b_des/hive/be_item_watch_event_queue"]
                 },
                 "owner":{
                     "type" : "string",
@@ -779,7 +769,7 @@
                                 },
                                 "name":{
                                     "type":"string",
-                                    "enum": ["a_queue"]
+                                    "enum": ["accuracy_search_queue"]
                                 },
                                 "dq": {
                                     "type": "integer",
@@ -832,7 +822,7 @@
                                 },
                                 "name":{
                                     "type":"string",
-                                    "enum":["a_queue"]
+                                    "enum":["accuracy_search_queue"]
                                 },
                                 "dq": {
                                     "type": "integer",
@@ -895,7 +885,7 @@
                 },
                 "name":{
                     "type":"string",
-                    "enum": ["a_v_queue"]
+                    "enum": ["accuracy_viewitem_queue"]
                 },
                 "dq": {
                     "type": "integer",

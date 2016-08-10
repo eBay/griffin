@@ -51,7 +51,10 @@ require.config({
     'ngToaster': '/base/bower_components/AngularJS-Toaster/toaster',
 
     'jquery': '/base/bower_components/jquery/dist/jquery',
-    'bootstrap': '/base/bower_components/bootstrap/dist/js/bootstrap'
+    'bootstrap': '/base/bower_components/bootstrap/dist/js/bootstrap',
+
+    
+		'echarts': '/base/bower_components/echarts/dist/echarts',
   },
   shim: {
     'angular': {
@@ -86,6 +89,9 @@ require.config({
     'bootstrap': {
       exports: 'bootstrap',
       deps: ['jquery']
+    },
+    'echarts': {
+      exports: 'echarts'
     }
   }
 });

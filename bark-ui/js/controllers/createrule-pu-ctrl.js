@@ -18,18 +18,16 @@ define(['./module'], function(controllers) {
         console.log('Create rule controller');
         $scope.currentStep = 1;
 
-        var publishBasic = 'https://bark.vip.ebay.com/api/v1/metrics';
+        // var publishBasic = 'https://bark.vip.ebay.com/api/v1/metrics';
+        var publishBasic = document.location.origin;
         // $scope.form.publishUrl = publishBasic;
         $scope.$watch('form.basic.name', function(newValue){
           $scope.form.publishUrl = publishBasic;// + (newValue?newValue:'');
         });
 
         $scope.$on('$viewContentLoaded', function() {
+            $scope.$emit('initReq');
             resizeWindow();
-            $(window).resize(function() {
-                resizeWindow();
-            });
-
         });
 
         var dbtreeUrl = $config.uri.dbtree;
@@ -56,21 +54,21 @@ define(['./module'], function(controllers) {
 
         }
 
+        $scope.$on('resizeHandler', function(e) {
+            if ($route.current.$$route.controller == "CreateRulePUCtrl") {
+                resizeWindow();
+            }
+        });
 
         function resizeWindow() {
-            if ($route.current.$$route.controller == "CreateRulePUCtrl") {
-                $timeout(function() {
                     var stepSelection = '.formStep[id=step-' + $scope.currentStep + ']';
                     $(stepSelection).css({
-                        height: $(window).innerHeight() - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
+                        height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
                     });
                     $('fieldset').height($(stepSelection).height() - $(stepSelection + '>.stepDesc').height() - $('.btn-container').height() - 80);
                     $('.y-scrollable').css({
                         'max-height': $('fieldset').height()
                     });
-
-                }, 0);
-            }
         }
 
         $scope.ruleTypes = $filter('strarr')('modeltype');//['Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];

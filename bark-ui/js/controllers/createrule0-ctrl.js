@@ -16,27 +16,26 @@ define(['./module'], function (controllers) {
     'use strict';
     controllers.controller('CreateRule0Ctrl', ['$scope', '$http', '$config', '$location', 'toaster', '$timeout', '$route',  function ($scope, $http, $config, $location, toaster, $timeout, $route) {
       console.log('Create rule 0 controller');
+      $scope.publishURL = document.location.origin;
+
       $scope.click = function(type){
         $location.path('/createrule-' + type);
       }
       $scope.$on('$viewContentLoaded', function(){
+        $scope.$emit('initReq');
         resizeWindow();
-        $(window).resize(function(){
-          resizeWindow();
-        });
+      });
+
+      $scope.$on('resizeHandler', function(e) {
+        if($route.current.$$route.controller == 'CreateRule0Ctrl'){
+            console.log('createrule0 resize');
+            resizeWindow();
+        }
       });
 
       function resizeWindow(){
-        if ($route.current.$$route.controller == "CreateRule0Ctrl") {
-          $('#main').height( $(window).innerHeight() - $('#main').offset().top - $('#footerwrap').outerHeight());
-          $('#panel-2 > .panel-heading').css({height: $('#panel-1 > .panel-heading').outerHeight()});
-          $('#panel-2 >.panel-body').css({height: $('#panel-1 >.panel-body').outerHeight()});
-          $('#panel-2 >.panel-footer').css({height: $('#panel-1 >.panel-footer').outerHeight()});
-
-
-          // $('#panel-3 >.panel-body').css({height: $('#panel-4 >.panel-body').outerHeight() + $('#panel-4 >.panel-footer').outerHeight() - $('#panel-3 >.panel-footer').outerHeight()});
-          $('#panel-4 >.panel-body').css({height: $('#panel-3 >.panel-body').outerHeight() + $('#panel-3 >.panel-footer').outerHeight() - $('#panel-4 >.panel-footer').outerHeight()});
-        }
+        $('#panel-2 >.panel-body').css({height: $('#panel-1 >.panel-body').outerHeight() + $('#panel-1 >.panel-footer').outerHeight() - $('#panel-2 >.panel-footer').outerHeight()});
+        $('#panel-4 >.panel-body').css({height: $('#panel-3 >.panel-body').outerHeight() + $('#panel-3 >.panel-footer').outerHeight() - $('#panel-4 >.panel-footer').outerHeight()});
       }
     }]);
 });

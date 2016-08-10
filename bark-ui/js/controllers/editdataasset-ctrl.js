@@ -28,25 +28,24 @@ define(['./module'], function (controllers) {
         $scope.formatTypeOptions = ['yyyyMMdd', 'yyyy-MM-dd','HH'];
 
         $scope.$on('$viewContentLoaded', function() {
+            $scope.$emit('initReq');
             resizeWindow();
-            $(window).resize(function() {
-                resizeWindow();
-            });
 
         });
 
+        $scope.$on('resizeHandler', function(e) {
+            if ($route.current.$$route.controller == "EditDataAssetCtrl") {
+                resizeWindow();
+            }
+        });
 
         function resizeWindow() {
-            if ($route.current.$$route.controller == "EditDataAssetCtrl") {
-                $timeout(function() {
-                    $('.formStep').height($(window).innerHeight()  -  $('.formStep').offset().top - $('#footerwrap').outerHeight());
-                    $('fieldset').height($(window).innerHeight()  -  $('fieldset').offset().top - $('#footerwrap').outerHeight()- $('.btn-container').height() -80);
+                    $('.formStep').height(window.innerHeight  -  $('.formStep').offset().top - $('#footerwrap').outerHeight());
+                    $('fieldset').height(window.innerHeight  -  $('fieldset').offset().top - $('#footerwrap').outerHeight()- $('.btn-container').height() -80);
                     $('.y-scrollable').css({
                         'max-height': $('fieldset').height()
                     });
 
-                }, 0);
-            }
         }
 
         // var dbtree = $config.uri.dbtree;

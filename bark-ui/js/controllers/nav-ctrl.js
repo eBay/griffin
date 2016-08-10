@@ -14,7 +14,7 @@
 */
 define(['./module'], function (controllers) {
     'use strict';
-    controllers.controller('NavCtrl', ['$scope', '$http', '$config', '$location', '$cookies', '$rootScope', function ($scope, $http, $config, $location, $cookies, $rootScope) {
+    controllers.controller('NavCtrl', ['$scope', '$http', '$config', '$location', '$cookies', '$rootScope', '$timeout', function ($scope, $http, $config, $location, $cookies, $rootScope, $timeout) {
       console.log('Navigation controller');
       var cookieObjs = $cookies.getAll();
       if(cookieObjs.ntAccount){
@@ -32,6 +32,26 @@ define(['./module'], function (controllers) {
           return $location.path().indexOf(route) == 0;
           //return $location.path() == route;
       }
+
+      var timer = null;
+      $("#searchBox").off("keyup");
+      $("#searchBox").on("keyup", function(event){
+        if(timer){
+          $timeout.cancel(timer);
+        }
+        var searchValue = event.target.value;
+
+        if(searchValue != undefined){
+            timer = $timeout(function(){
+              $rootScope.keyword = searchValue.trim();
+            }, 500);
+        }
+      });
+
+      $scope.$on('$routeChangeStart', function(next, current) {
+        $("#searchBox").val('');
+        $rootScope.keyword = '';
+      });
 
       $scope.logout = function(){
         $rootScope.ntAccount = undefined;

@@ -14,69 +14,84 @@
 */
 define(['./module'], function (controllers) {
     'use strict';
-    controllers.controller('RuleCtrl', ['$scope', '$http', '$config', '$location', '$timeout', '$route', 'toaster', function ($scope, $http, $config, $location, $timeout, $route, toaster) {
+    controllers.controller('RuleCtrl', ['$scope', '$http', '$config', '$location', '$timeout', '$route', 'toaster', '$filter', function ($scope, $http, $config, $location, $timeout, $route, toaster, $filter) {
       console.log('rule controller');
 
-      $scope.statusList = ['Testing', 'Verified', 'Deployed'];
-      $scope.systemList = ['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Kafka'];
-      $scope.typeList = ['Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];
+      $scope.statusList = $filter('strarr')('modelstatus');
+      $scope.systemList = $filter('strarr')('modelsystem');
+      $scope.typeList = $filter('strarr')('modeltype');
 
-       var allModels = $config.uri.allModels;
-       var ts = null;
-       var start = 0;
-       var number = 10;
+      var allModels = $config.uri.allModels;
+      var ts = null;
+      var start = 0;
+      var number = 10;
+      var originalRowCollection = undefined;
 
-       $scope.paging = function(tableState){
-         console.log(tableState);
-         ts = tableState;
+      $scope.paging = function(tableState){
+        console.log(tableState);
+        ts = tableState;
 
-         // tableState.pagination.numberOfPages = $scope.rowCollection.length/10 + 1;
-         start = tableState.pagination.start || 0;
-         number = tableState.pagination.number || 10;
+        // tableState.pagination.numberOfPages = $scope.rowCollection.length/10 + 1;
+        start = tableState.pagination.start || 0;
+        number = tableState.pagination.number || 10;
 
-         if(start == 0 && !$scope.rowCollection){
-           $http.get(allModels).success(function(data) {
-             data.sort(function(a,b){
-               return -(a.createDate - b.createDate);
-             });
-             $scope.rowCollection = data;
-
-             $scope.displayed = $scope.rowCollection.slice(start, start+number);
-             tableState.pagination.numberOfPages = Math.ceil($scope.rowCollection.length/number);
+        if(start == 0 && !$scope.rowCollection){
+         $http.get(allModels).success(function(data) {
+           data.sort(function(a,b){
+             return -(a.createDate - b.createDate);
            });
-         }else{
+           originalRowCollection = angular.copy(data);
+           $scope.rowCollection = angular.copy(data);
+
            $scope.displayed = $scope.rowCollection.slice(start, start+number);
-         }
-       }
+           tableState.pagination.numberOfPages = Math.ceil($scope.rowCollection.length/number);
+         });
+        }else{
+         $scope.displayed = $scope.rowCollection.slice(start, start+number);
+        }
+      };
 
-       $scope.$watch('keyword', function(newValue){
-         if($scope.rowCollection){
-           start = 0;
-           //::TODO replace the below line to the real search result.
-           $scope.rowCollection = $scope.rowCollection.slice(0, 11);
-           
-           $scope.displayed = $scope.rowCollection.slice(start, start+number);
-           ts.pagination.numberOfPages = Math.ceil($scope.rowCollection.length/number);
-         }
+      var include = function(keyword, str) {
+        if(keyword == undefined || keyword == null){
+          return true;
+        } else if(str == undefined || str == null){
+          return false;
+        } else{
+          var value = keyword.trim().toLowerCase();
+          return str.trim().toLowerCase().includes(value);
+        }
+      };
 
-       });
+      var findValue = function(keyword, assetItem) {
+        var date = $filter('date')(assetItem.createDate, 'M/d/yy h:mm a', '-0700')
+        return include(keyword, assetItem.name)
+          || include(keyword, assetItem.description)
+          || include(keyword, assetItem.owner)
+          || include(keyword, $filter('strmap')(assetItem.system, $scope.systemList))
+          || include(keyword, $filter('strmap')(assetItem.status, $scope.statusList))
+          || include(keyword, $filter('strmap')(assetItem.type, $scope.typeList))
+          || include(keyword, date);
+      };
 
-
-      //  $http.get(allModels).success(function(data) {
-      //    data.sort(function(a,b){
-      //      return -(a.createDate - b.createDate);
-      //    });
-    	//    $scope.rowCollection = data;
-      //  });
-    //   $timeout(function(){
-      // $scope.rowCollection = createRowCollection();
-    // },1000);
-      // $scope.rowCollection = [
-      //        {firstName: 'Laurent', lastName: 'Renard', birthDate: new Date('1987-05-21'), balance: 102, email: 'whatever@gmail.com'},
-      //        {firstName: 'Blandine', lastName: 'Faivre', birthDate: new Date('1987-04-25'), balance: -2323.22, email: 'oufblandou@gmail.com'},
-      //        {firstName: 'Francoise', lastName: 'Frere', birthDate: new Date('1955-08-27'), balance: 42343, email: 'raymondef@gmail.com'}
-      //    ];
-      //
+      $scope.$watch('keyword', function(newValue){
+        if(originalRowCollection){
+          start = 0;
+          if(newValue == undefined || newValue == ''){
+            $scope.rowCollection = angular.copy(originalRowCollection);
+          }else{
+            var result = [];
+            for (var i = 0; i < originalRowCollection.length; i++) {
+              var item = originalRowCollection[i];
+              if(findValue(newValue, item)){
+                result.push(item);
+              }
+            };
+            $scope.rowCollection = angular.copy(result);
+          }
+          $scope.displayed = $scope.rowCollection.slice(start, start+number);
+          ts.pagination.numberOfPages = Math.ceil($scope.rowCollection.length/number);
+        }
+      });
 
 
       $scope.remove = function remove(row) {
@@ -88,18 +103,8 @@ define(['./module'], function (controllers) {
         // $scope.deletedRow = row;
         $scope.deletedBriefRow = row;
         $('#deleteConfirmation').modal('show');
-        $scope.keyword = 'abc';
 
 
-        // var deleteModelUrl = $config.uri.deleteModel + '/' + row.name;
-        // $http.delete(deleteModelUrl).success(function(){
-        //   var index = $scope.rowCollection.indexOf(row);
-        //   $scope.rowCollection.splice(index, 1);
-        //
-        //   index = $scope.displayed.indexOf(row);
-        //   $scope.displayed.splice(index, 1);
-        //
-        // });
 
       }
 
@@ -122,29 +127,13 @@ define(['./module'], function (controllers) {
       }
 
 
+
       $scope.edit = function edit() {
       }
 
       $scope.$on('$viewContentLoaded', function() {
-          resizeWindow();
-          $(window).resize(function() {
-              resizeWindow();
-          });
-
+        $scope.$emit('initReq');
       });
-
-
-      function resizeWindow() {
-          if ($route.current.$$route.controller == "RuleCtrl") {
-              $timeout(function() {
-
-                  $('#modelContainer').css({
-                      height: $(window).innerHeight() - $('#modelContainer').offset().top - $('#footerwrap').outerHeight()
-                  });
-
-              }, 0);
-          }
-      }
 
 
 /*

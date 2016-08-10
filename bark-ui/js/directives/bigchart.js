@@ -35,65 +35,54 @@ define(['./module'], function (directives) {
         // },
         // postLink: function( scope, element, attrs ){
         //   alert('hello');
-        // },
+        // // },
         link: function( scope, element, attrs ) {
+          console.log(scope);
           var getWidth = function(){
-            //return $(window).innerWidth() - $('#rightbar').outerWidth() -20;
-            return $(window).innerWidth();
+            return window.innerWidth;
           }
           var getHeight = function(){
-            //return $(window).innerHeight() - $('.navbar-fixed-top').outerHeight() - $('#footerwrap').outerHeight() - 10;
-            return $(window).innerHeight();
+            return window.innerHeight;
           }
 
         //  $('#bigChartShow').remove();
-          if($('big-chart')){
-            if($('big-chart').length > 1){
-              $($('big-chart')[0]).remove();
-            }
-          }
+          // if($('big-chart')){
+          //   if($('big-chart').length > 1){
+          //     $($('big-chart')[0]).remove();
+          //   }
+          // }
 
           $timeout(function(){
-            $('#mainWindow').hide();
             $('#bigChartShow').css({height:getHeight(),
-                                    width: getWidth(),
-                                    // top: $('.navbar-fixed-top').outerHeight() + 10,
-                                    // left: 10
+                                    width: getWidth()
                                   });
-            // if(scope.chartConfig){
-            //   scope.chartConfig.options.chart.width = width;
-            //   scope.chartConfig.options.chart.height = height;
-            // }
+
             $(window).resize(function(){
                 $('#bigChartShow').css({height:getHeight(),
-                            width: getWidth(),
-                            // top: $('.navbar-fixed-top').outerHeight() + 10,
-                            // left: 10
+                            width: getWidth()
                           });
-                  resizeChart(scope.chartConfig);
-
             });
           });
 
-          scope.$watch('chartConfig', function(newValue){
-            resizeChart(newValue);
-          });
+          // scope.$watch('chartConfig', function(newValue){
+          //   resizeChart(newValue);
+          // });
 
-          scope.$on('$routeChangeStart', function(){
-            $('#mainWindow').show();
-            angular.element(document).find('#bigChartContainer').remove();
-          });
+          // scope.$on('$routeChangeStart', function(){
+          //   $('#mainWindow').show();
+          //   $('#bigChartContainer').hide();
+          // });
 
-          function resizeChart(config){
-            $timeout(function(){
-              config.options.chart.width = getWidth();
-              config.options.chart.height = getHeight();
-            });
-          }
+          // function resizeChart(config){
+          //   $timeout(function(){
+          //     config.options.chart.width = getWidth();
+          //     config.options.chart.height = getHeight();
+          //   });
+          // }
 
           scope.closeBigChart = function(){
             console.log('close big chart!');
-            angular.element(document).find('#bigChartContainer').remove();
+            $('#bigChartContainer').hide();
             $('#mainWindow').show();
 
           }

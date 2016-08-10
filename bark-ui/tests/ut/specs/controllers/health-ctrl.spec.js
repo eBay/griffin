@@ -12,8 +12,8 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
  */
-define(['angular', 'angularMocks', 'js/controllers/health-ctrl'],
-  function(angular, mocks, HealthCtrl) {
+define(['require', 'angular', 'angularMocks', 'js/controllers/health-ctrl', 'echarts'],
+  function(require, angular, mocks, HealthCtrl) {
     describe('Test /js/controllers/health-ctrl.js', function(){
       	beforeEach(function(){
 	        module('app.controllers');
@@ -53,7 +53,7 @@ define(['angular', 'angularMocks', 'js/controllers/health-ctrl'],
 
       	describe("httpGet $config.uri.dbtree test",function(){
 	        beforeEach(function(){
-	            $httpBackend.when('GET', $config.uri.heatmap).respond([1,2,3]);
+	            $httpBackend.when('GET', $config.uri.heatmap).respond([{"name":"unknown","dq":0.0,"metrics":[{"name":"mean","dq":4835.3,"dqfail":0,"timestamp":1470387389994,"metricType":"","assetName":null,"details":[]},{"name":"test1001","dq":1638.6,"dqfail":0,"timestamp":1470387312289,"metricType":"","assetName":null,"details":[]},{"name":"test_publish","dq":99.8,"dqfail":0,"timestamp":1463994766925,"metricType":"","assetName":null,"details":[]},{"name":"v","dq":99.8,"dqfail":0,"timestamp":1463994766925,"metricType":"","assetName":null,"details":[]}]},{"name":"Hadoop","dq":0.0,"metrics":[{"name":"movie_acc","dq":97.0,"dqfail":0,"timestamp":1470009600000,"metricType":"","assetName":null,"details":[]},{"name":"movie_acc_test2","dq":97.0,"dqfail":0,"timestamp":1470009600000,"metricType":"","assetName":null,"details":[]},{"name":"hadoop_accuracy_1","dq":99.053,"dqfail":0,"timestamp":1467356400000,"metricType":"","assetName":null,"details":[]}]},{"name":"Bullseye","dq":0.0,"metrics":[{"name":"test_accuracy_1","dq":98.952,"dqfail":1,"timestamp":1467439200000,"metricType":"","assetName":null,"details":[]},{"name":"test_accuracy_2","dq":99.103,"dqfail":0,"timestamp":1467439200000,"metricType":"","assetName":null,"details":[]},{"name":"TotalCount_asset1","dq":5056215.0,"dqfail":0,"timestamp":1467439200000,"metricType":"","assetName":null,"details":[]},{"name":"TotalCount_asset2","dq":1.229703E7,"dqfail":0,"timestamp":1467356400000,"metricType":"","assetName":null,"details":[]},{"name":"aw","dq":5056215.0,"dqfail":0,"timestamp":1467439200000,"metricType":"Bollinger","assetName":null,"details":[]}]}]);
 	            $httpBackend.flush();
 	        });
 

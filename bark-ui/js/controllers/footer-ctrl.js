@@ -22,32 +22,33 @@ define(['./module'], function (controllers) {
       retrieveNotifications();
       $interval(retrieveNotifications, 60000);
 
-      $interval(function(){
-        if($scope.allNotifications){
-          var length = $scope.allNotifications.length;
-          if(length == 0){
-            return;
-          }else if(length <= number){
-            $scope.notifications = $scope.allNotifications;
-            return;
-          }
-          var index = start%length;
-          var end = index + number;
+      // $interval(function(){
+      //   if($scope.allNotifications){
+      //     var length = $scope.allNotifications.length;
+      //     if(length == 0){
+      //       return;
+      //     }else if(length <= number){
+      //       $scope.notifications = $scope.allNotifications;
+      //       return;
+      //     }
+      //     var index = start%length;
+      //     var end = index + number;
 
-          $scope.notifications = $scope.allNotifications.slice(index, end);
+      //     $scope.notifications = $scope.allNotifications.slice(index, end);
 
-          if(end > length){
-            $scope.notifications = $scope.notifications.concat($scope.allNotifications.slice(0, end-length ));
-          }
-          start ++;
-        }
+      //     if(end > length){
+      //       $scope.notifications = $scope.notifications.concat($scope.allNotifications.slice(0, end-length ));
+      //     }
+      //     start ++;
+      //   }
 
-      }, 2000);
+      // }, 2000);
 
       function retrieveNotifications(){
         var notificationUrl = $config.uri.getnotifications;
         $http.get(notificationUrl).success(function(data) {
-          $scope.allNotifications = data.slice(0, 15);
+          // $scope.allNotifications = data.slice(0, 15);
+          $scope.notifications = data.slice(0, 3);
         });
       }
 

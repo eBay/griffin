@@ -13,16 +13,18 @@
 	limitations under the License.
  -->
 <!-- <div id="bigChartShow" style="display: none;"> -->
-<div id="bigChartContainer"  class="big-chart-container">
+	
+<div id="bigChartContainer"  class="big-chart-container" style="display:none;">
 	<div id="bigChartShow" class="big-chart-content">
 		<div class="container-fluid">
-			<div class="pull-right">
+			<div class="pull-right" style="position:fixed;right:40px;top:20px;z-index:1050;">
 				<button type="button" id="bigChartClose" class="bark-close thick" aria-label="Close" ng-click="closeBigChart()">
-					<!-- <span aria-hidden="true" style="font-size:3em">&times;</span> -->
 				</button>
 			</div>
-			<div class="row">
 			
+			<div class="row">
+				<div id="bigChartDiv"></div>
+
 			</div>
 		</div>
 	</div>

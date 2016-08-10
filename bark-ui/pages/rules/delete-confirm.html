@@ -76,7 +76,7 @@
             </label>
 
             <div class="col-md-8 col-lg-8 col-sm-8" style="color: #fff">
-              {{deletedRow.basic.threshold}}
+              {{deletedRow.basic.threshold}}<span ng-show="deletedRow.basic.type==0">%</span>
             </div>
           </div>
 
@@ -86,7 +86,7 @@
             </label>
 
             <div class="col-md-8 col-lg-8 col-sm-8 " style="color: #fff">
-              {{deletedRow.basic.scheduleType|strmap:scheduletype}}
+              {{deletedRow.basic.scheduleType|strmap:'scheduletype'}}
             </div>
           </div>
 

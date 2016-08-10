@@ -14,18 +14,31 @@
 */
 define(['./module'], function(controllers) {
     'use strict';
-    controllers.controller('SideBarCtrl', ['$scope', '$http', '$config', '$filter', '$timeout', '$compile', '$routeParams', '$barkChart', function($scope, $http, $config, $filter, $timeout, $compile, $routeParams, $barkChart) {
-        var url = $config.uri.statistics;
+    controllers.controller('SideBarCtrl', ['$scope', '$http', '$config', '$filter', '$timeout', '$compile', '$routeParams', '$barkChart', '$rootScope', function($scope, $http, $config, $filter, $timeout, $compile, $routeParams, $barkChart, $rootScope) {
 
+        var echarts = require('echarts');
 
-        $http.get(url).success(function(res) {
-            $scope.datasets = res.assets;
-            $scope.metrics = res.metrics;
-            $scope.pieConfig = $barkChart.genConfigPie(res.status);
+        pageInit();
 
-        });
+        function pageInit() {
+          var url = $config.uri.statistics;
 
-        sideBarList();
+          $http.get(url).success(function(res) {
+              $scope.datasets = res.assets;
+              $scope.metrics = res.metrics;
+              renderDataAssetPie(res.status);
+
+              sideBarList();
+          });
+
+          
+        }
+
+        var renderDataAssetPie = function(status) {
+            resizePieChart();
+            $scope.dataAssetPieChart = echarts.init(document.getElementById('data-asset-pie'), 'dark');
+            $scope.dataAssetPieChart.setOption($barkChart.getOptionPie(status));
+        }
 
         $scope.$watch(function(){return $routeParams.sysName;}, function(value){
           console.log('Watched value: ' + value);
@@ -37,27 +50,25 @@ define(['./module'], function(controllers) {
         });
 
         $scope.draw = function(metric, parentIndex, index) {
-            var chartDivId = $scope.briefmetrics[parentIndex].name + index;
-            if(angular.element('#' + chartDivId).children().length == 0){
 
-            // small chart
-              metric.chartId = $barkChart.genConfigSide(metric, {options:{chart:{width: $('.panel-heading').innerWidth() - 20, height: 150}}});
+            var chartId = 'chart' + parentIndex + '-' + index;
+            document.getElementById(chartId).style.width = ($('.panel-heading').innerWidth()-20)+'px';
+            document.getElementById(chartId).style.height = '200px';
+            var myChart = echarts.init($('#'+chartId).get(0), 'dark');
+            metric.myOption = $barkChart.getOptionSide(metric);
+            myChart.setOption(metric.myOption);
 
-              var newDirective = angular.element('<div class="panel-body" style="cursor:pointer;">chart content</div>');
-              angular.element('#' + chartDivId).append(newDirective);
-              $compile(newDirective)($scope);
-          }
+            $('#'+chartId).unbind('click');
+            $('#'+chartId).click(function() {
+              showBig($scope.briefmetrics[parentIndex].metrics[index]);
+            });
+          
         };
 
-        $scope.showBig = function(metric){
+        var showBig = function(metric){
           var metricDetailUrl = $config.uri.metricdetail + '/' + metric.name;
           $http.get(metricDetailUrl).success(function (data){
-            var newDirective = angular.element('<big-chart/>');
-            angular.element('body').append(newDirective);
-            $compile(newDirective)($scope);
-
-            $scope.chartConfig = $barkChart.genConfigBig(data);
-
+            $rootScope.showBigChart($barkChart.getOptionBig(data));
           });
         }
 
@@ -81,41 +92,44 @@ define(['./module'], function(controllers) {
               if(!sysName){
                 $scope.backup_metrics = angular.copy(res);
               }
+
+              $timeout(function() {
+                resizeSideChart();
+              }, 0);
           });
         }
 
-
-        resizeSidebar();
-
         $(window).resize(function() {
-            resizeSidebar();
+            console.log('sidebar resize');
+            if(window.innerWidth < 992) {
+              $('#rightbar').css('display', 'none');
+            } else {
+              $('#rightbar').css('display', 'block');
+              resizePieChart();
+              $scope.dataAssetPieChart.resize();
+              resizeSideChart();
+            }
         });
 
-        function resizeSidebar() {
-            $timeout(function() {
+        function resizeSideChart() {
+            $('#side-bar-metrics').css({
+                height: $('#mainContent').height()-$('#side-bar-stats').outerHeight()+70
+            });
 
-                if($('#side-bar-metrics').offset()){//if the element is rendered
-                  $('#side-bar-metrics').css({
-                      height: $(window).innerHeight() - $('#side-bar-metrics').offset().top
-                  });
-
-                  //redraw statistics chart
-                  if($scope.pieConfig){
-                    $scope.pieConfig.options.chart.width = $('#side-bar-stats').width() * 7 /12;
-                  }
-                  //need to redraw the charts
-                  angular.forEach($scope.briefmetrics, function(sys){
-                    angular.forEach(sys.metrics, function(metric){
-                      if(metric.chartId){
-                        metric.chartId.options.chart.width = $('.panel-heading').innerWidth() - 20;
-                      }
-                    });
-
-                  });
-                }else{
-                  resizeSidebar();
+            console.log($scope.briefmetrics);
+            angular.forEach($scope.briefmetrics, function(sys, sysIndex) {
+              var sysIndex = sysIndex;
+              angular.forEach(sys.metrics, function(metric, index) {
+                if (!metric.tag) {
+                  $scope.draw(metric, sysIndex, index);
                 }
-            }, 0);
+              })
+            });
+        }
+
+        function resizePieChart() {
+            document.getElementById('data-asset-pie').style.width = $('#data-asset-pie').parent().width()+'px';
+            document.getElementById('data-asset-pie').style.height = $('#data-asset-pie').parent().width()+'px';
         }
     }
     ]);

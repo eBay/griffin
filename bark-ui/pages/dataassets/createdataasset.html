@@ -13,7 +13,7 @@
 	limitations under the License.
  -->
 <div class="container-fluid">
-  <div class="row">
+  <div class="row pageTitle">
     <h5 class="over-title margin-bottom-15">Register Data Asset</h5>
   </div><!--//row-->
   <div class="row">
@@ -47,9 +47,9 @@
                       </label>
 
                       <div class="col-md-10 col-lg-10 col-sm-10 ">
-                        <input type="text" class="form-control" ng-model="form.basic.assetName" id="assetName" name="assetName" placeholder="Please input the asset name." required ng-pattern="'([0-9a-zA-Z\\_\\-\\.])+'">
+                        <input type="text" class="form-control" ng-model="form.basic.assetName" id="assetName" name="assetName" placeholder="Please input the asset name, which should be your Hive table name" required ng-pattern="'([0-9a-zA-Z\\_\\-\\.])+'">
                         <span class="error text-small block " ng-if="Form.assetName.$dirty && Form.assetName.$error.required">Asset Name is required.</span>
-                        <span class="error text-small block " ng-if="Form.assetName.$dirty && Form.assetName.$error.pattern">Only letter, number, ".", "-" and "_" are allowed</span>
+                        <span class="error text-small block " ng-if="Form.assetName.$dirty && Form.assetName.$error.pattern">Only letter, number, "-", "_" and "." are allowed</span>
                       </div>
                     </div>
                   </div>
@@ -173,7 +173,7 @@
                   <div class="col-md-12 col-lg-12 col-sm-12">
                     <div class="form-group">
                       <label class="col-md-2 col-lg-2 col-sm-2 control-label">
-                        time partition columns</span>:
+                        Hive partition columns</span>:
                       </label>
 
                       <div class="col-md-10 col-lg-10 col-sm-10 ">

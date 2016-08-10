@@ -30,7 +30,10 @@ define([
     './editdataasset-ctrl',
     './footer-ctrl',
     './mydashboard-ctrl',
-    './subscribemodel-ctrl'
+    './subscribemodel-ctrl',
+    './bigChart-ctrl',
+    './main-ctrl',
+    './downloadSample-ctrl'
     // './my-ctrl-2'
 ], function () {
   // console.log('my controller 1');

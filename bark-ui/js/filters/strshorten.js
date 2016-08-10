@@ -22,7 +22,7 @@ define(['./module'], function (filters) {
             var strLength = str.length;
             var windowWidth = 2000;
             try{
-              windowWidth = $(window).width();
+              windowWidth = window.innerWidth;
               console.log('Window Size: ' + windowWidth);
             }catch(e){
               console.error(e);

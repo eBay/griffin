@@ -19,7 +19,8 @@ define(['./module'], function (filters) {
       scheduletype: ['Daily', 'Weekly', 'Monthly', 'Hourly'],
       modelsystem: ['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Kafka', 'Sojourner', 'SiteSpeed', 'EDW'],
       matchfunction: ['LENGTH', 'LOWER', 'UPPER', 'TRIM'],
-      modelstatus: ['Testing', 'Need Verify', 'Deployed'],
+      //modelstatus: ['Testing', 'Need Verify', 'Deployed'],
+      modelstatus: ['Initial', 'Validation', 'Production'],
       vatype: ['Defaut Count', 'Total Count', 'Null Count', 'Unique Count', 'Duplicate Count', 'Maximum', 'Minimum', 'Mean', 'Median', 'Regular Expression Matching', 'Pattern Frequency'],
       antype: ['Default', 'History Trend Detection', 'Bollinger Bands Detection', 'Deviation Detection(Based on MAD)']
     };

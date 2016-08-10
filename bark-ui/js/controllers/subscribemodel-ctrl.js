@@ -174,25 +174,26 @@ define(['./module'], function(controllers) {
         };
 
         $scope.$on('$viewContentLoaded', function() {
+            $scope.$emit('initReq');
             resizeWindow();
-            $(window).resize(function() {
-                resizeWindow();
-            });
-
         });
 
+        $scope.$on('resizeHandler', function(e) {
+            if ($route.current.$$route.controller == "SubscribeModelCtrl") {
+                resizeWindow();
+            }
+        });
 
         function resizeWindow() {
-            if ($route.current.$$route.controller == "SubscribeModelCtrl") {
-                $timeout(function() {
-                    $('.formStep').height($(window).innerHeight()  -  $('.formStep').offset().top - $('#footerwrap').outerHeight());
-                    $('fieldset').height($(window).innerHeight()  -  $('fieldset').offset().top - $('#footerwrap').outerHeight()- $('.btn-container').height() -80);
+            console.log(window.innerHeight);
+            console.log($('.formStep').offset().top);
+            console.log($('#footerwrap').outerHeight());
+                    $('.formStep').innerHeight(window.innerHeight  -  $('.formStep').offset().top - $('#footerwrap').outerHeight());
+                    $('fieldset').height(window.innerHeight  -  $('fieldset').offset().top - $('#footerwrap').outerHeight()- $('.btn-container').height() -80);
                     $('.y-scrollable').css({
                         'max-height': $('fieldset').height()
                     });
 
-                }, 0);
-            }
         }
 
         $scope.form = {

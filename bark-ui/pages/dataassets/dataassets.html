@@ -16,7 +16,7 @@
 	<p>
 		<a class="btn btn-primary btn-o btn-wide" href="#/createdataasset"><i class="fa fa-plus"></i> Register Data Asset</a>
 	</p>
-	<div id="assetContainer" style="overflow-y: auto;">
+	<div id="assetContainer">
     <table st-table="displayed" st-pipe="paging" class="table table-striped">
 	  	<thead>
 	    	<tr style="background-color:#7D95CC">
@@ -48,11 +48,11 @@
 	    		<td>{{(row.timestamp | date: 'short':'-0700') || 'N/A' }}</td>
 	    		<td>{{row.owner || 'N/A'}}</td>
 		        <td>
-		          <a ng-class="ntAccount!=row.owner?'disabled':''" href="#/dataassets/{{row._id}}" alt="edit" title="edit">
+		          <a ng-class="(!adminAccess && ntAccount!=row.owner)?'disabled':''" href="#/dataassets/{{row._id}}" alt="edit" title="edit">
 		            <i class="fa fa-pencil"></i>
 		          </a>
 		          &nbsp;
-		          <a ng-class="ntAccount==row.owner||adminAccess?'':'disabled'" href="" ng-click="remove(row)" alt="delete" title="delete">
+		          <a ng-class="(!adminAccess && ntAccount!=row.owner)?'disabled':''" href="" ng-click="remove(row)" alt="delete" title="delete">
 		            <i class="fa fa-trash-o"></i>
 		          </a>
 		        </td>

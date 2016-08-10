@@ -22,7 +22,9 @@ define([
     'angularRoute',
     'ngToaster',
     'ngCookies',
-    'angularSpinner'
+    'angularSpinner',
+    'echarts',
+    'echarts-dark'
 ], function (angular) {
     'use strict';
 

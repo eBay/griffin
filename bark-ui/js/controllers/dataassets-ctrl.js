@@ -14,19 +14,25 @@
 */
 define(['./module'], function (controllers) {
     'use strict';
-    controllers.controller('DataAssetsCtrl', ['$scope', '$http', '$config', '$location', 'toaster', '$timeout', '$route',  function ($scope, $http, $config, $location, toaster, $timeout, $route) {
-	    
+    controllers.controller('DataAssetsCtrl', ['$scope', '$http', '$config', '$location', 'toaster', '$timeout', '$route', '$filter', function ($scope, $http, $config, $location, toaster, $timeout, $route, $filter) {
+
       var allModels = $config.uri.dataassetlist;
+      var ts = null;
+      var start = 0;
+      var number = 10;
+      var originalRowCollection = undefined;
 
       $scope.paging = function(tableState){
         console.log(tableState);
+        ts = tableState;
         // tableState.pagination.numberOfPages = $scope.rowCollection.length/10 + 1;
-        var start = tableState.pagination.start || 0;
-        var number = tableState.pagination.number || 10;
+        start = tableState.pagination.start || 0;
+        number = tableState.pagination.number || 10;
 
         if(start == 0 && !$scope.rowCollection){
           $http.get(allModels).success(function(data) {
-            $scope.rowCollection = data;
+            originalRowCollection = angular.copy(data);
+            $scope.rowCollection = angular.copy(data);
             $scope.rowCollection.sort(function(a,b){
               return (a.assetName<b.assetName?-1:(a.assetName>b.assetName?1:0));
             });
@@ -39,6 +45,46 @@ define(['./module'], function (controllers) {
         }
       }
 
+      var include = function(keyword, str) {
+        if(keyword == undefined || keyword == null){
+          return true;
+        } else if(str == undefined || str == null){
+          return false;
+        } else{
+          var value = keyword.trim().toLowerCase();
+          return str.trim().toLowerCase().includes(value);
+        }
+      };
+
+      var findValue = function(keyword, assetItem) {
+        var date = $filter('date')(assetItem.timestamp, 'M/d/yy h:mm a', '-0700')
+        return include(keyword, assetItem.assetName)
+          || include(keyword, assetItem.assetType)
+          || include(keyword, assetItem.owner)
+          || include(keyword, assetItem.system)
+          || include(keyword, assetItem.assetHDFSPath)
+          || include(keyword, date);
+      };
+      
+      $scope.$watch('keyword', function(newValue){
+        if(originalRowCollection){
+          start = 0;
+          if(newValue == undefined || newValue == ''){
+            $scope.rowCollection = angular.copy(originalRowCollection);
+          }else{
+            var result = [];
+            for (var i = 0; i < originalRowCollection.length; i++) {
+              var item = originalRowCollection[i];
+              if(findValue(newValue, item)){
+                result.push(item);
+              }
+            };
+            $scope.rowCollection = angular.copy(result);
+          }
+          $scope.displayed = $scope.rowCollection.slice(start, start+number);
+          ts.pagination.numberOfPages = Math.ceil($scope.rowCollection.length/number);
+        }
+      });
 
 		$scope.remove = function(row) {
 			$scope.selectedRow = row;
@@ -64,25 +110,9 @@ define(['./module'], function (controllers) {
 		}
 
     $scope.$on('$viewContentLoaded', function() {
-        resizeWindow();
-        $(window).resize(function() {
-            resizeWindow();
-        });
-
+        $scope.$emit('initReq');
     });
 
-
-    function resizeWindow() {
-        if ($route.current.$$route.controller == "DataAssetsCtrl") {
-            $timeout(function() {
-
-                $('#assetContainer').css({
-                    height: $(window).innerHeight() - $('#assetContainer').offset().top - $('#footerwrap').outerHeight()
-                });
-
-            }, 0);
-        }
-    }
   }]);
 
 

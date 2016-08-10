@@ -99,8 +99,8 @@
 
                       <div class="col-md-10 col-lg-10 col-sm-10">
                         <!-- <input type="text" class="form-control" ng-model="form.basic.dataaset"> -->
-                        <select id="assetSelector" class="form-control" ng-model="form.basic.dataaset" ng-init="form.basic.dataaset='-1'"required>
-                          <option value="-1">Please select...(optional)</option>
+                        <select id="assetSelector" class="form-control" ng-model="form.basic.dataaset">
+                          <option value="">Please select...(optional)</option>
                           <option ng-repeat="row in assets" value="{{row.name}}" >{{row.name}}</option>
                         </select>
                      </div>

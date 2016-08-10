@@ -162,3 +162,18 @@ a>.side-name:hover{
     box-shadow: #000 0 -1px 7px 1px, inset #460 0 -1px 9px, #7D0 0 2px 12px;
 }
 /* led end   */
+
+@media (max-width: 1200px) {
+	#sidebar-option {
+		height: auto;
+		display: block;
+	}
+}
+
+@media (min-width: 1200px) {
+	#sidebar-option {
+		height: 180px;
+		display: flex;
+		align-items: center;
+	}
+}

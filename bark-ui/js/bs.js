@@ -24,13 +24,7 @@ define([
 
    require(['domReady!'], function (document) {
 
-        $("#rightbar").css({ height: $(window).innerHeight() -56 });
-        $("#rightbar").css({ width: $(window).innerWidth() -$("#rightbar").offset().left });
-        $(window).resize(function(){
-          $("#rightbar").css({ height: $(window).innerHeight()-56 });
-          $("#rightbar").css({ width: $(window).innerWidth() -$("#rightbar").offset().left });
-        });
-
+        $('#mainWindow').height($('#mainContent').height());
 
         angular.bootstrap(document, ['app']);
     });

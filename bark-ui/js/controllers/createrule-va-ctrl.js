@@ -87,22 +87,24 @@ define(['./module'], function(controllers) {
 
 
         $scope.$on('$viewContentLoaded', function() {
+            $scope.$emit('initReq');
             resizeWindow();
-            $(window).resize(function() {
-                resizeWindow();
-            });
-
         });
 
+        $scope.$on('resizeHandler', function(e) {
+            if ($route.current.$$route.controller == "CreateRuleVACtrl") {
+                $scope.$emit('initReq');
+                resizeWindow();
+            }
+        });
 
         function resizeWindow() {
-            if ($route.current.$$route.controller == "CreateRuleVACtrl") {
-                $timeout(function() {
                     var stepSelection = '.formStep[id=step-' + $scope.currentStep + ']';
                     $(stepSelection).css({
-                        height: $(window).innerHeight() - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
+                        height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
                     });
                     $('fieldset').height($(stepSelection).height() - $(stepSelection + '>.stepDesc').height() - $('.btn-container').height() - 80);
+                    console.log($('fieldset').height());
                     $('.y-scrollable').css({
                         'max-height': $('fieldset').height()- $('.add-dataset').outerHeight()
                     });
@@ -111,8 +113,6 @@ define(['./module'], function(controllers) {
                         'padding-top': (($('.formula-text-up').height() - $('.formula-text-mid').height()) + $('.formula-text-mid').height() / 2) + 'px'
                     });
 
-                }, 10);
-            }
         }
 
         $scope.ruleTypes = $filter('strarr')('modeltype');//['Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];
@@ -279,17 +279,23 @@ define(['./module'], function(controllers) {
 
         var nextStep = function() {
             $scope.currentStep++;
-            resizeWindow();
+            $timeout(function(){
+                resizeWindow();
+            }, 0);
         }
         ;
         var prevStep = function() {
             $scope.currentStep--;
-            resizeWindow();
+            $timeout(function(){
+                resizeWindow();
+            }, 0);
         }
         ;
         var goToStep = function(i) {
             $scope.currentStep = i;
-            resizeWindow();
+            $timeout(function(){
+                resizeWindow();
+            }, 0);
         }
         ;
 

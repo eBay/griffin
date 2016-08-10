@@ -32,7 +32,9 @@ require.config({
 	    'jquery': '../bower_components/jquery/dist/jquery',
 	    'bootstrap': '../bower_components/bootstrap/dist/js/bootstrap',
 	    'spin': '../bower_components/spin.js/spin',
-	    'angularSpinner': '../bower_components/angular-spinner/angular-spinner'
+	    'angularSpinner': '../bower_components/angular-spinner/angular-spinner',
+		'echarts': '../bower_components/echarts/dist/echarts',
+		'echarts-dark': '../bower_components/echarts/theme/dark'
 	},
 	shim: {
 		'angular': {
@@ -59,6 +61,7 @@ require.config({
 			deps: ['angular'],
 			exports: 'ngCookies'
 		},
+	
 	    'jquery': {
 				exports: 'jquery'
 			},
@@ -72,7 +75,14 @@ require.config({
 	    'angularSpinner':{
 	    	exports: 'angularSpinner',
 	    	deps: ['angular', 'spin']
-	    }
+	    },
+		'echarts': {
+			exports: 'echarts'
+		},
+		'echarts-dark': {
+			deps: ['echarts'],
+			exports: 'echarts-dark'
+		}
 	},
 	deps: ['bs']
 });

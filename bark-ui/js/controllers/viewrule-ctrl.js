@@ -16,54 +16,61 @@ define(['./module'], function (controllers) {
     'use strict';
     controllers.controller('ViewRuleCtrl', ['$filter', '$scope', '$http', '$config', '$location', 'toaster', '$timeout', '$routeParams', '$barkChart', '$route',  function ($filter, $scope, $http, $config, $location, toaster, $timeout, $routeParams, $barkChart, $route) {
 
-	  	var getModelUrl = $config.uri.getModel+"/"+$routeParams.modelname;
-		  $http.get(getModelUrl).success(function(data){
-			  $scope.ruleData = data;
-		  }).error(function(data){
-        // errorMessage(0, 'Save model failed, please try again!');
-        toaster.pop('error', data.message);
-      });
+      var echarts = require('echarts');
 
-      $scope.anTypes = ['', 'History Trend Detection', 'Bollinger Bands Detection', 'Deviation Detection'];
+      pageInit();
 
-      var url= $config.uri.rulemetric+"/"+$routeParams.modelname;
+      function pageInit() {
+        $scope.$emit('initReq');
 
-      $http.get(url).success(function(res){
-					$scope.modelresultData = res;
-  				var chartData = res.details;
-
-          if (chartData) {
-            if ($('#viewrule-chart').position()) {
-              var height = $('#viewrule-definition').height() - $('#viewrule-chart').position().top;
-              var heightChart = $('#viewrule-definition').height() + 10 - $('#viewrule-chart').position().top;
-            }
-            $scope.metric = $barkChart.genConfigSide(res,{options:{chart:{ height: heightChart?heightChart:170}}});
-          }
-
-      });
-
-      $scope.$on('$viewContentLoaded', function(){
-        resizeWindow();
-        $(window).resize(function(){
-          resizeWindow();
+        var getModelUrl = $config.uri.getModel+"/"+$routeParams.modelname;
+        $http.get(getModelUrl).success(function(data){
+          $scope.ruleData = data;
+        }).error(function(data){
+          // errorMessage(0, 'Save model failed, please try again!');
+          toaster.pop('error', data.message);
         });
-      });
 
+        $scope.anTypes = ['', 'History Trend Detection', 'Bollinger Bands Detection', 'Deviation Detection'];
 
+        var url= $config.uri.rulemetric+"/"+$routeParams.modelname;
 
-      $scope.confirmDeploy = function() {
-            if($scope.ruleData.basic.owner != null && $scope.ruleData.basic.owner == $scope.ntAccount){
-              var enableModel = $config.uri.enableModel + "/" + $scope.ruleData.basic.name;
-              $http.get(enableModel).success(function(data) {
-                $scope.ruleData.basic.status = 2;
-              });
+        $http.get(url).success(function(res){
+            $scope.modelresultData = res;
+            if (res.details) {
+              $('#viewrule-chart').height(200);
+              $scope.ruleChart = echarts.init(document.getElementById('viewrule-chart'), 'dark');
+              $scope.ruleChart.setOption($barkChart.getOptionSide(res));
+
             }
+            resizeWindow();
+        }).error(function(data) {
+          resizeWindow();
+          toaster.pop('error', data.message);
+        });
+      }
 
-        };
+      $scope.confirmDeploy = function(){
+        var deployModelUrl = $config.uri.enableModel + '/' + $scope.ruleData.basic.name;
+        var answer = confirm('Are you sure you want to deploy this model to production?')
+
+        if(answer){
+          $http.get(deployModelUrl).success(function(){
+            $scope.ruleData.basic.status = 2;
+            toaster.pop('info', 'Your model has be deployed to prduction!');
+          });
+        }
+
+      }
+
+
+      $scope.$on('resizeHandler', function(e) {
+            if ($route.current.$$route.controller == "ViewRuleCtrl") {
+                resizeWindow();
+            }
+        });
 
       function resizeWindow(){
-        if ($route.current.$$route.controller == "ViewRuleCtrl") {
-          $timeout(function(){
 
             var h1 = $('#viewruleDefinition').height();
             var h2 = $('#viewTestResult').height();
@@ -72,10 +79,9 @@ define(['./module'], function (controllers) {
             $('#viewruleDefinition').height(height);
             $('#viewTestResult').height(height);
 
-            $('#viewruleContent').height($(window).innerHeight() - $('#viewruleContent').offset().top - $('#footerwrap').outerHeight());
-          });
-        }
-
+            if ($scope.ruleChart) {
+              $scope.ruleChart.resize();
+            }
       }
     }]);
 });

@@ -12,23 +12,76 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-#containerDiv{
-	background-image: url("./b3vHigh.jpg");
-	background-repeat: round;
+
+html, body {
+    height: 100%;
 }
 
-#circular{
-	/*border-radius: 50%;*/
-	position: relative;
-	background-image: url("./pad.png");
-	background-repeat: round;
+body {
+    background-image: url("./background.jpg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
-#loginInput{
-	margin-top: 25%;
+#content {
+    background-color: transparent;
 }
 
-#explaination{
-	margin-top: 20%;
-	/*color: white;*/
+hr {
+    margin-bottom: 30px;
+}
+
+@media (min-width: 992px) {
+
+    #content-row {
+        margin-top:12em;
+        margin-bottom:7em;
+    }
+
+    #bark-description {
+        display: block;
+    }
+
+    #bark-description-2 {
+        display: none;
+    }
+}
+
+@media (max-width:991px) {
+
+    #content-row {
+        margin-top:0em;
+        margin-bottom:0em;
+    }
+
+    #bark-description {
+        display: none;
+    }
+
+    #bark-description-2 {
+        margin-top: 3em;
+        display: block;
+    }
+}
+
+#bark-description p, #bark-description-2 p {
+    margin-left: 100px;
+    color: #ffffff;
+    font-size: 20px;
+}
+
+#content-row {
+    padding: 3em 0;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#loginMsg {
+    display: none;
+    background-color: #F1D7D7;
+    color: #A95252;
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-align:center;
 }

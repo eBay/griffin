@@ -28,36 +28,6 @@ define(['angular', 'angularMocks', 'js/controllers/nav-ctrl'],
           $location = _$location_;
     	}));
 
-    	describe('$scope values are set properly', function(){
-    		var $scope;
-
-    		beforeEach(function(){
-    			$scope = {};
-    			$controller('NavCtrl', {$scope:$scope});
-    		})
-
-    		it('$scope.test is set to \'test\'', function(){
-    			// expect($scope.test).toEqual('test');
-    		});
-        //
-    		// it('Retrieved http data successfully!', function(){
-    		// 	$httpBackend.expect('GET', $config.uri.greeting).respond({
-    		// 		"name":"Jason",
-    		// 		"age":30
-    		// 	});
-        //
-        //
-    		// 	$httpBackend.flush();
-    		// 	//dump($scope.userInfo);
-    		// 	expect($scope.userInfo.name).toEqual("Jason");
-    		// 	expect($scope.userInfo.age).toEqual(30);
-    		// });
-        //
-    		// it('$scope.sum function works well', function(){
-    		// 	expect($scope.sum(1, 2)).toEqual(1+2);
-    		// });
-    	});
-
       describe('$scope functions are set properly', function(){
         var $scope;
 

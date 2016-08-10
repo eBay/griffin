@@ -208,8 +208,7 @@ function isSpinnerRequired(Config, url){
         "metricdetail",
         "dashboard",
         "getmydashboard",
-        "getsubscribe",
-        "metricsample"
+        "getsubscribe"
     ];
 
     var uriArray = Config.uri;
