@@ -8,6 +8,12 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
 
 [Slack](https://ebay-eng.slack.com/messages/ebaysf-bark/)
 
+
+
+### How to build
+1. git clone the repository of https://github.com/eBay/DQSolution
+2. run "mvn install"
+
 ### How to run in docker
 1. Install [docker](https://www.docker.com)
 2. Pull pre-built docker image directly and tag it as bark-env
@@ -34,10 +40,6 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
     ```
     http://[your docker host IP address]:48080/
     ```
-
-### How to build
-1. git clone the repository of https://github.com/eBay/DQSolution
-2. run "mvn install"
 
 ### How to deploy and run at local
 1. Install jdk (1.7 or later versions)
