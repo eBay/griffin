@@ -1,10 +1,10 @@
 package org.apache.bark.util
 
-import com.ebay.bark.PartitionConfig
+import org.apache.bark.common.PartitionPair
 
 object PartitionUtils {
 
-  def generateWhereClause(partition: List[PartitionConfig]): String = {
+  def generateWhereClause(partition: List[PartitionPair]): String = {
     val builder = StringBuilder.newBuilder
 
     for (i <- 0 to partition.length - 1) {
@@ -30,10 +30,10 @@ object PartitionUtils {
 
   }
 
-  def generateTargetSQLClause(targetTable: String, partition: List[List[PartitionConfig]]): String = {
+  def generateTargetSQLClause(targetTable: String, partition: List[List[PartitionPair]]): String = {
     val builder = StringBuilder.newBuilder
 
-    val parts = if (partition.length == 0) List[PartitionConfig]() :: Nil else partition
+    val parts = if (partition.length == 0) List[PartitionPair]() :: Nil else partition
 
     for (i <- 0 to parts.length - 1) {
 

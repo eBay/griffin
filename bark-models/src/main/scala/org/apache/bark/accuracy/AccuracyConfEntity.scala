@@ -1,6 +1,6 @@
 package org.apache.bark.accuracy
 
-import com.ebay.bark.PartitionConfig
+import org.apache.bark.common.PartitionPair
 
 /**
   * Accurarcy configuration entity
@@ -12,6 +12,6 @@ class AccuracyConfEntity {
   var hour: String = null
 
   var accuracyMapping: List[AccuracyMapping] = List()
-  var srcPartitions: List[PartitionConfig] = List()
-  var tgtPartitions: List[List[PartitionConfig]] = List()
+  var srcPartitions: List[PartitionPair] = List()
+  var tgtPartitions: List[List[PartitionPair]] = List()
 }
