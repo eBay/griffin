@@ -1,0 +1,73 @@
+{
+  "source": "srcFile1",
+  "target": "tgtFile1",
+  "accuracyMapping": [
+    {
+      "sourceColId": 0,
+      "sourceColName": "id",
+      "targetColId": 0,
+      "targetColName": "userid",
+      "isPK": true
+    },
+    {
+      "sourceColId": 1,
+      "sourceColName": "name",
+      "targetColId": 1,
+      "targetColName": "name",
+      "isPK": false
+    },
+    {
+      "sourceColId": 2,
+      "sourceColName": "age",
+      "targetColId": 3,
+      "targetColName": "age",
+      "isPK": false
+    },
+    {
+      "sourceColId": 4,
+      "sourceColName": "timestamp",
+      "targetColId": 4,
+      "targetColName": "timestamp",
+      "isPK": true
+    },
+    {
+      "sourceColId": 5,
+      "sourceColName": "eventtype",
+      "targetColId": 5,
+      "targetColName": "event",
+      "isPK": false
+    }
+  ],
+  "srcPartitions": [
+    {
+      "colName": "dt",
+      "colValue": "20160706"
+    },
+    {
+      "colName": "hour",
+      "colValue": "08"
+    }
+  ],
+  "tgtPartitions": [
+    [
+      {
+        "colName": "dt",
+        "colValue": "20160706"
+      },
+      {
+        "colName": "hour",
+        "colValue": "08"
+      }
+    ],
+    [
+      {
+        "colName": "dt",
+        "colValue": "20160706"
+      },
+      {
+        "colName": "hour",
+        "colValue": "09"
+      }
+    ]
+  ]
+}

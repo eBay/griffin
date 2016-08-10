@@ -1,0 +1,21 @@
+//========== 1.. Test Accuracy model result with request file: data\test\reqJson\accTest1.json ==========
+match percentage: 95.0 %
+
+Map(eventtype -> home, name -> Sarah, timestamp -> 326312303215, age -> 21, id -> 2204064048)
+
+//========== 2.. Test Accuracy model result with request file: data\test\reqJson\accTest2.json ==========
+match percentage: 50.0 %
+
+Map(eventtype -> null, name -> Amy, timestamp -> 333333333, age -> 18, id -> 12345678)
+Map(eventtype -> event_3, name -> null, timestamp -> 333333333, age -> 18, id -> 12345678)
+Map(eventtype -> event_8, name -> 那个谁, timestamp -> 777777777, age -> 21, id -> 32165498)
+Map(eventtype -> event_7, name -> 那个谁, timestamp -> 666666666, age -> 36, id -> 32165498)
+
+//========== 3.. Test Accuracy model result with request file: data\test\reqJson\accTest3.json ==========
+match percentage: 50.0 %
+
+Map(eventtype -> null, name -> Amy, timestamp -> 333333333, age -> 18, id -> 12345678)
+Map(eventtype -> event_3, name -> null, timestamp -> 333333333, age -> 18, id -> 12345678)
+Map(eventtype -> event_8, name -> 那个谁, timestamp -> 777777777, age -> 21, id -> 32165498)
+Map(eventtype -> event_7, name -> 那个谁, timestamp -> 666666666, age -> 36, id -> 32165498)
+

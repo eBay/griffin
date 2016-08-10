@@ -3,15 +3,20 @@ package org.apache.bark.validility
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.bark.util.{DataConverter, DataTypeUtils, HdfsUtils, PartitionUtils}
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{Logging, SparkConf, SparkContext}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.hive.HiveContext
 
-object Vali {
+object Vali extends Logging {
 
   def main(args: Array[String]): Unit ={
-
+    if (args.length < 2) {
+      logError("Usage: class <input-conf-file> <outputPath>")
+      logError("For input-conf-file, please use accu_config.json as an template to reflect test dataset accordingly.")
+      sys.exit(-1)
+    }
     val input = HdfsUtils.openFile(args(0))
 
     val outputPath = args(1) + System.getProperty("file.separator")
@@ -25,21 +30,20 @@ object Vali {
     mapper.registerModule(DefaultScalaModule)
 
     //read the config info of comparison
-    val configure = mapper.readValue(input, classOf[ValidityConf])
+    val configure = mapper.readValue(input, classOf[ValidityConfEntity])
 
     val conf = new SparkConf().setAppName("Vali")
     val sc: SparkContext = new SparkContext(conf)
-    val sqlContext = new org.apache.spark.sql.hive.HiveContext(sc)
+    val sqlContext = new HiveContext(sc)
 
     //add spark applicationId for debugging
     val applicationId = sc.applicationId
+
+    //for spark monitoring
     HdfsUtils.writeFile(startFile, applicationId)
 
     //get data
-    val sojdf = sqlContext.sql("SELECT * FROM " + configure.dataSet + PartitionUtils.generateWhereClause(configure.timePartitions))
-    val dfCount = sojdf.count()
-    println("sojdf: " + dfCount)
-
+    val sojdf = sqlContext.sql(PartitionUtils.generateSourceSQLClause(configure.dataSet, configure.timePartitions))
 
     //-- algorithm --
     calcVali(sc, configure, sojdf)
@@ -48,14 +52,14 @@ object Vali {
     val out = HdfsUtils.createFile(resultFile)
     mapper.writeValue(out, configure)
 
+    //for spark monitoring
     HdfsUtils.createFile(doneFile)
 
     sc.stop()
   }
 
-  def calcVali(sc: SparkContext, configure: ValidityConf, sojdf: DataFrame) : Unit = {
+  def calcVali(sc: SparkContext, configure: ValidityConfEntity, sojdf: DataFrame) : Unit = {
     val dfCount = sojdf.count()
-    println("sojdf:" + dfCount)
 
     //--1. get all cols name, and types--
     val fnts = sojdf.schema.fields.map(x => (x.name, x.dataType.simpleString)).toMap
@@ -113,14 +117,14 @@ object Vali {
     def getNumStats(smry: MultivariateStatisticalSummary, df: DataFrame, op: Int, col: Int): Any = {
       val i = numIdx.indexWhere(_ == col)
       if (i >= 0) {
-        op match {
-          case MetricsConf.totalCount => smry.count
-          case MetricsConf.maximum => smry.max(i)
-          case MetricsConf.minimum => smry.min(i)
-          case MetricsConf.mean => smry.mean(i)
-          case MetricsConf.median => funcMedian(df, col)
-//          case MetricsConf.variance => smry.variance(i)
-//          case MetricsConf.numNonZeros => smry.numNonzeros(i)
+        MetricsType(op) match {
+          case MetricsType.TotalCount => smry.count
+          case MetricsType.Maximum => smry.max(i)
+          case MetricsType.Minimum => smry.min(i)
+          case MetricsType.Mean => smry.mean(i)
+          case MetricsType.Median => funcMedian(df, col)
+//          case MetricsType.Variance => smry.variance(i)
+//          case MetricsType.NumNonZeros => smry.numNonzeros(i)
           case _ => None
         }
       }
@@ -180,11 +184,11 @@ object Vali {
 
     //regex and match str metrics request
     def getStrResult(df: DataFrame, op: Int, col: Int): Any = {
-      op match {
-        case MetricsConf.totalCount => funcCount(df, col)
-        case MetricsConf.nullCount => funcNullCount(df, col)
-        case MetricsConf.uniqueCount => funcUniqueCount(df, col)
-        case MetricsConf.duplicateCount => funcDuplicateCount(df, col)
+      MetricsType(op) match {
+        case MetricsType.TotalCount => funcCount(df, col)
+        case MetricsType.NullCount => funcNullCount(df, col)
+        case MetricsType.UniqueCount => funcUniqueCount(df, col)
+        case MetricsType.DuplicateCount => funcDuplicateCount(df, col)
         case _ => None
       }
     }
@@ -198,8 +202,8 @@ object Vali {
     val rsltCols = numcols.union(strcols)
     configure.validityReq = rsltCols
 
-    println("== result ==\n" + rsltCols)
-
+    //output: need to change
+    logInfo("== result ==\n" + rsltCols)
   }
 
 }

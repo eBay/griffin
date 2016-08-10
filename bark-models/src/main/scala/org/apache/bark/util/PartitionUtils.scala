@@ -3,54 +3,29 @@ package org.apache.bark.util
 import org.apache.bark.common.PartitionPair
 
 object PartitionUtils {
-
   def generateWhereClause(partition: List[PartitionPair]): String = {
-    val builder = StringBuilder.newBuilder
-
-    for (i <- 0 to partition.length - 1) {
-
-      if (i == 0) {
-        builder.append(partition(i).colName)
-        builder.append(" = ")
-        builder.append(partition(i).colValue)
-        builder.append(" ")
-      } else {
-        builder.append(" AND ")
-        builder.append(partition(i).colName)
-        builder.append(" = ")
-        builder.append(partition(i).colValue)
-        builder.append(" ")
+    var first = true
+    partition.foldLeft("") { (clause, pair) =>
+      if (first) {
+        first = false
+        s"where ${pair.colName} = ${pair.colValue}"
       }
-
+      else s"$clause AND ${pair.colName} = ${pair.colValue}"
     }
-
-    val where = if (partition.length > 0) " where " else " "
-
-    where + builder.toString()
-
   }
 
-  def generateTargetSQLClause(targetTable: String, partition: List[List[PartitionPair]]): String = {
-    val builder = StringBuilder.newBuilder
+  def generateSourceSQLClause(sourceTable: String, partition: List[PartitionPair]): String = {
+    s"SELECT * FROM $sourceTable ${generateWhereClause(partition)}"
+  }
 
-    val parts = if (partition.length == 0) List[PartitionPair]() :: Nil else partition
-
-    for (i <- 0 to parts.length - 1) {
-
-      if (i == 0) {
-        builder.append("SELECT * FROM ")
-        builder.append(targetTable)
-        builder.append(PartitionUtils.generateWhereClause(parts(i)))
-      } else {
-        builder.append(" UNION ALL ")
-        builder.append("SELECT * FROM ")
-        builder.append(targetTable)
-        builder.append(PartitionUtils.generateWhereClause(parts(i)))
+  def generateTargetSQLClause(targetTable: String, partitions: List[List[PartitionPair]]): String = {
+    var first = true
+    partitions.foldLeft(s"SELECT * FROM $targetTable") { (clause, partition) =>
+      if (first) {
+        first = false
+        s"$clause ${generateWhereClause(partition)}"
       }
-
+      else s"$clause UNION ALL SELECT * FROM $targetTable ${generateWhereClause(partition)}"
     }
-
-    builder.toString()
-
   }
 }

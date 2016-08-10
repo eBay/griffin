@@ -8,4 +8,8 @@ class ValidityConfEntity {
   var validityReq: List[ValidityReq] = List()
 
   var timePartitions: List[PartitionPair] = List()
+
+  override def toString = {
+    s"dataSet: $dataSet, validityReq: $validityReq"
+  }
 }

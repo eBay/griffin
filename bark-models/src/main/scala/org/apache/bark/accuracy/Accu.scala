@@ -58,7 +58,7 @@ object Accu extends Logging{
     HdfsUtils.writeFile(startFile, applicationId)
 
     //get source data
-    val sojdf = sqlContext.sql("SELECT * FROM  " + configure.source + PartitionUtils.generateWhereClause(configure.srcPartitions))
+    val sojdf = sqlContext.sql(PartitionUtils.generateSourceSQLClause(configure.source, configure.srcPartitions))
 
     //get target data
     val bedf = sqlContext.sql(PartitionUtils.generateTargetSQLClause(configure.target, configure.tgtPartitions))

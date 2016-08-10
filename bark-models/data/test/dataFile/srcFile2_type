@@ -1,0 +1,9 @@
+columnName,columnType
+id,long
+name,string
+age,int
+city,string
+timestamp,long
+eventtype,string
+dt,string
+hour,string
