@@ -23,34 +23,12 @@ public class LoginServiceTest {
 	public void testLogin(){
 
 		//login success
-		String fullname = loginService.login("_http_dart_service", "P[q}X9t9_N");
-		assertEquals(fullname, "_http_dart_service");
-		System.out.println("login success");
-
-		//login fail
-		String errorname = loginService.login("_http_dart_service", "12345678");
-		assertEquals(errorname, null);
-		System.out.println("login fail");
-
-		System.out.println();
+		String fullname = loginService.login("alex", "alex");
+		assertEquals(fullname, "alex");
 
 	}
-	
-	
-	@Test
-	public void test(){
-		
-		String s = "accuracy_viewitem_queue_1468904400000";
-		
-		String[] ss = s.split("_");
-		
-		String aaa = ss[ss.length-1];
-		
-		String b = s.replace("_"+aaa, "");
-		
-		
-		System.out.println(aaa + "s: " + b);
-		
-	}
+
+
+
 
 }

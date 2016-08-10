@@ -37,8 +37,8 @@ $(document).ready(function() {
         var name = $('input:eq(0)').val();
         var password = $('input:eq(1)').val();
 
-      //  var loginUrl = '/api/v1/login/authenticate';
-       var loginUrl = 'http://bark.qa.ebay.com/api/v1/login/authenticate'; //dev env
+       var loginUrl = '/api/v1/login/authenticate';
+
 
 
         loginBtnWait();

@@ -20,10 +20,10 @@ define(['./module'], function (services) {
     services.factory('$config', function(){
 
 
-      // var BACKEND_SERVER = '';
+      var BACKEND_SERVER = '';
     //   var BACKEND_SERVER = 'http://localhost:8080'; //dev env
 
-     var BACKEND_SERVER = 'http://bark.qa.ebay.com';  //localhost
+
 
       var API_ROOT_PATH = '/api/v1';
 

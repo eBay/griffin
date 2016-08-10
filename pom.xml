@@ -18,11 +18,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.bark</groupId>
     <artifactId>bark-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Apache Bark Parent</name>
     <modules>
-    	<module>bark-scheduler</module>
+    	  <module>bark-ui</module>
         <module>bark-core</module>
     </modules>
     <inceptionYear>2016</inceptionYear>
@@ -52,6 +52,7 @@
     </developers>
 
     <properties>
+        <bark.version>0.1.0-SNAPSHOT</bark.version>
         <!-- General Properties -->
         <java.version>1.7</java.version>
         <scala.version>2.10</scala.version>
@@ -172,6 +173,8 @@
 	-->
         <!-- spring security -->
         <spring.framework.version>3.2.8.RELEASE</spring.framework.version>
+
+        <mockito.version>1.10.19</mockito.version>
 
     </properties>
 
@@ -542,6 +545,12 @@
                 <version>${unit.test.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
+
    <!--          <dependency>
                 <groupId>com.carrotsearch</groupId>
                 <artifactId>junit-benchmarks</artifactId>
