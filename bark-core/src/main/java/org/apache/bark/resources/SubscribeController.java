@@ -22,7 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.bark.model.UserSubscribeItem;
+import org.apache.bark.domain.UserSubscription;
 import org.apache.bark.service.SubscribeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,45 +40,14 @@ public class SubscribeController {
 	@GET
 	@Path("/{user}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public UserSubscribeItem get(@PathParam("user") String user) {
-
+	public UserSubscription get(@PathParam("user") String user) {
 		return subscribeService.getSubscribe(user);
 	}
 
 	@POST
 	@Path("/")
 	@Consumes({"application/json"})
-	public void set(@RequestBody UserSubscribeItem input)
-	{
-		UserSubscribeItem tresult = new UserSubscribeItem("yosha");
-		//		List<PlatformSubscribeItem> result = new ArrayList<PlatformSubscribeItem>();
-		//
-		//		SystemSubscribeItem t11 = new SystemSubscribeItem();
-		//		t11.setSystem("bullseye");
-		//		t11.setSelectAll(false);
-		//		List<String> d11 = new ArrayList<String>();
-		//		d11.add("0");
-		//		d11.add("10");
-		//		t11.setDataassets(d11);
-		//
-		//		SystemSubscribeItem t12 = new SystemSubscribeItem();
-		//		t12.setSystem("IDLS");
-		//		t12.setSelectAll(true);
-		//		List<String> d12 = new ArrayList<String>();
-		//		d12.add("1");
-		//		d12.add("11");
-		//		t12.setDataassets(d12);
-		//
-		//		PlatformSubscribeItem p1 = new PlatformSubscribeItem();
-		//		p1.setSelectAll(false);
-		//		p1.setPlatform("Apollo");
-		//		p1.addSystem(t11);
-		//		p1.addSystem(t12);
-		//
-		//		result.add(p1);
-		//
-		//		tresult.setSubscribes(result);
-
+	public void set(@RequestBody UserSubscription input) {
 		subscribeService.subscribe(input);
 	}
 

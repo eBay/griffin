@@ -15,10 +15,7 @@
 package org.apache.bark.resources;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -40,16 +37,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.bark.domain.DqMetricsValue;
+import org.apache.bark.domain.SampleFilePathLKP;
 import org.apache.bark.error.ErrorMessage;
-import org.apache.bark.model.AssetLevelMetrics;
-import org.apache.bark.model.DQMetricsValue;
-import org.apache.bark.model.ModelForFront;
-import org.apache.bark.model.OverViewStatistics;
-import org.apache.bark.model.SampleFilePathLKP;
-import org.apache.bark.model.SampleOut;
-import org.apache.bark.model.SystemLevelMetrics;
 import org.apache.bark.service.DQMetricsService;
-import org.apache.bark.service.DQModelService;
+import org.apache.bark.service.DqModelService;
+import org.apache.bark.vo.AssetLevelMetrics;
+import org.apache.bark.vo.DqModelVo;
+import org.apache.bark.vo.OverViewStatistics;
+import org.apache.bark.vo.SampleOut;
+import org.apache.bark.vo.SystemLevelMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -66,35 +63,18 @@ public class DQMetricsController {
 	private DQMetricsService dqMetricsService;
 
 	@Autowired
-	private DQModelService dqModelService;
+	private DqModelService dqModelService;
 
 	@POST
 	@Path("/")
 	@Consumes({ "application/json" })
-	public Response insertMetadata(@Valid DQMetricsValue dq) {
+	public Response insertMetadata(@Valid DqMetricsValue dq) {
 		if (dq != null) {
 			ErrorMessage err = dq.validate();
 			if (err != null) {
-				return Response.status(Responses.CLIENT_ERROR).entity(err)
-						.build();
+				return Response.status(Responses.CLIENT_ERROR).entity(err).build();
 			}
 		}
-		// ValidatorFactory factory =
-		// Validation.buildDefaultValidatorFactory();
-		// Validator validator = factory.getValidator();
-		// Set<ConstraintViolation<DQMetricsValue>> constraintViolations =
-		// validator.validate(dq);
-		//
-		// if(constraintViolations.size() > 0){
-		// List<String> msgs = new ArrayList<String>();
-		// for(ConstraintViolation<DQMetricsValue> violation :
-		// constraintViolations){
-		// msgs.add(violation.getMessage());
-		// }
-		//
-		// return Response.status(Responses.CLIENT_ERROR).entity(msgs).build();
-		// }
-		//
 
 		dqMetricsService.insertMetadata(dq);
 		return Response.status(Response.Status.CREATED).build();
@@ -104,7 +84,7 @@ public class DQMetricsController {
 	@GET
 	@Path("/{asset_id}/latest")
 	@Produces(MediaType.APPLICATION_JSON)
-	public DQMetricsValue getLatestMetricsValueById(
+	public DqMetricsValue getLatestMetricsValueById(
 			@PathParam("asset_id") String assetId) {
 		return dqMetricsService.getLatestlMetricsbyId(assetId);
 	}
@@ -135,10 +115,10 @@ public class DQMetricsController {
 	@Path("/dashboard")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<SystemLevelMetrics> getAllDashboard() {
-		List<ModelForFront> models = dqModelService.getAllModles();
+		List<DqModelVo> models = dqModelService.getAllModles();
 		Map<String, String> modelMap = new HashMap<String, String>();
 
-		for (ModelForFront model : models) {
+		for (DqModelVo model : models) {
 			modelMap.put(
 					model.getName(),
 					model.getAssetName() == null ? "unknow" : model
@@ -225,14 +205,14 @@ public class DQMetricsController {
 		StreamingOutput fileStream = new StreamingOutput() {
 			@Override
 			public void write(OutputStream output) throws IOException,
-					WebApplicationException {
+			WebApplicationException {
 				try {
 					Process pro = Runtime.getRuntime().exec(
 							"hadoop fs -cat /" + path);
 
 					BufferedReader buff = new BufferedReader(
 							new InputStreamReader(pro.getInputStream()));
-					
+
 					int cnt = 0;
 					String line = null;
 					while ((line = buff.readLine()) != null) {
@@ -252,9 +232,9 @@ public class DQMetricsController {
 			}
 		};
 
-		String[] pathTokens = path.split("/");		
+		String[] pathTokens = path.split("/");
 		String fileName = pathTokens[pathTokens.length-2] + "_" + pathTokens[pathTokens.length-1];
-		
+
 		ResponseBuilder response = Response.ok(fileStream);
 		response.header("Content-Disposition",
 				"attachment; filename=" + fileName);

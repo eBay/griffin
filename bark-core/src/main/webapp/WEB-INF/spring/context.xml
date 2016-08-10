@@ -18,30 +18,20 @@
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd">
 
 
-	<!-- DispatcherServlet Context: defines this servlet's request-processing 
-		infrastructure -->
-
 	<context:annotation-config />
 
-
 	<context:component-scan base-package="org.apache.bark.common" />
- 	<context:component-scan base-package="org.apache.bark.service" /> 
+	<context:component-scan base-package="org.apache.bark.domain" />
+	<context:component-scan base-package="org.apache.bark.repo" />
 	<context:component-scan base-package="org.apache.bark.error" />
+ 	<context:component-scan base-package="org.apache.bark.service" /> 
+	<context:component-scan base-package="org.apache.bark.ebay" />
 	<context:component-scan base-package="org.apache.bark.resources" />
 	
 
-	<!-- <import resource="dao-context.xml"/> 
-	<bean id="dQModelService" class="org.apache.bark.service.DQModelServiceImpl" />
-	-->
-	<bean id="loginService" class="org.apache.bark.service.LoginServiceImpl" />
-	<bean id="notificationService" class="org.apache.bark.service.NotificationServiceImpl" />
-	<bean id="dqModelService" class="org.apache.bark.service.DQModelServiceImpl"/>
-	<bean id="dataAssetService" class="org.apache.bark.service.DataAssetServiceImpl"/>
-	<bean id="dqMetricsService" class="org.apache.bark.service.DQMetricsServiceImpl"/>
-	
 	<task:scheduled-tasks scheduler="barkScheduler">
-		<!--<task:scheduled ref="dqmetrics" method="autoRefresh" fixed-delay="3600000"/>-->
-		<task:scheduled ref="dqjob" method="schedulingJobs" fixed-delay="120000"/>  
+		<task:scheduled ref="dqmetrics" method="autoRefresh" fixed-delay="3600000"/>
+		<task:scheduled ref="dqjob" method="schedulingJobs" fixed-delay="120000"/>
     </task:scheduled-tasks>
 	<task:scheduler id="barkScheduler"/>
 	

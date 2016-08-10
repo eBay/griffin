@@ -16,7 +16,7 @@ package org.apache.bark.service;
 
 import java.util.List;
 
-import org.apache.bark.model.NotificationRecord;
+import org.apache.bark.vo.NotificationRecord;
 
 public interface NotificationService {
 	public void insert(NotificationRecord record);

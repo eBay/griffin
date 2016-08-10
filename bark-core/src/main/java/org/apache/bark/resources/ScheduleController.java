@@ -17,7 +17,7 @@ package org.apache.bark.resources;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import org.apache.bark.service.DQJobSchedulingService;
+import org.apache.bark.service.DqScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class ScheduleController {
 
 	@Autowired
-	private DQJobSchedulingService dqJobSchedulingService;
+	private DqScheduleService dqJobSchedulingService;
 
 	@GET
 	@Path("/")

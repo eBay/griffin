@@ -1,23 +1,18 @@
 package org.apache.bark.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import org.apache.bark.common.BarkDbOperationException;
-import org.apache.bark.model.DataAsset;
-import org.apache.bark.model.DataAssetInput;
-import org.apache.bark.model.PlatformMetadata;
-import org.apache.bark.service.DataAssetService;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.bark.domain.DataAsset;
+import org.apache.bark.vo.DataAssetInput;
+import org.apache.bark.vo.PlatformMetadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Iterator;
-import java.util.List;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -67,7 +62,7 @@ public class DataAssetServiceTest {
         while (itr.hasNext()) {
             DataAsset da = itr.next();
             if (da.getAssetName().equals(name)) {
-                newId = da.get_id();
+                newId = da.getId();
                 break ;
             }
         }
@@ -114,8 +109,8 @@ public class DataAssetServiceTest {
 
     private void testRemoveDataAsset(long id) {
         try {
-            int del = dataAssetService.removeAssetById(id);
-            assertEquals(del, 0);
+            dataAssetService.removeAssetById(id);
+
             DataAsset tda2 = dataAssetService.getDataAssetById(id);
             assertNull(tda2);
             System.out.println("remove the data asset " + id + " success");

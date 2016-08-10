@@ -15,133 +15,116 @@ package org.apache.bark.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-import org.apache.bark.common.BarkDbOperationException;
-import org.apache.bark.common.ModelSampleFlowConstants;
-import org.apache.bark.common.ModelStatusConstants;
-import org.apache.bark.common.ModelTypeConstants;
 import org.apache.bark.common.ScheduleModelSeperator;
-import org.apache.bark.common.ScheduleTypeConstants;
-import org.apache.bark.common.ValidityTypeConstants;
-import org.apache.bark.dao.BarkMongoDAO;
-import org.apache.bark.model.DQJob;
-import org.apache.bark.model.DQModelEntity;
-import org.apache.bark.model.DQSchedule;
-import org.apache.bark.model.DataAsset;
-import org.apache.bark.model.MappingItemInput;
-import org.apache.bark.model.ModelBasicInputNew;
-import org.apache.bark.model.ModelExtraInputNew;
-import org.apache.bark.model.ModelForFront;
-import org.apache.bark.model.ModelInput;
-import org.apache.bark.model.ModelType;
+import org.apache.bark.domain.DqMetricsValue;
+import org.apache.bark.domain.DataAsset;
+import org.apache.bark.domain.DqJob;
+import org.apache.bark.domain.DqModel;
+import org.apache.bark.domain.DqSchedule;
+import org.apache.bark.domain.ModelStatus;
+import org.apache.bark.domain.ModelType;
+import org.apache.bark.domain.ScheduleType;
+import org.apache.bark.domain.ValidityType;
+import org.apache.bark.error.BarkDbOperationException;
+import org.apache.bark.repo.DataAssetRepo;
+import org.apache.bark.repo.DqJobRepo;
+import org.apache.bark.repo.DqMetricsRepo;
+import org.apache.bark.repo.DqModelRepo;
+import org.apache.bark.repo.DqScheduleRepo;
+import org.apache.bark.vo.DqModelVo;
+import org.apache.bark.vo.MappingItemInput;
+import org.apache.bark.vo.ModelBasicInputNew;
+import org.apache.bark.vo.ModelExtraInputNew;
+import org.apache.bark.vo.ModelInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-//import org.springframework.validation.annotation.Validated;
 
 import com.mongodb.DBObject;
 
 @Service
-// @Validated
-public class DQModelServiceImpl implements DQModelService {
-	private static Logger logger = LoggerFactory
-			.getLogger(DQModelServiceImpl.class);
+public class DqModelServiceImpl implements DqModelService {
+
+	private static Logger logger = LoggerFactory.getLogger(DqModelServiceImpl.class);
 
 	public static String MODEL_TYPE_ACCUATE = "Accruacy";
 	public static String MODEL_TYPE_VALIDATE = "Validate";
 	public static String MODEL_TYPE_PUBLISH = "Publish";
-	public static String MODEL_CREATE_SCUCESS = "{\"status\":\"0\" , \"result\":\"success\"}";
-	public static String MODEL_CREATE_NAME_EXISTS = "{\"status\":\"-1\" , \"result\":\"Model name already exists, please change it.\"}";
 
-	// @Autowired
-	// private DQModelDao dqModelDao;
+//	public static String MODEL_CREATE_SCUCESS = "{\"status\":\"0\" , \"result\":\"success\"}";
+//	public static String MODEL_CREATE_NAME_EXISTS = "{\"status\":\"-1\" , \"result\":\"Model name already exists, please change it.\"}";
+	
+	/** the minimum number of Jobs executed in the ModelStatus.TESTING, and then it could be shifted
+	 * to ModelStatus.VERIFIED.
+	 */
+	public static final int MIN_TESTING_JOB_NUMBER = 5;
 
 	@Autowired
 	private DataAssetService dataAssetService;
 
-	public static List<ModelForFront> allModels;
-	public static HashMap<String, String> thresholds;
-	public static HashMap<String, String> references;
+	@Autowired
+    private DqModelRepo dqModelRepo;
 
+	@Autowired
+    private DqScheduleRepo scheduleRepo;
+
+	@Autowired
+    private DqJobRepo jobRepo;
+
+	@Autowired
+    private DataAssetRepo dataAssetRepo;
+
+	@Autowired
+	private Converter<DqModel, DqModelVo> converter;
+
+	@Autowired
+    private DqMetricsRepo metricsRepo;
+	
 	@Override
-	public List<ModelForFront> getAllModles() {
-		List<DBObject> l = BarkMongoDAO.getModelDAO().getDBObjectAllModels();
-
-		allModels = new ArrayList<ModelForFront>();
-		thresholds = new HashMap<String, String>();
-		references = new HashMap<String, String>();
-		for (int i = 0; i < l.size(); i++) {
-			DBObject o = l.get(i);
-			allModels.add(new ModelForFront(o.get("modelName") == null ? null
-					: o.get("modelName").toString(),
-					o.get("system") == null ? -1 : Integer.parseInt(o.get(
-							"system").toString()),
-							o.get("modelDesc") == null ? null : o.get("modelDesc")
-									.toString(), o.get("modelType") == null ? -1
-											: Integer.parseInt(o.get("modelType").toString()),
-											o.get("timestamp") == null ? new Date(0) : new Date(Long
-													.parseLong(o.get("timestamp").toString())), o
-													.get("status") == null ? null : o.get("status")
-															.toString(), o.get("assetName") == null ? "unknown"
-																	: o.get("assetName").toString(),
-																	o.get("owner") == null ? null : o.get("owner").toString()));
-			thresholds.put(o.get("modelName").toString(),
-					o.get("threshold") == null ? null : o.get("threshold")
-							.toString());
-			if (o.get("referenceModel") != null) {
-				if (o.get("referenceModel").toString().length() > 0) {
-					references.put(o.get("modelName").toString(),
-							o.get("referenceModel").toString());
-				}
-			}
+	public List<DqModelVo> getAllModles() {
+	    List<DqModelVo> allModels = new ArrayList<>();
+		for(DqModel each : dqModelRepo.getAll()) {
+            allModels.add( converter.voOf(each));
 		}
-
 		return allModels;
 	}
 
-	@Override
+	
+    @Override
 	public int deleteModel(String name) throws BarkDbOperationException {
 		try {
-			DQModelEntity temp = BarkMongoDAO.getModelDAO().findByName(name);
+			DqModel dqModel = dqModelRepo.findByName(name);
 
-			//flag concern metrics first
-			flagConcernMetricsOfModel(temp);
+			// TODO need to mark related metrics as deleted, instead of real deletion
+			// markMetricsDeleted(dqModel);
 
-			BarkMongoDAO.getModelDAO().deleteModelbyId(temp.get_id().toString());
+			dqModelRepo.delete(dqModel.getId());
 
-			if (temp.getModelType() == ModelTypeConstants.ACCURACY)
-				BarkMongoDAO.getModelDAO().deleteSchedule(name);
-			else if (temp.getModelType() == ModelTypeConstants.VALIDITY) {
-				DBObject currentSchedule = BarkMongoDAO.getModelDAO()
-						.getValidateSchedule(temp.getAssetId());
-				if (currentSchedule == null)
+			if (dqModel.getModelType() == ModelType.ACCURACY) {
+				scheduleRepo.deleteByModelList(name);
+			} else if (dqModel.getModelType() == ModelType.VALIDITY) {
+				DBObject currentSchedule = scheduleRepo.getValiditySchedule(dqModel.getAssetId());
+				if (currentSchedule == null || currentSchedule.get("modelList") == null) {
 					return -1;
-				if (currentSchedule.get("modelList").toString() == null)
-					return -1;
-				String rawModelList = currentSchedule.get("modelList")
-						.toString();
+				}
+
+				String rawModelList = currentSchedule.get("modelList") .toString();
 				String newModelList = "";
 				if (rawModelList.contains(ScheduleModelSeperator.SEPERATOR)) {
-					String[] rawModelArray = rawModelList
-							.split(ScheduleModelSeperator.SPLIT_SEPERATOR);
+					String[] rawModelArray = rawModelList.split(ScheduleModelSeperator.SPLIT_SEPERATOR);
 					for (int i = 0; i < rawModelArray.length; i++) {
 						if (!rawModelArray[i].equals(name))
-							newModelList = newModelList
-							+ ScheduleModelSeperator.SEPERATOR
-							+ rawModelArray[i];
+							newModelList = newModelList + ScheduleModelSeperator.SEPERATOR + rawModelArray[i];
 					}
-					newModelList = newModelList
-							.substring(ScheduleModelSeperator.SEPERATOR
-									.length());
+					newModelList = newModelList.substring(ScheduleModelSeperator.SEPERATOR.length());
 					currentSchedule.put("modelList", newModelList);
-					BarkMongoDAO.getModelDAO().upsertNewSchedule(
-							currentSchedule, temp.getModelType());
-				} else {
-					if (rawModelList.equals(name))
-						BarkMongoDAO.getModelDAO().deleteSchedule(name);
+					scheduleRepo.updateModelType(currentSchedule, dqModel.getModelType());
+
+				} else if (rawModelList.equals(name)) {
+				    scheduleRepo.deleteByModelList(name);
 				}
 			}
 
@@ -153,62 +136,35 @@ public class DQModelServiceImpl implements DQModelService {
 		}
 	}
 
-	//flag all the metrics concerned with the given model
-	private void flagConcernMetricsOfModel(DQModelEntity model) {
-		if (model == null) return ;
-		//ModelInput mi = convertModel(model);
-		//get the concern metrics and flag them...
-	}
-
+	// FIXME to be removed
 	@Override
-	public DQModelEntity getGeneralModel(String name) {
-		return BarkMongoDAO.getModelDAO().findByName(name);
+	public DqModel getGeneralModel(String name) {
+		return dqModelRepo.findByName(name);
 	}
 
-	public int checkGeneralModelByName(String name) {
-		DQModelEntity sourceObject = BarkMongoDAO.getModelDAO()
-				.findByName(name);
-		if (sourceObject == null)
-			return 0;
-		else
-			return 1;
-	}
-
-	@Override
-	public HashMap<String, String> getThresholds() {
-		if (thresholds == null)
-			getAllModles();
-		return thresholds;
-	}
-
-	@Override
-	public HashMap<String, String> getReferences() {
-		if (references == null)
-			getAllModles();
-		return references;
+	private boolean hasModelWithName(String name) {
+		return null != dqModelRepo.findByName(name);
 	}
 
 	@Override
 	public ModelInput getModelByName(String name)
 			throws BarkDbOperationException {
-		DQModelEntity sourceObject = null;
+		DqModel dqModel = null;
 		try {
-			sourceObject = BarkMongoDAO.getModelDAO().findByName(name);
+			dqModel = dqModelRepo.findByName(name);
 
 		} catch (Exception e) {
 			logger.warn(e.toString());
-			throw new BarkDbOperationException(
-					"Failed to find model with name of '" + name + "'", e);
+			throw new BarkDbOperationException("Failed to find model with name of '" + name + "'", e);
 		}
 
-		if (sourceObject == null) {
-			throw new BarkDbOperationException(404, "The model of '" + name
-					+ "' doesn't exist!");
+		if (dqModel == null) {
+			throw new BarkDbOperationException(404, "The model of '" + name + "' doesn't exist!");
 		}
-		return convertModel(sourceObject);
+		return convertModel(dqModel);
 	}
 
-	private ModelInput convertModel(DQModelEntity sourceObject) {
+	private ModelInput convertModel(DqModel sourceObject) {
 		// Object result = sourceObject;
 		int modelType = sourceObject.getModelType();
 		ModelInput result = new ModelInput();
@@ -241,110 +197,100 @@ public class DQModelServiceImpl implements DQModelService {
 		} else if (modelType == ModelType.PUBLISH) {
 
 			result.getExtra().setPublishUrl(sourceObject.getModelContent());
-
-			return result;
 		}
 
 		return result;
 	}
 
-	public void newSampleJob4Model(DQModelEntity input)
-	{
+	public void newSampleJob4Model(DqModel input) {
 		int type = input.getSchedule();
-		Calendar c=Calendar.getInstance();
-		Date date=new Date();
-		date.setMinutes(0);
-		date.setSeconds(0);
-		c.setTime(date);
-		for(int i=0;i<ModelSampleFlowConstants.sampelCount;i++)
-		{
-			if(type==ScheduleTypeConstants.DAILY)
-				c.add(Calendar.DATE,-1);
-			else if(type==ScheduleTypeConstants.HOURLY)
-				c.add(Calendar.HOUR,-1);
-			else if(type==ScheduleTypeConstants.WEEKLY)
-				c.add(Calendar.DATE,-7);
-			else if(type==ScheduleTypeConstants.MONTHLY)
-				c.add(Calendar.MONTH,-1);
-			else
-				continue;
+        Calendar c = Calendar.getInstance();
+        Date date = new Date();
+        date.setMinutes(0);
+        date.setSeconds(0);
+        c.setTime(date);
 
-			long starttime = c.getTime().getTime() / 1000 * 1000;
+        for (int i = 0; i < MIN_TESTING_JOB_NUMBER; i++) {
+            if (type == ScheduleType.DAILY)
+                c.add(Calendar.DATE, -1);
+            else if (type == ScheduleType.HOURLY)
+                c.add(Calendar.HOUR, -1);
+            else if (type == ScheduleType.WEEKLY)
+                c.add(Calendar.DATE, -7);
+            else if (type == ScheduleType.MONTHLY)
+                c.add(Calendar.MONTH, -1);
+            else
+                continue;
 
-			DQJob job = new DQJob();
-			job.setModelList(input.getModelName());
-			job.setStarttime(starttime);
-			job.setStatus(0);
-			job.set_id(input.getModelName()+"_"+starttime);
-			job.setJobType(input.getModelType());
-			int result = BarkMongoDAO.getModelDAO().newJob(job);
-			if(result==0)
-			{
-				logger.warn( "===================new job failure");
-				continue;
-			}
-		}
-	}
+            long starttime = c.getTime().getTime() / 1000 * 1000;
 
-	@Override
-	public void enableSchedule4Model(DQModelEntity input)
-	{
-		if(input==null) return;
+            DqJob job = new DqJob();
+            job.setModelList(input.getModelName());
+            job.setStarttime(starttime);
+            job.setStatus(0);
+            job.setId(input.getModelName() + "_" + starttime);
+            job.setJobType(input.getModelType());
 
-		input.setStatus(ModelStatusConstants.DEPLOYED);
-		BarkMongoDAO.getModelDAO().upsertModel(input);
+            if (jobRepo.newJob(job) == 0) {
+                logger.warn("===================new job failure");
+                continue;
+            }
+        }
+    }
 
-		if (input.getModelType() == ModelTypeConstants.ACCURACY
-				|| input.getModelType() == ModelTypeConstants.VALIDITY) {
-			DQSchedule schedule = new DQSchedule();
-			schedule.set_id(BarkMongoDAO.getModelDAO().getNextJobSequence());
-			schedule.setScheduleType(input.getSchedule());
-			Date d = new Date(input.getStarttime());
+    @Override
+	public void enableSchedule4Model(DqModel dqModel) {
+		if(dqModel==null) return;
+
+		dqModel.setStatus(ModelStatus.DEPLOYED);
+		dqModelRepo.update(dqModel);
+
+		if (dqModel.getModelType() == ModelType.ACCURACY
+				|| dqModel.getModelType() == ModelType.VALIDITY) {
+			DqSchedule schedule = new DqSchedule();
+			schedule.setId(scheduleRepo.getNextId());
+			schedule.setScheduleType(dqModel.getSchedule());
+			Date d = new Date(dqModel.getStarttime());
 			d.setMinutes(0);
 			d.setSeconds(0);
-			schedule.setStarttime(d.getTime() / 1000 * 1000);
+			schedule.setStarttime(d.getTime() / 1000 * 1000); // FIXME ????
 			schedule.setStatus(0);
-			schedule.setAssetId(input.getAssetId());
-			schedule.setJobType(input.getModelType());
+			schedule.setAssetId(dqModel.getAssetId());
+			schedule.setJobType(dqModel.getModelType());
 
 			String modellist = "";
-			if (input.getModelType() == ModelTypeConstants.VALIDITY) {
-				DBObject currentSchedule = BarkMongoDAO.getModelDAO()
-						.getValidateSchedule(
-								input.getAssetId());
+			if (dqModel.getModelType() == ModelType.VALIDITY) {
+				DBObject currentSchedule = scheduleRepo.getValiditySchedule(
+								dqModel.getAssetId());
 				if (currentSchedule != null) {
 					if (currentSchedule.get("modelList") != null
-							&& !currentSchedule.get("modelList").toString()
-							.equals("")) {
+							&& !currentSchedule.get("modelList").toString().equals("")) {
 						modellist = currentSchedule.get("modelList")
 								.toString();
 						modellist = modellist
 								+ ScheduleModelSeperator.SEPERATOR
-								+ input.getModelName();
+								+ dqModel.getModelName();
 					}
 				}
 				if (modellist.equals(""))
-					modellist = input.getModelName();
+					modellist = dqModel.getModelName();
 			} else
-				modellist = input.getModelName();
+				modellist = dqModel.getModelName();
 			schedule.setModelList(modellist);
 
-			BarkMongoDAO.getModelDAO().upsertNewSchedule(schedule,
-					input.getModelType());
+			scheduleRepo.updateByModelType(schedule, dqModel.getModelType());
 		}
 	}
 
 	@Override
 	public int newModel(ModelInput input) throws BarkDbOperationException {
 		try {
-			if (checkGeneralModelByName(input.getBasic().getName()) == 1) {
+			if ( hasModelWithName(input.getBasic().getName()) ) {
 				throw new BarkDbOperationException("Record already existing");
 			}
 
-			DQModelEntity entity = new DQModelEntity();
-
-			// set basic information first
-			entity.set_id(BarkMongoDAO.getModelDAO().getNextModelSequence());
+			DqModel entity = new DqModel();
+			entity.setId(dqModelRepo.getNextId());
 			entity.setModelId(input.getBasic().getName());
 			entity.setModelName(input.getBasic().getName());
 			entity.setNotificationEmail(input.getBasic().getEmail());
@@ -358,13 +304,13 @@ public class DQModelServiceImpl implements DQModelService {
 			entity.setAssetId(input.getBasic().getDataasetId());
 			entity.setReferenceModel("");
 			entity.setModelType(input.getBasic().getType());
-			if (input.getBasic().getStarttime() == 0)
+			if (input.getBasic().getStarttime() == 0) {
 				entity.setStarttime(new Date().getTime());
-			else
+			} else {
 				entity.setStarttime(input.getBasic().getStarttime());
-			// entity.setJobStatus(0);
+			}
 
-			if (input.getBasic().getType() == ModelTypeConstants.ACCURACY) {
+			if (input.getBasic().getType() == ModelType.ACCURACY) {
 
 				StringBuffer content = new StringBuffer("");
 				content.append(input.getExtra().getSrcDb() + "|"
@@ -381,11 +327,11 @@ public class DQModelServiceImpl implements DQModelService {
 					delimeter = ";";
 				}
 				entity.setModelContent(content.toString());
-				entity.setStatus(ModelStatusConstants.TESTING);
+				entity.setStatus(ModelStatus.TESTING);
 
 				newSampleJob4Model(entity);
 
-			} else if (input.getBasic().getType() == ModelTypeConstants.VALIDITY) {
+			} else if (input.getBasic().getType() == ModelType.VALIDITY) {
 
 				StringBuffer content = new StringBuffer("");
 				content.append(input.getExtra().getSrcDb() + "|"
@@ -394,84 +340,78 @@ public class DQModelServiceImpl implements DQModelService {
 						+ input.getExtra().getColumn());
 				entity.setModelContent(content.toString());
 
-				if(input.getExtra().getVaType() == ValidityTypeConstants.TOTAL_COUNT){
+				if(input.getExtra().getVaType() == ValidityType.TOTAL_COUNT){
 					entity.setStatus(input.getBasic().getStatus());
 				}else{
-					entity.setStatus(ModelStatusConstants.TESTING);
+					entity.setStatus(ModelStatus.TESTING);
 				}
 
 				newSampleJob4Model(entity);
 
-			} else if (input.getBasic().getType() == ModelTypeConstants.ANOMALY_DETECTION) {
+			} else if (input.getBasic().getType() == ModelType.ANOMALY) {
 				StringBuffer content = new StringBuffer("");
 				content.append(input.getExtra().getSrcDb() + "|"
 						+ input.getExtra().getSrcDataSet() + "|"
 						+ input.getExtra().getAnType());
 				entity.setModelContent(content.toString());
-				entity.setStatus(ModelStatusConstants.DEPLOYED);
+				entity.setStatus(ModelStatus.DEPLOYED);
 
 				int index = 1;
 				DBObject countModel;
 				while (true) {
-					countModel = BarkMongoDAO.getModelDAO()
-							.findCountModelByAssetID(
-									input.getBasic().getDataasetId());
+					countModel = dqModelRepo.findCountModelByAssetID(input.getBasic().getDataasetId());
 					if (countModel == null) {
-						DataAsset asset = BarkMongoDAO.getModelDAO()
-								.getAssetById(
-										new Long(input.getBasic()
-												.getDataasetId()));
-						ModelInput tempCountModel = new ModelInput();
+						DataAsset asset = dataAssetRepo.getById(
+										new Long(input.getBasic().getDataasetId()));
 						ModelBasicInputNew basic = new ModelBasicInputNew();
 						ModelExtraInputNew extra = new ModelExtraInputNew();
 						basic.setDataaset(input.getBasic().getDataaset());
 						basic.setDataasetId(input.getBasic().getDataasetId());
-						basic.setDesc("Count for "
-								+ input.getBasic().getDataaset());
+						basic.setDesc("Count for " + input.getBasic().getDataaset());
 						basic.setEmail(input.getBasic().getEmail());
-						basic.setName("Count_" + input.getBasic().getName()
-								+ "_" + index);
+						basic.setName("Count_" + input.getBasic().getName() + "_" + index);
 						basic.setOwner(input.getBasic().getOwner());
-						basic.setScheduleType(input.getBasic()
-								.getScheduleType());
+						basic.setScheduleType(input.getBasic() .getScheduleType());
 						basic.setStatus(input.getBasic().getStatus());
 						basic.setSystem(input.getBasic().getSystem());
-						basic.setType(ModelTypeConstants.VALIDITY);
-						extra.setVaType(ValidityTypeConstants.TOTAL_COUNT);
+						basic.setType(ModelType.VALIDITY);
+
+						extra.setVaType(ValidityType.TOTAL_COUNT);
 						extra.setColumn("wholeDataSet");
 						extra.setSrcDataSet(asset.getSystem());
 						extra.setSrcDb(asset.getPlatform());
+
+						ModelInput tempCountModel = new ModelInput();
 						tempCountModel.setBasic(basic);
 						tempCountModel.setExtra(extra);
+
 						newModel(tempCountModel);
 						index++;
 					} else {
 						break;
 					}
 				}
-				BarkMongoDAO.getModelDAO().addModelReference(countModel,
-						input.getBasic().getName());
+				dqModelRepo.addReference(countModel, input.getBasic().getName());
 
-			} else if (input.getBasic().getType() == ModelTypeConstants.PUBLISH_METRICS) {
+			} else if (input.getBasic().getType() == ModelType.PUBLISH) {
 				StringBuffer content = new StringBuffer("");
 				content.append(input.getExtra().getPublishUrl());
-				entity.setStatus(ModelStatusConstants.DEPLOYED);
+				entity.setStatus(ModelStatus.DEPLOYED);
 
 				entity.setModelContent(content.toString());
 			}
 
-			BarkMongoDAO.getModelDAO().insertModel(entity);
+			dqModelRepo.update(entity);
 
 			return 0;
 		} catch (Exception e) {
-			logger.warn(e.toString());
-			throw new BarkDbOperationException("Failed to insert a new Model",
-					e);
+			logger.error(e.toString());
+			throw new BarkDbOperationException("Failed to insert a new Model", e);
 		}
 
 	}
 
-	public ModelBasicInputNew getViewModelForFront(DQModelEntity sourceObject) {
+	public ModelBasicInputNew getViewModelForFront(DqModel sourceObject) {
 		ModelBasicInputNew basic = new ModelBasicInputNew();
 		basic.setDesc(sourceObject.getModelDesc());
 		basic.setName(sourceObject.getModelName());
@@ -487,5 +427,17 @@ public class DQModelServiceImpl implements DQModelService {
 
 		return basic;
 	}
+
+	@Override
+    public void updateModelStatus(int fromStatus, int toStatus) {
+        List<DqModel> allmodels = dqModelRepo.getByStatus(fromStatus);
+        for (DqModel model : allmodels) {
+            List<DqMetricsValue> allMetrics = metricsRepo.getByMetricsName(model.getModelName());
+            if (allMetrics.size() >= MIN_TESTING_JOB_NUMBER) {
+                model.setStatus(toStatus);
+                dqModelRepo.update(model);
+            }
+        }
+    }
 
 }

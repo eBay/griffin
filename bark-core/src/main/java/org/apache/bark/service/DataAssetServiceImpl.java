@@ -18,33 +18,32 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.bark.common.BarkDbOperationException;
 import org.apache.bark.common.HDFSUtils;
-import org.apache.bark.common.KeyValue;
-import org.apache.bark.common.ModelStatusConstants;
-import org.apache.bark.common.ModelTypeConstants;
-import org.apache.bark.common.ScheduleTypeConstants;
-import org.apache.bark.common.SystemTypeConstants;
-import org.apache.bark.common.ValidityTypeConstants;
-import org.apache.bark.dao.BarkMongoDAO;
-import org.apache.bark.model.DQModelEntity;
-import org.apache.bark.model.DataAsset;
-import org.apache.bark.model.DataAssetIndex;
-import org.apache.bark.model.DataAssetInput;
-import org.apache.bark.model.DataSchema;
-import org.apache.bark.model.ModelBasicInputNew;
-import org.apache.bark.model.ModelExtraInputNew;
-import org.apache.bark.model.ModelForFront;
-import org.apache.bark.model.ModelInput;
-import org.apache.bark.model.PartitionFormat;
-import org.apache.bark.model.PlatformMetadata;
-import org.apache.bark.model.SystemMetadata;
+import org.apache.bark.common.Pair;
+import org.apache.bark.domain.DataAsset;
+import org.apache.bark.domain.DqModel;
+import org.apache.bark.domain.ModelStatus;
+import org.apache.bark.domain.ModelType;
+import org.apache.bark.domain.ScheduleType;
+import org.apache.bark.domain.SystemType;
+import org.apache.bark.domain.ValidityType;
+import org.apache.bark.error.BarkDbOperationException;
+import org.apache.bark.repo.DataAssetRepo;
+import org.apache.bark.repo.DqModelRepo;
+import org.apache.bark.vo.DataAssetIndex;
+import org.apache.bark.vo.DataAssetInput;
+import org.apache.bark.vo.DqModelVo;
+import org.apache.bark.vo.ModelBasicInputNew;
+import org.apache.bark.vo.ModelExtraInputNew;
+import org.apache.bark.vo.ModelInput;
+import org.apache.bark.vo.PlatformMetadata;
+import org.apache.bark.vo.SystemMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,99 +51,86 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 //import org.springframework.validation.annotation.Validated;
 
+
+
+
+
+
+
 import com.mongodb.DBObject;
 
 @Service
-// @Validated
 public class DataAssetServiceImpl implements DataAssetService {
-	private static Logger logger = LoggerFactory
-			.getLogger(DataAssetServiceImpl.class);
 
-	// @Autowired
-	// private DataAssetDao dataAssetDao;
+	private static Logger logger = LoggerFactory.getLogger(DataAssetServiceImpl.class);
 
+	 @Autowired
+	 private DataAssetRepo dataAssetRepo;
+
+	 @Autowired
+	 private DqModelRepo dqModelRepo;
+	 
 	@Autowired
-	private DQModelService dqModelService;			//dqmodel service
+	private DqModelService dqModelService;
+
 	@Autowired
 	private Environment env;
 
-	public static List<ModelForFront> allModels;
+	// FIXME ???
+	public static List<DqModelVo> allModels;
+
+	// FIXME ???
 	public static HashMap<String, String> thresholds;
 
 	@Override
-	@SuppressWarnings({ "unchecked", "deprecation" })
 	public List<DataAsset> getAllDataAssets() {
-
-		List<DataAsset> dal = new ArrayList<DataAsset>();
-		List<DBObject> allAssets = BarkMongoDAO.getModelDAO().getAllAssets();
-
-		for (DBObject o : allAssets) {
-
-			DataAsset da = new DataAsset();
-
-			da.set_id(new Long((long) Double.parseDouble(o.get("_id")
-					.toString())));
-			da.setPlatform(o.get("platform").toString());
-			da.setSystem(o.get("system").toString());
-			da.setAssetName(o.get("assetName").toString());
-			da.setAssetType(o.get("assetType").toString());
-			da.setAssetHDFSPath(o.get("assetHDFSPath").toString());
-			da.setSchema((List<DataSchema>) o.get("schema"));
-			if (o.get("partition") != null)
-				da.setPartitions((List<PartitionFormat>) o.get("partitions"));
-
-			if (!o.containsField("owner")) {
-				da.setOwner("");
-			} else {
-				da.setOwner(o.get("owner").toString());
-			}
-
-			if (!o.containsField("timestamp")) {
-				da.setTimestamp(new Date());
-			} else {
-				da.setTimestamp(new Date(o.get("timestamp").toString()));
-			}
-
-			dal.add(da);
-		}
-
-		return dal;
-
+		return dataAssetRepo.getAll();
 	}
 
-	@Override
+	protected DataAsset ofEntity(DBObject o) {
+	    return new DataAsset(o);
+	}
+    @Override
 	public int createDataAsset(DataAssetInput input)
 			throws BarkDbOperationException {
 
 		DataAsset da = new DataAsset();
 
-		List<KeyValue> queryList = new ArrayList<KeyValue>();
-		queryList.add(new KeyValue("assetName", input.getAssetName()));
-		queryList.add(new KeyValue("assetType", input.getAssetType()));
-		queryList.add(new KeyValue("system", input.getSystem()));
+		List<Pair> queryList = new ArrayList<Pair>();
+		queryList.add(new Pair("assetName", input.getAssetName()));
+		queryList.add(new Pair("assetType", input.getAssetType()));
+		queryList.add(new Pair("system", input.getSystem()));
 
-		List<KeyValue> updateValues = new ArrayList<KeyValue>();
-		updateValues.add(new KeyValue("schema", input.getSchema()));
-		updateValues.add(new KeyValue("platform", input.getPlatform()));
+		List<Pair> updateValues = new ArrayList<Pair>();
+		updateValues.add(new Pair("schema", input.getSchema()));
+		updateValues.add(new Pair("platform", input.getPlatform()));
 		updateValues
-		.add(new KeyValue("assetHDFSPath", input.getAssetHDFSPath()));
-		updateValues.add(new KeyValue("owner", input.getOwner()));
+		.add(new Pair("assetHDFSPath", input.getAssetHDFSPath()));
+		updateValues.add(new Pair("owner", input.getOwner()));
 
-		DBObject item = BarkMongoDAO.getModelDAO().getAssetByCondition(
-				queryList);
+		DBObject item = dataAssetRepo.getByCondition(queryList);
 
 		if (item != null) {
 			throw new BarkDbOperationException("Record already existing");
 		}
 
 		String hdfsPath = input.getAssetHDFSPath();
-
-
-		if (hdfsPath.endsWith("/")) {
-			hdfsPath = hdfsPath.substring(0, hdfsPath.length() - 1);
-			logger.warn( "hdfsPath: " + hdfsPath);
-
+		
+		String[] subs = hdfsPath.split("/");
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for (String s : subs) {
+			if(!s.contains("[")){
+				sb.append("/");
+				sb.append(s);	
+			}
 		}
+		
+		hdfsPath = sb.toString().replaceFirst("/", "");
+		
+		
+		logger.info("HDFS Path: " + hdfsPath);
 
 		if(!"qa".equals(env.getProperty("env"))){//in prod environment, need to validate the hdfs path
 
@@ -158,8 +144,8 @@ public class DataAssetServiceImpl implements DataAssetService {
 
 		try {
 
-			long seq = BarkMongoDAO.getModelDAO().getNextAssetSequence();
-			da.set_id(seq);
+			long seq = dataAssetRepo.getNextId();
+			da.setId(seq);
 			da.setAssetName(input.getAssetName());
 			da.setAssetType(input.getAssetType());
 			da.setPlatform(input.getPlatform());
@@ -171,7 +157,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 			da.setTimestamp(new Date());
 
 			logger.debug("log: new record inserted" + seq);
-			BarkMongoDAO.getModelDAO().saveDataAsset(da);
+			dataAssetRepo.save(da);
 
 			//create new total count dqmodel
 			{
@@ -179,16 +165,16 @@ public class DataAssetServiceImpl implements DataAssetService {
 				ModelBasicInputNew basic = new ModelBasicInputNew();
 				ModelExtraInputNew extra = new ModelExtraInputNew();
 				basic.setDataaset(input.getAssetName());
-				basic.setDataasetId((int)seq);
+				basic.setDataasetId(seq);
 				basic.setDesc("Count for " + input.getAssetName());
 				basic.setEmail(input.getOwner() + "@ebay.com");
 				basic.setName("TotalCount_" + input.getAssetName());
 				basic.setOwner(input.getOwner());
-				basic.setScheduleType(ScheduleTypeConstants.DAILY);
-				basic.setStatus(ModelStatusConstants.DEPLOYED);
-				basic.setSystem(SystemTypeConstants.indexOf(input.getSystem()));
-				basic.setType(ModelTypeConstants.VALIDITY);
-				extra.setVaType(ValidityTypeConstants.TOTAL_COUNT);
+				basic.setScheduleType(ScheduleType.DAILY);
+				basic.setStatus(ModelStatus.DEPLOYED);
+				basic.setSystem(SystemType.indexOf(input.getSystem()));
+				basic.setType(ModelType.VALIDITY);
+				extra.setVaType(ValidityType.TOTAL_COUNT);
 				extra.setColumn("wholeDataSet");
 				extra.setSrcDataSet(input.getAssetName());
 				extra.setSrcDb(input.getPlatform());
@@ -207,26 +193,28 @@ public class DataAssetServiceImpl implements DataAssetService {
 	}
 
 	@Override
-	public int updateDataAsset(DataAssetInput input)
+	public void updateDataAsset(DataAssetInput input)
 			throws BarkDbOperationException {
 		try {
 
 			DataAsset da = new DataAsset();
 
-			List<KeyValue> queryList = new ArrayList<KeyValue>();
-			queryList.add(new KeyValue("assetName", input.getAssetName()));
-			queryList.add(new KeyValue("assetType", input.getAssetType()));
-			queryList.add(new KeyValue("system", input.getSystem()));
+			List<Pair> queryList = new ArrayList<Pair>();
+			queryList.add(new Pair("assetName", input.getAssetName()));
+			queryList.add(new Pair("assetType", input.getAssetType()));
+			queryList.add(new Pair("system", input.getSystem()));
 
-			List<KeyValue> updateValues = new ArrayList<KeyValue>();
-			updateValues.add(new KeyValue("schema", input.getSchema()));
-			updateValues.add(new KeyValue("platform", input.getPlatform()));
-			updateValues.add(new KeyValue("assetHDFSPath", input
+			List<Pair> updateValues = new ArrayList<Pair>();
+			updateValues.add(new Pair("schema", input.getSchema()));
+			updateValues.add(new Pair("platform", input.getPlatform()));
+			updateValues.add(new Pair("assetHDFSPath", input
 					.getAssetHDFSPath()));
-			updateValues.add(new KeyValue("owner", input.getOwner()));
+			updateValues.add(new Pair("owner", input.getOwner()));
 
-			DBObject item = BarkMongoDAO.getModelDAO().getAssetByCondition(
-					queryList);
+			DBObject item = dataAssetRepo.getByCondition(queryList);
+			if (item == null) {
+				throw new BarkDbOperationException( "The data asset doesn't exist");
+			} 
 
 			da.setAssetName(input.getAssetName());
 			da.setAssetType(input.getAssetType());
@@ -238,18 +226,11 @@ public class DataAssetServiceImpl implements DataAssetService {
 			da.setPartitions(input.getPartitions());
 			da.setTimestamp(new Date());
 
-			if (item == null) {
-				throw new BarkDbOperationException(
-						"The data asset doesn't exist");
-
-			} else {
-				logger.warn( "log: updated record, id is: "
-						+ (long) Double.parseDouble(item.get("_id").toString()));
-				da.set_id(new Long((long) Double.parseDouble(item.get("_id")
-						.toString())));
-				BarkMongoDAO.getModelDAO().updateDataAsset(da, item);
-				return 0;
-			}
+			logger.warn( "log: updated record, id is: "
+			                + (long) Double.parseDouble(item.get("_id").toString()));
+			da.setId(new Long((long) Double.parseDouble(item.get("_id")
+			                .toString())));
+			dataAssetRepo.update(da, item);
 		} catch (Exception e) {
 			throw new BarkDbOperationException("Failed to update data asset", e);
 		}
@@ -258,17 +239,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 
 	@Override
 	public DataAsset getDataAssetById(Long id) throws BarkDbOperationException {
-
-		// List<DataAsset> da = dataAssetDao.findByField(DataAsset.class, "_id",
-		// id);
-		//
-		// if(!da.isEmpty()){
-		// return da.get(0);
-		// }
-		//
-		// return null;
-
-		return BarkMongoDAO.getModelDAO().getAssetById(id);
+		return dataAssetRepo.getById(id);
 	}
 
 	@Override
@@ -276,28 +247,25 @@ public class DataAssetServiceImpl implements DataAssetService {
 
 		List<PlatformMetadata> alltree = new ArrayList<PlatformMetadata>();
 
-		List<DBObject> allAssets = BarkMongoDAO.getModelDAO().getAllAssets();
+		List<DataAsset> allAssets = dataAssetRepo.getAll();
 
-		List<String> platforms = new ArrayList<String>(
-				getAllPlatforms(allAssets));
-		for (String platform : platforms) {
+		 
+		for (String platform : getAllPlatforms(allAssets)) {
 
 			PlatformMetadata plat = new PlatformMetadata();
 			plat.setPlatform(platform);
 
-			List<String> datasets = new ArrayList<String>(getSystemsByPlatform(
-					platform, allAssets));
+			
 			List<SystemMetadata> d = new ArrayList<SystemMetadata>();
 
-			for (String dataset : datasets) {
+			for (String dataset : getSystemsByPlatform( platform, allAssets)) {
 
 				SystemMetadata db = new SystemMetadata();
 				db.setName(dataset);
 
 				List<DataAssetIndex> assets = new ArrayList<DataAssetIndex>();
 
-				Map<Long, String> tableB = getAssetsBySystem(platform, dataset,
-						allAssets);
+				Map<Long, String> tableB = getAssetsBySystem(platform, dataset, allAssets);
 				for (Entry<Long, String> entry : tableB.entrySet()) {
 					DataAssetIndex dai = new DataAssetIndex();
 					dai.setId(entry.getKey());
@@ -320,35 +288,30 @@ public class DataAssetServiceImpl implements DataAssetService {
 
 	}
 
-	public Set<String> getAllPlatforms(List<DBObject> records) {
-
-		Set<String> p = new HashSet<String>();
-		for (DBObject o : records) {
-			p.add(o.get("platform").toString());
+	private Set<String> getAllPlatforms(List<DataAsset> records) {
+		Set<String> p = new LinkedHashSet<>();
+		for (DataAsset o : records) {
+			p.add(o.getPlatform());
 		}
 		return p;
 	}
 
-	public Set<String> getSystemsByPlatform(String platform,
-			List<DBObject> records) {
+	public Set<String> getSystemsByPlatform(String platform, List<DataAsset> records) {
 		Set<String> p = new HashSet<String>();
-		for (DBObject o : records) {
-			if (o.get("platform").equals(platform)) {
-				p.add(o.get("system").toString());
+		for (DataAsset o : records) {
+			if (o.getPlatform().equals(platform)) {
+				p.add(o.getSystem());
 			}
 		}
 		return p;
 
 	}
 
-	public Map<Long, String> getAssetsBySystem(String platform, String system,
-			List<DBObject> records) {
+	public Map<Long, String> getAssetsBySystem(String platform, String system, List<DataAsset> records) {
 		Map<Long, String> p = new HashMap<Long, String>();
-		for (DBObject o : records) {
-			if (o.get("platform").equals(platform)
-					&& o.get("system").equals(system)) {
-				p.put(((Number) o.get("_id")).longValue(), o.get("assetName")
-						.toString());
+		for (DataAsset o : records) {
+			if (o.getPlatform().equals(platform) && o.getSystem().equals(system)) {
+				p.put(o.getId(), o.getAssetName());
 			}
 		}
 		return p;
@@ -356,32 +319,26 @@ public class DataAssetServiceImpl implements DataAssetService {
 	}
 
 	@Override
-	public int removeAssetById(Long id) throws BarkDbOperationException {
+	public void removeAssetById(Long id) throws BarkDbOperationException {
 		try {
-			//delete concern models first
-			removeConcernModelsOfAsset(id);
+			removeRelatedModels(id);
 
-			BarkMongoDAO.getModelDAO().deleteAssetbyId(id);
+			dataAssetRepo.delete(id);
 		} catch (Exception e) {
-			throw new BarkDbOperationException(
-					"Failed to delete data asset with id of '" + id + "'", e);
+			throw new BarkDbOperationException("Failed to delete data asset with id of '" + id + "'", e);
 		}
-
-		return 0;
 
 	}
 
-	//remove all the models concerned with the given data asset
-	private int removeConcernModelsOfAsset(Long dataAssetId) {
+	//remove all the models related with the given data asset
+	private int removeRelatedModels(Long dataAssetId) {
 		try {
-			DataAsset da = BarkMongoDAO.getModelDAO().getAssetById(dataAssetId);
+			DataAsset da = dataAssetRepo.getById(dataAssetId);
 			if (da != null) {
 				//delete all the accuracy models with this given source asset
-				List<DQModelEntity> models = BarkMongoDAO.getModelDAO().getModelsByDataAsset(da, true);
-				Iterator<DQModelEntity> itr = models.iterator();
-				while (itr.hasNext()) {
-					DQModelEntity me = itr.next();
-					dqModelService.deleteModel(me.getModelName());
+				List<DqModel> models = dqModelRepo.getByDataAsset(da, true);
+				for(DqModel each : models) {
+					dqModelService.deleteModel(each.getModelName());
 				}
 			}
 		} catch (Exception e) {

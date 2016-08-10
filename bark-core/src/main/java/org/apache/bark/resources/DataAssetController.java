@@ -14,7 +14,6 @@
  */
 package org.apache.bark.resources;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,14 +27,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.bark.common.BarkDbOperationException;
+import org.apache.bark.domain.DataAsset;
+import org.apache.bark.error.BarkDbOperationException;
 import org.apache.bark.error.ErrorMessage;
-import org.apache.bark.model.DataAsset;
-import org.apache.bark.model.DataAssetInput;
-import org.apache.bark.model.NotificationRecord;
-import org.apache.bark.model.PlatformMetadata;
 import org.apache.bark.service.DataAssetService;
 import org.apache.bark.service.NotificationService;
+import org.apache.bark.vo.DataAssetInput;
+import org.apache.bark.vo.NotificationRecord;
+import org.apache.bark.vo.PlatformMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -130,9 +129,8 @@ public class DataAssetController {
 	@DELETE
 	@Path("/{asset_id}")
 	public String removeAssetById(@PathParam("asset_id") Long id) {
-		int res;
 		try {
-			res = dataAssetService.removeAssetById(id);
+			dataAssetService.removeAssetById(id);
 			return "{\"status\":\"0\" , \"result\":\"success\"}";
 		} catch (BarkDbOperationException e) {
 			// TODO Auto-generated catch block
@@ -150,9 +148,8 @@ public class DataAssetController {
 	@PUT
 	@Path("/")
 	public String updateDataAsset(DataAssetInput input) {
-		int res;
 		try {
-			res = dataAssetService.updateDataAsset(input);
+			dataAssetService.updateDataAsset(input);
 			return "{\"status\":\"0\" , \"result\":\"success\"}";
 		} catch (BarkDbOperationException e) {
 			// TODO Auto-generated catch block

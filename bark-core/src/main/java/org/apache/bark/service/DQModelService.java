@@ -14,24 +14,26 @@
  */
 package org.apache.bark.service;
 
-import java.util.HashMap;
 import java.util.List;
 
-import org.apache.bark.common.BarkDbOperationException;
-import org.apache.bark.model.DQModelEntity;
-import org.apache.bark.model.ModelForFront;
-import org.apache.bark.model.ModelInput;
+import org.apache.bark.domain.DqModel;
+import org.apache.bark.error.BarkDbOperationException;
+import org.apache.bark.vo.DqModelVo;
+import org.apache.bark.vo.ModelInput;
 
-public interface DQModelService {
-	public List<ModelForFront> getAllModles();
+public interface DqModelService {
+
+	public List<DqModelVo> getAllModles();
+
+	// FIXME what the return value means
 	public int deleteModel(String name) throws BarkDbOperationException;
-	public HashMap<String, String> getThresholds();
-	public HashMap<String, String> getReferences();
-	public DQModelEntity getGeneralModel(String name);
+
+	public DqModel getGeneralModel(String name);
 
 
 	public ModelInput getModelByName(String name) throws BarkDbOperationException;
-	public void enableSchedule4Model(DQModelEntity input);
+
+	public void enableSchedule4Model(DqModel input);
 	
 	/**
 	 * Create a new Model
@@ -39,4 +41,6 @@ public interface DQModelService {
 	 * @return 0 if successful, -1 if already existing, other negative values for other reasons
 	 */
 	public int newModel(ModelInput input) throws BarkDbOperationException;
+
+    void updateModelStatus(int fromStatus, int toStatus);
 }

@@ -16,16 +16,21 @@ package org.apache.bark.service;
 
 import java.util.List;
 
-import org.apache.bark.common.BarkDbOperationException;
-import org.apache.bark.model.DataAsset;
-import org.apache.bark.model.DataAssetInput;
-import org.apache.bark.model.PlatformMetadata;
+import org.apache.bark.domain.DataAsset;
+import org.apache.bark.error.BarkDbOperationException;
+import org.apache.bark.vo.DataAssetInput;
+import org.apache.bark.vo.PlatformMetadata;
 
 public interface DataAssetService {
-	public List<DataAsset> getAllDataAssets();
-	public int createDataAsset(DataAssetInput input) throws BarkDbOperationException;
-	public int updateDataAsset(DataAssetInput input) throws BarkDbOperationException;
-	public DataAsset getDataAssetById(Long id) throws BarkDbOperationException;
-	public List<PlatformMetadata> getSourceTree();
-	public int removeAssetById(Long id) throws BarkDbOperationException;
+    public List<DataAsset> getAllDataAssets();
+
+    public int createDataAsset(DataAssetInput input) throws BarkDbOperationException;
+
+    public void updateDataAsset(DataAssetInput input) throws BarkDbOperationException;
+
+    public DataAsset getDataAssetById(Long id) throws BarkDbOperationException;
+
+    public List<PlatformMetadata> getSourceTree();
+
+    public void removeAssetById(Long id) throws BarkDbOperationException;
 }

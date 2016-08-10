@@ -14,100 +14,94 @@
  */
 package org.apache.bark.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
-
-import org.apache.bark.common.KeyValue;
-import org.apache.bark.common.MetricType;
-import org.apache.bark.common.ModelTypeConstants;
-import org.apache.bark.common.ScheduleTypeConstants;
-import org.apache.bark.common.SystemTypeConstants;
-import org.apache.bark.dao.BarkMongoDAO;
-import org.apache.bark.model.AssetLevelMetrics;
-import org.apache.bark.model.AssetLevelMetricsDetail;
-import org.apache.bark.model.BollingerBandsEntity;
-import org.apache.bark.model.DQHealthStats;
-import org.apache.bark.model.DQMetricsValue;
-import org.apache.bark.model.DQModelEntity;
-import org.apache.bark.model.MADEntity;
-import org.apache.bark.model.ModelForFront;
-import org.apache.bark.model.OverViewStatistics;
-import org.apache.bark.model.SampleFilePathLKP;
-import org.apache.bark.model.SampleOut;
-import org.apache.bark.model.SystemLevelMetrics;
-import org.apache.bark.model.SystemLevelMetricsList;
+import org.apache.bark.common.Pair;
+import org.apache.bark.domain.DqMetricsValue;
+import org.apache.bark.domain.DqModel;
+import org.apache.bark.domain.MetricType;
+import org.apache.bark.domain.ModelType;
+import org.apache.bark.domain.SampleFilePathLKP;
+import org.apache.bark.domain.ScheduleType;
+import org.apache.bark.domain.SystemType;
+import org.apache.bark.repo.DataAssetRepo;
+import org.apache.bark.repo.DqMetricsRepo;
+import org.apache.bark.repo.DqModelRepo;
+import org.apache.bark.repo.SampleFilePathRepo;
+import org.apache.bark.vo.AssetLevelMetrics;
+import org.apache.bark.vo.AssetLevelMetricsDetail;
+import org.apache.bark.vo.BollingerBandsEntity;
+import org.apache.bark.vo.DQHealthStats;
+import org.apache.bark.vo.DqModelVo;
+import org.apache.bark.vo.MADEntity;
+import org.apache.bark.vo.OverViewStatistics;
+import org.apache.bark.vo.SampleOut;
+import org.apache.bark.vo.SystemLevelMetrics;
+import org.apache.bark.vo.SystemLevelMetricsList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-//import org.springframework.validation.annotation.Validated;
-
 
 import com.mongodb.DBObject;
 
-@Service
-@Component("dqmetrics")
-// @Validated
+@Service("dqmetrics")
 public class DQMetricsServiceImpl implements DQMetricsService {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(DQMetricsServiceImpl.class);
-
-	// @Autowired
-	// private DQMetricsValuesDao dqMetricsDao;
-
-	// @Autowired
-	// private DataAssetDao dataAssetDao;
+	private static Logger logger = LoggerFactory.getLogger(DQMetricsServiceImpl.class);
 
 	@Autowired
-	private DQModelService dqModelService;
+	private DqModelService dqModelService;
 
 	@Autowired
 	private SubscribeService subscribeService;
 
-	HashMap<String, String> modelSystem;
+	Map<String, String> modelSystem = new HashMap<String, String>();
 
-	public static List<DQMetricsValue> cacheValues;
+	@Autowired
+    private DqMetricsRepo metricsRepo;
+
+	@Autowired
+    private DqModelRepo dqModelRepo;
+
+	@Autowired
+    private DataAssetRepo dataAssetRepo;
+
+	@Autowired
+    private SampleFilePathRepo missedFileRepo;
+
+	public static List<DqMetricsValue> cacheValues = new ArrayList<DqMetricsValue>();;
+
 	public static SystemLevelMetricsList totalSystemLevelMetricsList;
 	public static int trendLength = 20 * 24;
 	public static int trendOffset = 24 * 7;
 
-	public void insertMetadata(DQMetricsValue dq) {
+	public void insertMetadata(DqMetricsValue metrics) {
 
-		List<KeyValue> queryList = new ArrayList<KeyValue>();
-		queryList.add(new KeyValue("metricName", dq.getMetricName()));
+		List<Pair> queryList = new ArrayList<Pair>();
+		queryList.add(new Pair("metricName", metrics.getMetricName()));
 		// queryList.add(new KeyValue("metricType", dq.getMetricType()));
 		// queryList.add(new KeyValue("assetId", dq.getAssetId()));
-		queryList.add(new KeyValue("timestamp", dq.getTimestamp()));
+		queryList.add(new Pair("timestamp", metrics.getTimestamp()));
 
-		List<KeyValue> updateValues = new ArrayList<KeyValue>();
-		updateValues.add(new KeyValue("value", dq.getValue()));
+		List<Pair> updateValues = new ArrayList<Pair>();
+		updateValues.add(new Pair("value", metrics.getValue()));
 
-		DBObject item = BarkMongoDAO.getModelDAO().getAllMetricsByCondition(
-				queryList);
+		DBObject item = metricsRepo.getByCondition(queryList);
 
 		if (item == null) {
-			long seq = BarkMongoDAO.getModelDAO().getNextMetricsSequence();
+			long seq = metricsRepo.getNextId();
 			logger.warn("log: new record inserted" + seq);
-			dq.set_id(seq);
-			BarkMongoDAO.getModelDAO().saveDQMetricsValue(dq);
+			metrics.set_id(seq);
+			metricsRepo.save(metrics);
 		} else {
 			logger.warn("log: updated record");
-			BarkMongoDAO.getModelDAO().updateDQMetricsValue(dq, item);
+			metricsRepo.update(metrics, item);
 		}
 
 	}
@@ -116,21 +110,20 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 
 		// List<String> assetIds = new ArrayList<String>();
 
-		List<DQModelEntity> allModels = BarkMongoDAO.getModelDAO()
-				.getAllModels();
-		modelSystem = new HashMap<String, String>();
+		List<DqModel> allModels = dqModelRepo.getAll();
 
-		for (DQModelEntity model : allModels) {
+		for (DqModel model : allModels) {
 			// assetIds.add(asset.get("assetName").toString());
 			modelSystem.put(model.getModelName(),
-					SystemTypeConstants.val(model.getSystem()));
+					SystemType.val(model.getSystem()));
 		}
 
 		return null;
 
 	}
 
-	public DQMetricsValue getLatestlMetricsbyId(String assetId) {
+	// FIXME to remove
+	public DqMetricsValue getLatestlMetricsbyId(String assetId) {
 
 		// Query<DQMetricsValue> q =
 		// dqMetricsDao.getDatastore().createQuery(DQMetricsValue.class).filter("assetId",
@@ -142,40 +135,31 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		// }
 		//
 		// return v.get(0);
-		return BarkMongoDAO.getModelDAO().getLatestMetricsByAssetId(assetId);
+		return metricsRepo.getLatestByAssetId(assetId);
 	}
 
 	public void autoRefresh() {
 		updateLatestDQList();
 	}
 
-	public void refreshAllDQMetricsValuesinCache() {
-		fetchAllAssetIdBySystems();
-		// cacheValues = dqMetricsDao.findByFieldInValues(DQMetricsValue.class,
-		// "assetId", assetIds);
+    public void refreshAllDQMetricsValuesinCache() {
+        fetchAllAssetIdBySystems();
+        // cacheValues = dqMetricsDao.findByFieldInValues(DQMetricsValue.class,
+        // "assetId", assetIds);
 
-		cacheValues = new ArrayList<DQMetricsValue>();
-		List<DBObject> allMetrics = BarkMongoDAO.getModelDAO().getAllMetrics();
-		for (DBObject tempMetric : allMetrics) {
-			cacheValues.add(new DQMetricsValue(tempMetric.get("metricName")
-					.toString(), Long.parseLong(tempMetric.get("timestamp")
-					.toString()), Float.parseFloat(tempMetric.get("value")
-					.toString())));
-		}
-	}
+        cacheValues.clear();
+        for (DqMetricsValue each : metricsRepo.getAll()) {
+            cacheValues.add(each);
+        }
+    }
 
 	public void updateLatestDQList() {
 		try {
 			logger.warn("==============updating all latest dq metrics==================");
-			// try {
-			// Thread.sleep(30000);
-			// } catch (InterruptedException e) {
-			// e.printStackTrace();
-			// }
 			refreshAllDQMetricsValuesinCache();
 
 			totalSystemLevelMetricsList = new SystemLevelMetricsList();
-			for (DQMetricsValue temp : cacheValues) {
+			for (DqMetricsValue temp : cacheValues) {
 				// totalSystemLevelMetricsList.upsertNewAsset(temp, assetSystem,
 				// 1);
 				totalSystemLevelMetricsList.upsertNewAssetExecute(
@@ -184,8 +168,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 						0, 1, null);
 			}
 
-			totalSystemLevelMetricsList.updateDQFail(dqModelService
-					.getThresholds());
+			totalSystemLevelMetricsList.updateDQFail(getThresholds());
 			calculateReferenceMetrics();
 
 			logger.warn("==============update all latest dq metrics done==================");
@@ -195,7 +178,18 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		}
 	}
 
-	public List<MADEntity> MAD(List<String> list) {
+	@Autowired
+	private DqModelRepo modelRepo;
+	
+	Map<String, String> getThresholds() {
+	    Map<String, String> thresHolds = new HashMap<>();
+	    for(DqModel each : modelRepo.getAll()) {
+	        thresHolds.put(each.getModelName(), "" + each.getThreshold());
+	    }
+	    return thresHolds;
+    }
+
+    public List<MADEntity> MAD(List<String> list) {
 		List<MADEntity> result = new ArrayList<MADEntity>();
 		int preparePointNumber = 15;
 		float up_coff = (float) 2.3;
@@ -258,13 +252,10 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		if (totalSystemLevelMetricsList == null)
 			updateLatestDQList();
 
-		HashMap<String, String> references = dqModelService.getReferences();
-		Iterator iter = references.keySet().iterator();
-		while (iter.hasNext()) {
-			Object next = iter.next();
-			String sourceName = next.toString();
-
-			String referencerNames = references.get(next).toString();
+		Map<String, String> references = getReferences();
+		
+		for(String sourceName : references.keySet()) {
+			String referencerNames = references.get(sourceName).toString();
 			List<String> rNames = new ArrayList<String>();
 			if (referencerNames.indexOf(",") == -1)
 				rNames.add(referencerNames);
@@ -274,20 +265,25 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 			for (String referencerName : rNames) {
 				logger.warn("==============anmoni loop start=================="
 						+ referencerName + " " + sourceName);
-				List<DQMetricsValue> sourceMetricValues = BarkMongoDAO
-						.getModelDAO().getAllMetricsByMetricsName(sourceName);// dqMetricsDao.findByField(DQMetricsValue.class,
-																				// "metricName",
-																				// sourceName);
-				DQModelEntity referencerModel = dqModelService
+				List<DqMetricsValue> metricList = metricsRepo.getByMetricsName(sourceName);// dqMetricsDao.findByField(DQMetricsValue.class,
+                                                            // "metricName",
+                                                            // sourceName);
+				DqModel referencerModel = dqModelService
 						.getGeneralModel(referencerName);
 				if (referencerModel == null)
+				{
+					logger.warn("==============referencerModel is null================== "+referencerName);
 					continue;
-				DQModelEntity sourceModel = dqModelService
+				}
+				DqModel sourceModel = dqModelService
 						.getGeneralModel(sourceName);
 				if (sourceModel == null)
+				{
+					logger.warn("==============sourceModel is null================== "+sourceModel);
 					continue;
+				}
 
-				if (sourceModel.getSchedule() == ScheduleTypeConstants.DAILY) {
+				if (sourceModel.getSchedule() == ScheduleType.DAILY) {
 					trendLength = 20;
 					trendOffset = 7;
 				} else {
@@ -295,10 +291,10 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 					trendOffset = 7 * 24;
 				}
 
-				Collections.sort(sourceMetricValues);
+				Collections.sort(metricList);
 				float threadshold = referencerModel.getThreshold();
 				// type anomin detection trend
-				if (referencerModel.getModelType() == ModelTypeConstants.ANOMALY_DETECTION) {
+				if (referencerModel.getModelType() == ModelType.ANOMALY) {
 					String content = referencerModel.getModelContent();
 					String[] contents = content.split("\\|");
 					int type = Integer.parseInt(contents[2]);
@@ -311,21 +307,21 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 								+ sourceName
 								+ " "
 								+ trendLength + " " + trendOffset);
-						if (sourceMetricValues.size() <= trendLength
+						if (metricList.size() <= trendLength
 								+ trendOffset)
 							continue;
 						int dqfail = 0;
-						if (sourceMetricValues.get(0).getValue()
-								/ sourceMetricValues.get(trendOffset)
+						if (metricList.get(0).getValue()
+								/ metricList.get(trendOffset)
 										.getValue() >= 1 + threadshold
-								|| sourceMetricValues.get(0).getValue()
-										/ sourceMetricValues.get(trendOffset)
+								|| metricList.get(0).getValue()
+										/ metricList.get(trendOffset)
 												.getValue() <= 1 - threadshold)
 							dqfail = 1;
 						for (int i = 0; i <= trendLength; i++) {
-							DQMetricsValue tempDQMetricsValue = sourceMetricValues
+							DqMetricsValue tempDQMetricsValue = metricList
 									.get(i);
-							float lastValue = sourceMetricValues.get(
+							float lastValue = metricList.get(
 									i + trendOffset).getValue();
 							totalSystemLevelMetricsList.upsertNewAssetExecute(
 									referencerName,
@@ -342,27 +338,28 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 					else if (type == 2) {
 						logger.warn("==============Bollinger start=================="
 								+ referencerName + " " + sourceName);
-						Collections.reverse(sourceMetricValues);
+						Collections.reverse(metricList);
 						List<String> sourceValues = new ArrayList<String>();
-						for (int i = 0; i < sourceMetricValues.size(); i++) {
-							sourceValues.add((long) sourceMetricValues.get(i)
+						for (int i = 0; i < metricList.size(); i++) {
+							sourceValues.add((long) metricList.get(i)
 									.getValue() + "");
 						}
 
 						List<BollingerBandsEntity> bollingers = bollingerBand(sourceValues);
 
 						int dqfail = 0;
-						if (sourceMetricValues.size() > 0) {
-							if (sourceMetricValues.get(
-									sourceMetricValues.size() - 1).getValue() < bollingers
+						logger.warn("==============Bollinger size : "+bollingers.size() +" metrics size:"+metricList.size());
+						if (metricList.size() > 0 && bollingers.size() > 0) {
+							if (metricList.get(
+									metricList.size() - 1).getValue() < bollingers
 									.get(bollingers.size() - 1).getLower()) {
 								dqfail = 1;
 							}
 
-							int offset = sourceMetricValues.size()
+							int offset = metricList.size()
 									- bollingers.size();
-							for (int i = offset; i < sourceMetricValues.size(); i++) {
-								DQMetricsValue tempDQMetricsValue = sourceMetricValues
+							for (int i = offset; i < metricList.size(); i++) {
+								DqMetricsValue tempDQMetricsValue = metricList
 										.get(i);
 
 								totalSystemLevelMetricsList
@@ -399,25 +396,26 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 					else if (type == 3) {
 						logger.warn("==============MAD start=================="
 								+ referencerName + " " + sourceName);
-						Collections.reverse(sourceMetricValues);
+						Collections.reverse(metricList);
 						List<String> sourceValues = new ArrayList<String>();
-						for (int i = 0; i < sourceMetricValues.size(); i++) {
-							sourceValues.add((long) sourceMetricValues.get(i)
+						for (int i = 0; i < metricList.size(); i++) {
+							sourceValues.add((long) metricList.get(i)
 									.getValue() + "");
 						}
 						List<MADEntity> MADList = MAD(sourceValues);
 
 						int dqfail = 0;
-						if (sourceMetricValues.size() > 0) {
-							if (sourceMetricValues.get(
-									sourceMetricValues.size() - 1).getValue() < MADList
+						logger.warn("==============MAD size : "+MADList.size() +" metrics size:"+metricList.size());
+						if (metricList.size() > 0 && MADList.size() > 0) {
+							if (metricList.get(
+									metricList.size() - 1).getValue() < MADList
 									.get(MADList.size() - 1).getLower())
 								dqfail = 1;
 
-							int offset = sourceMetricValues.size()
+							int offset = metricList.size()
 									- MADList.size();
-							for (int i = offset; i < sourceMetricValues.size(); i++) {
-								DQMetricsValue tempDQMetricsValue = sourceMetricValues
+							for (int i = offset; i < metricList.size(); i++) {
+								DqMetricsValue tempDQMetricsValue = metricList
 										.get(i);
 								totalSystemLevelMetricsList
 										.upsertNewAssetExecute(
@@ -451,12 +449,20 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		}
 	}
 
-	public List<SystemLevelMetrics> addAssetNames(
+	Map<String, String> getReferences() {
+	    Map<String, String> map = new HashMap<>();
+	    for(DqModel each : modelRepo.getAll()) {
+	        map.put(each.getModelName(), each.getReferenceModel());
+	    }
+	    return map;
+    }
+
+    public List<SystemLevelMetrics> addAssetNames(
 			List<SystemLevelMetrics> result) {
-		List<ModelForFront> models = dqModelService.getAllModles();
+		List<DqModelVo> models = dqModelService.getAllModles();
 		Map<String, String> modelMap = new HashMap<String, String>();
 
-		for (ModelForFront model : models) {
+		for (DqModelVo model : models) {
 			modelMap.put(
 					model.getName(),
 					model.getAssetName() == null ? "unknow" : model
@@ -476,10 +482,10 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	}
 
 	public Map<String, String> getAssetMap() {
-		List<ModelForFront> models = dqModelService.getAllModles();
+		List<DqModelVo> models = dqModelService.getAllModles();
 		Map<String, String> modelMap = new HashMap<String, String>();
 
-		for (ModelForFront model : models) {
+		for (DqModelVo model : models) {
 			modelMap.put(
 					model.getName(),
 					model.getAssetName() == null ? "unknow" : model
@@ -501,8 +507,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	public List<SystemLevelMetrics> heatMap() {
 		if (totalSystemLevelMetricsList == null)
 			updateLatestDQList();
-		return totalSystemLevelMetricsList.getHeatMap(dqModelService
-				.getThresholds());
+		return totalSystemLevelMetricsList.getHeatMap(getThresholds());
 	}
 
 	@Override
@@ -541,8 +546,8 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 
 		OverViewStatistics os = new OverViewStatistics();
 
-		os.setAssets(BarkMongoDAO.getModelDAO().getAllAssets().size());
-		os.setMetrics(BarkMongoDAO.getModelDAO().getAllModels().size());
+		os.setAssets(dataAssetRepo.getAll().size());
+		os.setMetrics(dqModelRepo.getAll().size());
 
 		DQHealthStats health = new DQHealthStats();
 
@@ -593,8 +598,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 
 		List<SampleOut> samples = new ArrayList<SampleOut>();
 
-		List<DBObject> dbos = BarkMongoDAO.getModelDAO().findSampleByModelName(
-				modelName);
+		List<DBObject> dbos = missedFileRepo.findByModelName(modelName);
 
 		for (DBObject dbo : dbos) {
 
@@ -613,12 +617,12 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	public void insertSampleFilePath(SampleFilePathLKP samplePath) {
 		SampleFilePathLKP entity = new SampleFilePathLKP();
 
-		entity.set_id(BarkMongoDAO.getModelDAO().getNextFilePathSequence());
+		entity.setId(missedFileRepo.getNextId());
 		entity.setModelName(samplePath.getModelName());
 		entity.setTimestamp(samplePath.getTimestamp());
 		entity.setHdfsPath(samplePath.getHdfsPath());
 
-		BarkMongoDAO.getModelDAO().insertNewSamplePath(entity);
+		missedFileRepo.save(entity);
 
 	}
 

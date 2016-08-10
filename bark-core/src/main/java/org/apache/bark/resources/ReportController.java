@@ -14,25 +14,18 @@
  */
 package org.apache.bark.resources;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.TimeZone;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 
-import org.apache.bark.model.AssetLevelMetrics;
-import org.apache.bark.model.AssetLevelMetricsDetail;
 import org.apache.bark.service.DQMetricsService;
+import org.apache.bark.vo.AssetLevelMetrics;
+import org.apache.bark.vo.AssetLevelMetricsDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -235,54 +228,53 @@ public class ReportController {
 		return result;
 	}
 
-	private LineReport createMockData(){
-		LineReport report = new LineReport();
-		report.title = "Bullseye viewitem hourly DQ";
-		report.items = new ArrayList<LineItem>();
-
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
-		long seed = 0;
-		try {
-			seed = dateFormat.parse("2016-06-13T00:00:00").getTime();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		Random rdm = new Random(new Date().getTime());
-
-		LineItem item = new LineItem();
-		item.name = "Tier2_LVS_Recognized_User";
-		item.details = new ArrayList<LinePoint>();
-		for(int i = 0; i < 24; i ++){
-			item.details.add(new LinePoint(seed + i*3600*1000, 95 + rdm.nextFloat()*5));
-		}
-		report.items.add(item);
-
-		item = new LineItem();
-		item.name = "e2e_Vistor";
-		item.details = new ArrayList<LinePoint>();
-		for(int i = 0; i < 24; i ++){
-			item.details.add(new LinePoint(seed + i*3600*1000, 95 + rdm.nextFloat()*5));
-		}
-		report.items.add(item);
-
-		item = new LineItem();
-		item.name = "e2e_User";
-		item.details = new ArrayList<LinePoint>();
-		for(int i = 0; i < 24; i ++){
-			item.details.add(new LinePoint(seed + i*3600*1000, 95 + rdm.nextFloat()*5));
-		}
-		report.items.add(item);
-
-
-		return report;
-	}
+//	private LineReport createMockData(){
+//		LineReport report = new LineReport();
+//		report.title = "Bullseye viewitem hourly DQ";
+//		report.items = new ArrayList<LineItem>();
+//
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
+//		long seed = 0;
+//		try {
+//			seed = dateFormat.parse("2016-06-13T00:00:00").getTime();
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		Random rdm = new Random(new Date().getTime());
+//
+//		LineItem item = new LineItem();
+//		item.name = "Tier2_LVS_Recognized_User";
+//		item.details = new ArrayList<LinePoint>();
+//		for(int i = 0; i < 24; i ++){
+//			item.details.add(new LinePoint(seed + i*3600*1000, 95 + rdm.nextFloat()*5));
+//		}
+//		report.items.add(item);
+//
+//		item = new LineItem();
+//		item.name = "e2e_Vistor";
+//		item.details = new ArrayList<LinePoint>();
+//		for(int i = 0; i < 24; i ++){
+//			item.details.add(new LinePoint(seed + i*3600*1000, 95 + rdm.nextFloat()*5));
+//		}
+//		report.items.add(item);
+//
+//		item = new LineItem();
+//		item.name = "e2e_User";
+//		item.details = new ArrayList<LinePoint>();
+//		for(int i = 0; i < 24; i ++){
+//			item.details.add(new LinePoint(seed + i*3600*1000, 95 + rdm.nextFloat()*5));
+//		}
+//		report.items.add(item);
+//
+//
+//		return report;
+//	}
 
 }
 
-@XmlRootElement
 class LineReport{
 	String title;
 	List<LineItem> items;
@@ -300,7 +292,6 @@ class LineReport{
 	}
 }
 
-@XmlRootElement
 class LineItem{
 	String name;
 	List<LinePoint> details;
@@ -318,11 +309,9 @@ class LineItem{
 	}
 }
 
-@XmlRootElement
 class LinePoint{
 	long timestamp;
 	float value;
-	private LinePoint() {}
 	public LinePoint(long timestamp, float value) {
 		super();
 		this.timestamp = timestamp;
@@ -343,7 +332,6 @@ class LinePoint{
 
 }
 
-@XmlRootElement
 class BarReport{
 	String title;
 	List<BarPoint> details;
@@ -362,12 +350,9 @@ class BarReport{
 
 }
 
-@XmlRootElement
 class BarPoint{
 	String name;
 	float value;
-
-	private BarPoint() {}
 
 	public BarPoint(String name, float value) {
 		super();

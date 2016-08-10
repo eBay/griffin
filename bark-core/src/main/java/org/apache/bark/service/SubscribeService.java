@@ -14,10 +14,13 @@
  */
 package org.apache.bark.service;
 
-import org.apache.bark.model.UserSubscribeItem;
+import org.apache.bark.domain.UserSubscription;
 
 
 public interface SubscribeService {
-	public int subscribe(UserSubscribeItem item);
-	public UserSubscribeItem getSubscribe(String user);
+
+	void subscribe(UserSubscription item);
+
+	UserSubscription getSubscribe(String user);
+
 }

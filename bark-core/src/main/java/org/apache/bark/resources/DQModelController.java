@@ -26,13 +26,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.bark.common.BarkDbOperationException;
+import org.apache.bark.error.BarkDbOperationException;
 import org.apache.bark.error.ErrorMessage;
-import org.apache.bark.model.ModelForFront;
-import org.apache.bark.model.ModelInput;
-import org.apache.bark.model.NotificationRecord;
-import org.apache.bark.service.DQModelService;
+import org.apache.bark.service.DqModelService;
 import org.apache.bark.service.NotificationService;
+import org.apache.bark.vo.DqModelVo;
+import org.apache.bark.vo.ModelInput;
+import org.apache.bark.vo.NotificationRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +45,7 @@ import com.sun.jersey.api.Responses;
 public class DQModelController {
 
 	@Autowired
-	private DQModelService dqModelService;
+	private DqModelService dqModelService;
 
 	@Autowired
 	private NotificationService notificationService;
@@ -53,7 +53,7 @@ public class DQModelController {
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<ModelForFront> allModels() {
+	public List<DqModelVo> allModels() {
 		return dqModelService.getAllModles();
 	}
 
@@ -92,22 +92,21 @@ public class DQModelController {
 
 	@DELETE
 	@Path("/{name}")
-	public void deleteModel(@PathParam("name") String name)
-			throws BarkDbOperationException {
+	public void deleteModel(@PathParam("name") String name) throws BarkDbOperationException {
 		dqModelService.deleteModel(name);
 	}
 
 	@POST
 	@Path("/")
 	public Response newModel(@RequestBody ModelInput input) {
-		if (input != null) {
-			ErrorMessage err = input.validate();
-			if (err != null) {
-				err.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
-				return Response.status(Responses.CLIENT_ERROR).entity(err)
-						.build();
-				// return ;
-			}
+		if (input == null) return null; 
+			
+		ErrorMessage err = input.validate();
+		if (err != null) {
+			err.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
+			return Response.status(Responses.CLIENT_ERROR).entity(err)
+					.build();
+			// return ;
 		}
 
 		try {

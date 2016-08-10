@@ -1,40 +1,34 @@
 package org.apache.bark.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import org.apache.bark.common.ModelStatusConstants;
-import org.apache.bark.common.ModelTypeConstants;
-import org.apache.bark.common.ValidityTypeConstants;
-import org.apache.bark.common.ScheduleTypeConstants;
-import org.apache.bark.common.SystemTypeConstants;
-import org.apache.bark.common.BarkDbOperationException;
-import org.apache.bark.model.*;
-import org.apache.bark.service.DQMetricsService;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.bark.domain.DqMetricsValue;
+import org.apache.bark.domain.SampleFilePathLKP;
+import org.apache.bark.vo.AssetLevelMetrics;
+import org.apache.bark.vo.OverViewStatistics;
+import org.apache.bark.vo.SampleOut;
+import org.apache.bark.vo.SystemLevelMetrics;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Date;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:context.xml"})
 public class DQMetricsServiceTest {
 
     @Autowired
-    private DQMetricsService dqMetricsService;
+    private DQMetricsServiceImpl dqMetricsService;
 
     //insertMetadata
     private void testInsertMetadata(String id, String metric, float val) {
-        DQMetricsValue dqmv = new DQMetricsValue();
+        DqMetricsValue dqmv = new DqMetricsValue();
         dqmv.set_id(12345678L);
         dqmv.setAssetId(id);
         dqmv.setMetricName(metric);
@@ -45,7 +39,7 @@ public class DQMetricsServiceTest {
 
     //getLatestlMetricsbyId
     private void testGetLatestlMetricsbyId(String id, String metric, float val) {
-        DQMetricsValue dv = dqMetricsService.getLatestlMetricsbyId(id);
+        DqMetricsValue dv = dqMetricsService.getLatestlMetricsbyId(id);
         assertNotNull(dv);
         assertEquals(dv.getMetricName(), metric);
         assertTrue(dv.getValue() == val);
@@ -206,6 +200,24 @@ public class DQMetricsServiceTest {
         testDownloadSample(path);
 
         //here we may need to remove the test samples
+    }
+
+    @Test
+    public void testGetThresholds() {
+        Map<String, String> thresholdMap = dqMetricsService.getThresholds();
+        System.out.println("---- threshold map ----");
+        for (Map.Entry<String, String> me : thresholdMap.entrySet()) {
+            System.out.println(me.getKey() + " -> " + me.getValue());
+        }
+    }
+
+    @Test
+    public void testGetReferences() {
+        Map<String, String> referenceMap = dqMetricsService.getReferences();
+        System.out.println("---- reference map ----");
+        for (Map.Entry<String, String> me : referenceMap.entrySet()) {
+            System.out.println(me.getKey() + " -> " + me.getValue());
+        }
     }
 
 

@@ -14,30 +14,29 @@
  */
 package org.apache.bark.service;
 
-import org.apache.bark.dao.BarkMongoDAO;
-import org.apache.bark.model.UserSubscribeItem;
+import org.apache.bark.domain.UserSubscription;
+import org.apache.bark.repo.UserSubscriptionRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 @Service
-@Validated
 public class SubscribeServiceImpl implements SubscribeService{
 	
-	final static Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);
+	final static Logger logger = LoggerFactory.getLogger(SubscribeServiceImpl.class);
+	
+	@Autowired
+    UserSubscriptionRepo subscriptionRepo;
 
 	@Override
-	public int subscribe(UserSubscribeItem item) {
-		
-		BarkMongoDAO.getModelDAO().upsertUserSubscribe(item);
-		
-		return 0;
+	public void subscribe(UserSubscription item) {
+		subscriptionRepo.upsertUserSubscribe(item);
 	}
 
 	@Override
-	public UserSubscribeItem getSubscribe(String user) {
-		return BarkMongoDAO.getModelDAO().getUserSubscribeItem(user);
+	public UserSubscription getSubscribe(String user) {
+		return subscriptionRepo.getUserSubscribeItem(user);
 	}
 	
 }

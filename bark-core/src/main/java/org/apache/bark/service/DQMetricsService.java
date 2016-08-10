@@ -16,19 +16,19 @@ package org.apache.bark.service;
 
 import java.util.List;
 
-import org.apache.bark.model.AssetLevelMetrics;
-import org.apache.bark.model.DQMetricsValue;
-import org.apache.bark.model.OverViewStatistics;
-import org.apache.bark.model.SampleFilePathLKP;
-import org.apache.bark.model.SampleOut;
-import org.apache.bark.model.SystemLevelMetrics;
+import org.apache.bark.domain.DqMetricsValue;
+import org.apache.bark.domain.SampleFilePathLKP;
+import org.apache.bark.vo.AssetLevelMetrics;
+import org.apache.bark.vo.OverViewStatistics;
+import org.apache.bark.vo.SampleOut;
+import org.apache.bark.vo.SystemLevelMetrics;
 
 public interface DQMetricsService {
-	public void insertMetadata(DQMetricsValue dq);
+	public void insertMetadata(DqMetricsValue dq);
 
 	// public List<DQMetricsValue> getMetricsValueById(String assetId);
 
-	public DQMetricsValue getLatestlMetricsbyId(String assetId);
+	public DqMetricsValue getLatestlMetricsbyId(String assetId);
 
 	// public AssetLevelMetrics getAssetLevelMetricsbyId(String assetId);
 	// public SystemLevelMetrics getSystemLevelMetricsbySystem(String system);

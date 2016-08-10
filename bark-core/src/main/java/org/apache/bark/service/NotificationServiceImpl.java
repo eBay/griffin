@@ -17,11 +17,10 @@ package org.apache.bark.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.bark.model.NotificationRecord;
-//import org.springframework.validation.annotation.Validated;
+import org.apache.bark.vo.NotificationRecord;
+import org.springframework.stereotype.Service;
 
-//@Service
-//@Validated
+@Service
 public class NotificationServiceImpl implements NotificationService {
 	private static List<NotificationRecord> records = new ArrayList<NotificationRecord>();
 	private static int count = 1;
@@ -35,7 +34,6 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public List<NotificationRecord> getAll() {
-		// TODO Auto-generated method stub
 		return records;
 	}
 
