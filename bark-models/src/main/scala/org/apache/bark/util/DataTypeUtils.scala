@@ -1,4 +1,4 @@
-package com.ebay.bark
+package org.apache.bark.util
 
 import java.sql.Timestamp
 import java.util.Date

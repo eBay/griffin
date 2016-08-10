@@ -1,21 +1,12 @@
-package com.ebay.bark
+package org.apache.bark.validility
 
-import com.fasterxml.jackson.core.{JsonFactory, JsonGenerator}
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
-import org.apache.spark.mllib.linalg.{Vector, Vectors}
+import org.apache.bark.util.{DataConverter, DataTypeUtils, HdfsUtils, PartitionUtils}
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.catalyst.CatalystTypeConverters
-import org.apache.spark.sql.{DataFrame, Row}
-import org.apache.spark.sql.types.{DataType, StructField}
-
-import scala.collection.immutable.HashSet
-import scala.collection.mutable.{Map, MutableList}
-import scala.collection.{Map, mutable}
-import scala.util.matching.Regex
+import org.apache.spark.sql.DataFrame
 
 object Vali {
 

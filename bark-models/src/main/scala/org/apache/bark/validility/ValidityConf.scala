@@ -1,4 +1,6 @@
-package com.ebay.bark
+package org.apache.bark.validility
+
+import com.ebay.bark.PartitionConfig
 
 class ValidityConf {
   var dataSet: String = null

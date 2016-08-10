@@ -1,10 +1,8 @@
-package com.ebay.bark
+package org.apache.bark.validility
 
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
-
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.mllib.linalg.Vectors
-import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
+import org.apache.spark.mllib.stat.Statistics
 
 object Validility extends App {
     val conf = new SparkConf().setAppName("Validility")

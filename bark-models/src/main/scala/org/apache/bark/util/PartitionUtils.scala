@@ -1,4 +1,6 @@
-package com.ebay.bark
+package org.apache.bark.util
+
+import com.ebay.bark.PartitionConfig
 
 object PartitionUtils {
 

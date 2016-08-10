@@ -1,4 +1,4 @@
-package com.ebay.bark
+package org.apache.bark.validility
 
 class MetricsReq {
   var name: Int = 0

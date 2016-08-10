@@ -1,4 +1,4 @@
-package com.ebay.bark
+package org.apache.bark.validility
 
 class ValidityReq {
   var colId: Int = 0

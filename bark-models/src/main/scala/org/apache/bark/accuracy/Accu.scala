@@ -9,44 +9,52 @@
   *
   */
 
-package com.ebay.bark
+package org.apache.bark.accuracy
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.bark.util.{HdfsUtils, PartitionUtils}
 import org.apache.spark.rdd.RDD.rddToPairRDDFunctions
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.{Logging, SparkConf, SparkContext}
 
 import scala.collection.immutable.HashSet
-import scala.collection.mutable
 import scala.collection.mutable.{MutableList, HashSet => MutableHashSet, Map => MutableMap}
 
-object Accu {
+object Accu extends Logging{
 
   def main(args: Array[String]) {
-
+    if (args.length < 2) {
+      logError("Usage: class <input-conf-file> <outputPath>")
+      logError("For input-conf-file, please use accu_config.json as an template to reflect test dataset accordingly.")
+      sys.exit(-1)
+    }
     val input = HdfsUtils.openFile(args(0))
 
     val outputPath = args(1) + System.getProperty("file.separator")
 
-    //add files for job scheduling
+    //some done files, some are for job scheduling purpose
     val startFile = outputPath + "_START"
     val resultFile = outputPath + "_RESULT"
     val doneFile = outputPath + "_FINISHED"
     val missingFile = outputPath + "missingRec.txt"
 
+    //deserialize json to bean object
     val mapper = new ObjectMapper()
     mapper.registerModule(DefaultScalaModule)
 
     //read the config info of comparison
-    val configure = mapper.readValue(input, classOf[AccuracyConf])
+    val configure = mapper.readValue(input, classOf[AccuracyConfEntity])
 
     val conf = new SparkConf().setAppName("Accu")
     val sc = new SparkContext(conf)
-    val sqlContext = new org.apache.spark.sql.hive.HiveContext(sc)
+    val sqlContext = new HiveContext(sc)
 
     //add spark applicationId for debugging
     val applicationId = sc.applicationId
+
+    //for spark monitoring
     HdfsUtils.writeFile(startFile, applicationId)
 
     //get source data
@@ -66,43 +74,44 @@ object Accu {
       sb.append(item)
       sb.append("\n")
     }
-    HdfsUtils.writeFile(missingFile, sb.toString())
 
+    //for spark monitoring
+    HdfsUtils.writeFile(missingFile, sb.toString())
     HdfsUtils.createFile(doneFile)
 
     sc.stop()
 
   }
 
-  def calcAccu(sc: SparkContext, configure: AccuracyConf, sojdf: DataFrame, bedf: DataFrame): ((Long, Long), List[String]) = {
+  def calcAccu(sc: SparkContext, configure: AccuracyConfEntity, sojdf: DataFrame, bedf: DataFrame): ((Long, Long), List[String]) = {
     val mp = configure.accuracyMapping
 
     //--0. prepare to start job--
 
     //the key column info, to match different rows between source and target
-    val sojKeyIndexList = MutableList[scala.Tuple2[Int, String]]()
-    val beKeyIndexList = MutableList[scala.Tuple2[Int, String]]()
+    val sojKeyIndexList = MutableList[Tuple2[Int, String]]()
+    val beKeyIndexList = MutableList[Tuple2[Int, String]]()
 
     //the value column info, to be compared with between the match rows
-    val sojValueIndexList = MutableList[scala.Tuple2[Int, String]]()
-    val beValueIndexList = MutableList[scala.Tuple2[Int, String]]()
+    val sojValueIndexList = MutableList[Tuple2[Int, String]]()
+    val beValueIndexList = MutableList[Tuple2[Int, String]]()
 
     //get the key and value column info from config
     for (i <- mp) {
       if (i.isPK) {
 
-        val sojkey = scala.Tuple2(i.sourceColId, i.sourceColName)
+        val sojkey = Tuple2(i.sourceColId, i.sourceColName)
         sojKeyIndexList += sojkey
 
-        val bekey = scala.Tuple2(i.targetColId, i.targetColName)
+        val bekey = Tuple2(i.targetColId, i.targetColName)
         beKeyIndexList += bekey
 
       }
 
-      val sojValue = scala.Tuple2(i.sourceColId, i.sourceColName)
+      val sojValue = Tuple2(i.sourceColId, i.sourceColName)
       sojValueIndexList += sojValue
 
-      val beValue = scala.Tuple2(i.targetColId, i.sourceColName)
+      val beValue = Tuple2(i.targetColId, i.sourceColName)
       beValueIndexList += beValue
 
     }
@@ -179,7 +188,7 @@ object Accu {
     val missed = allkvs.aggregate(((0L, 0L), List[String]()))(seqMissed, combMissed)
 
     //output: need to change
-    println("source count: " + missed._1._2 + " missed count : " + missed._1._1)
+    logInfo("source count: " + missed._1._2 + " missed count : " + missed._1._1)
 
     missed
   }
