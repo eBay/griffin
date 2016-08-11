@@ -121,6 +121,7 @@ object DataConverter {
       case x: Byte => x.toDouble
       case x: Float => x.toDouble
       case x: Date => x.getTime
+      //TODO
       case x: Timestamp => x.getTime
       case x: String => x.toDouble
       case x: Boolean => if (x) 1 else 0
