@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.ebay.oss.bark.error.BarkDbOperationException;
+import com.ebay.oss.bark.error.BarkWebException;
 import com.ebay.oss.bark.error.ErrorMessage;
 import com.ebay.oss.bark.service.DqModelService;
 import com.ebay.oss.bark.service.NotificationService;
@@ -40,7 +41,7 @@ import com.ebay.oss.bark.vo.NotificationRecord;
 import com.sun.jersey.api.Responses;
 
 @Component
-//@Scope("request")
+// @Scope("request")
 @Path("/models")
 public class DQModelController {
 
@@ -57,73 +58,55 @@ public class DQModelController {
 		return dqModelService.getAllModles();
 	}
 
-
 	@GET
 	@Path("/{name}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ModelInput getModel(@PathParam("name") String name) {
 
-		return dqModelService.getModelByName(name);
+		ModelInput model = dqModelService.getModelByName(name);
+		if (model == null) {
+			throw new BarkWebException(Responses.NOT_FOUND,
+					"The model you are looking for doesn't exist!");
+		}
+		return model;
 	}
 
 	@GET
 	@Path("/enableModel/{name}")
-	public void enableModel(@PathParam("name") String name)
-	{
+	public void enableModel(@PathParam("name") String name) {
 		dqModelService.enableSchedule4Model(dqModelService.getGeneralModel(name));
 	}
 
-	//	@GET
-	//	@Path("/{name}")
-	//	public Response getModel(@PathParam("name") String name) {
-	//
-	//		try {
-	//			return Response.status(Response.Status.OK)
-	//					.entity(dQModelService.getModelByName(name)).build();
-	//		} catch (BarkDbOperationException e) {
-	//			// throw new WebApplicationException(e, Responses.NOT_FOUND);
-	//			int status = e.getStatus();
-	//			status = (status != 0) ? status
-	//					: Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-	//			return Response.status(status)
-	//					.entity(new ErrorMessage(status, e.getMessage())).build();
-	//		}
-	//	}
 
 	@DELETE
 	@Path("/{name}")
 	public void deleteModel(@PathParam("name") String name) throws BarkDbOperationException {
-		dqModelService.deleteModel(name);
+
+		try {
+			dqModelService.deleteModel(name);
+		} catch (BarkDbOperationException e) {
+			throw new BarkWebException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage());
+		}
 	}
 
 	@POST
 	@Path("/")
-	public Response newModel(@RequestBody ModelInput input) {
-		if (input == null) return null; 
-			
-		ErrorMessage err = input.validate();
-		if (err != null) {
-			err.setStatus(Response.Status.BAD_REQUEST.getStatusCode());
-			return Response.status(Responses.CLIENT_ERROR).entity(err)
-					.build();
-			// return ;
-		}
+	public void newModel(@RequestBody ModelInput input) {
+		if (input != null) {
 
-		try {
-			dqModelService.newModel(input);
-			notificationService.insert(new NotificationRecord(new Date()
-			.getTime(), input.getBasic().getOwner(), "create", "model",
-			input.getBasic().getName()));
+			ErrorMessage err = input.validate();
+			if (err != null) {
+				throw new BarkWebException(Response.Status.BAD_REQUEST.getStatusCode(), err.getMessage());
+			}
 
-			return Response.status(Response.Status.CREATED).build();
+			try {
+				dqModelService.newModel(input);
+				notificationService.insert(new NotificationRecord(new Date().getTime(), input.getBasic().getOwner(),
+						"create", "model", input.getBasic().getName()));
 
-		} catch (BarkDbOperationException e) {
-			return Response
-					.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity(new ErrorMessage(
-							Response.Status.INTERNAL_SERVER_ERROR
-							.getStatusCode(), e.getMessage()))
-							.type(MediaType.APPLICATION_JSON).build();
+			} catch (BarkDbOperationException e) {
+				throw new BarkWebException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage());
+			}
 		}
 	}
 

@@ -158,10 +158,11 @@ public class DqModelServiceImpl implements DqModelService {
 			throw new BarkDbOperationException("Failed to find model with name of '" + name + "'", e);
 		}
 
-		if (dqModel == null) {
-			throw new BarkDbOperationException(404, "The model of '" + name + "' doesn't exist!");
+		if(dqModel != null){
+			return convertModel(dqModel);
+		}else{
+			return null;
 		}
-		return convertModel(dqModel);
 	}
 
 	private ModelInput convertModel(DqModel sourceObject) {
@@ -284,10 +285,12 @@ public class DqModelServiceImpl implements DqModelService {
 
 	@Override
 	public int newModel(ModelInput input) throws BarkDbOperationException {
+		if ( hasModelWithName(input.getBasic().getName()) ) {
+			throw new BarkDbOperationException("Record already existing");
+		}
+		
 		try {
-			if ( hasModelWithName(input.getBasic().getName()) ) {
-				throw new BarkDbOperationException("Record already existing");
-			}
+			
 
 			DqModel entity = new DqModel();
 			entity.setId(dqModelRepo.getNextId());
@@ -411,7 +414,7 @@ public class DqModelServiceImpl implements DqModelService {
 
 	}
 
-	public ModelBasicInputNew getViewModelForFront(DqModel sourceObject) {
+	private ModelBasicInputNew getViewModelForFront(DqModel sourceObject) {
 		ModelBasicInputNew basic = new ModelBasicInputNew();
 		basic.setDesc(sourceObject.getModelDesc());
 		basic.setName(sourceObject.getModelName());

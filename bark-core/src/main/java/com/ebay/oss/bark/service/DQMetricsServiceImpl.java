@@ -34,6 +34,7 @@ import com.ebay.oss.bark.domain.ModelType;
 import com.ebay.oss.bark.domain.SampleFilePathLKP;
 import com.ebay.oss.bark.domain.ScheduleType;
 import com.ebay.oss.bark.domain.SystemType;
+import com.ebay.oss.bark.error.BarkDbOperationException;
 import com.ebay.oss.bark.repo.DataAssetRepo;
 import com.ebay.oss.bark.repo.DqMetricsRepo;
 import com.ebay.oss.bark.repo.DqModelRepo;
@@ -94,14 +95,18 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 
 		DBObject item = metricsRepo.getByCondition(queryList);
 
-		if (item == null) {
-			long seq = metricsRepo.getNextId();
-			logger.warn("log: new record inserted" + seq);
-			metrics.set_id(seq);
-			metricsRepo.save(metrics);
-		} else {
-			logger.warn("log: updated record");
-			metricsRepo.update(metrics, item);
+		try{
+			if (item == null) {
+				long seq = metricsRepo.getNextId();
+				logger.warn("log: new record inserted" + seq);
+				metrics.set_id(seq);
+				metricsRepo.save(metrics);
+			} else {
+				logger.warn("log: updated record");
+				metricsRepo.update(metrics, item);
+			}
+		}catch(Exception e){
+			throw new BarkDbOperationException("Failed to save metrics value!", e);
 		}
 
 	}

@@ -47,7 +47,7 @@ define(['./module'], function (services) {
               //real data
               //data asset
               dbtree: BACKEND_SERVER + API_ROOT_PATH + '/dataassets/metadata',
-              schemadefinition: BACKEND_SERVER + API_ROOT_PATH + '/dataassets/metadata',
+              schemadefinition: BACKEND_SERVER + API_ROOT_PATH + '/dataassets',
               dataassetlist: BACKEND_SERVER + API_ROOT_PATH + '/dataassets',
               adddataasset: BACKEND_SERVER + API_ROOT_PATH + '/dataassets',
               updatedataasset: BACKEND_SERVER + API_ROOT_PATH + '/dataassets',

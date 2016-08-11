@@ -32,12 +32,13 @@ import org.springframework.stereotype.Component;
 
 import com.ebay.oss.bark.domain.DataAsset;
 import com.ebay.oss.bark.error.BarkDbOperationException;
-import com.ebay.oss.bark.error.ErrorMessage;
+import com.ebay.oss.bark.error.BarkWebException;
 import com.ebay.oss.bark.service.DataAssetService;
 import com.ebay.oss.bark.service.NotificationService;
 import com.ebay.oss.bark.vo.DataAssetInput;
 import com.ebay.oss.bark.vo.NotificationRecord;
 import com.ebay.oss.bark.vo.PlatformMetadata;
+import com.sun.jersey.api.Responses;
 
 @Component
 //@Scope("request")
@@ -51,6 +52,7 @@ public class DataAssetController {
 
 	/**
 	 * Get data asset metadata
+	 *
 	 * @return
 	 */
 	@GET
@@ -61,104 +63,102 @@ public class DataAssetController {
 	}
 
 	/**
-	 * Get schema definition of data asset
-	 * @param id
-	 * @return
-	 * @throws BarkDbOperationException
-	 */
-	@GET
-	@Path("/metadata/{asset_id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public DataAsset getDataAssetById(@PathParam("asset_id") Long id) throws BarkDbOperationException {
-		return dataAssetService.getDataAssetById(id);
-	}
-
-	/**
 	 * Register a new data asset
+	 *
 	 * @param input
 	 * @return
+	 * @throws BarkWebException
 	 */
 	@POST
 	@Path("/")
-	public Response registerNewDataAsset(DataAssetInput input) {
+	public void registerNewDataAsset(DataAssetInput input)
+			throws BarkWebException {
 		try {
 			dataAssetService.createDataAsset(input);
-			notificationService.insert(new NotificationRecord(new Date().getTime(),  input.getOwner(), "create", "dataasset", input.getAssetName()));
-			return Response.status(Response.Status.CREATED).build();
-			//			return "{\"status\":\"0\" , \"result\":\"success\"}";
+			notificationService.insert(new NotificationRecord(new Date()
+			.getTime(), input.getOwner(), "create", "dataasset", input
+			.getAssetName()));
+			//			return Response.status(Response.Status.CREATED).build();
 		} catch (BarkDbOperationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			//			return "{\"status\":\"-1\" , \"result\":\""+ e.getMessage() +"\"}";
-			return Response
-					.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity(new ErrorMessage(
-							Response.Status.INTERNAL_SERVER_ERROR
-							.getStatusCode(), e.getMessage()))
-							.type(MediaType.APPLICATION_JSON).build();
+
+			throw new BarkWebException(
+					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+					e.getMessage());
 		}
 
 	}
 
-
 	/**
 	 * Get all data asset list
+	 *
 	 * @return
 	 */
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<DataAsset> getAssetList() { return dataAssetService.getAllDataAssets();	}
+	public List<DataAsset> getAssetList() {
+		return dataAssetService.getAllDataAssets();
+	}
 
 	/**
-	 * Get one data asset  by id
+	 * Get one data asset by id
+	 *
 	 * @return
-	 * @throws BarkDbOperationException
+	 * @throws BarkWebException
 	 */
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public DataAsset getOneAsset(@PathParam("id") Long id) throws BarkDbOperationException {
-		return dataAssetService.getDataAssetById(id);
+	public DataAsset getOneAsset(@PathParam("id") Long id)
+			throws BarkWebException {
+		DataAsset da = dataAssetService.getDataAssetById(id);
+		if (da == null) {
+			throw new BarkWebException(Responses.NOT_FOUND,
+					"The asset you are looking for doesn't exist");
+		} else {
+			return da;
+		}
 	}
 
 	/**
 	 * Remove a data asset by id
+	 *
 	 * @param id
 	 * @return
 	 */
 	@DELETE
-	@Path("/{asset_id}")
-	public String removeAssetById(@PathParam("asset_id") Long id) {
+	@Path("/{id}")
+	public void removeAssetById(@PathParam("id") Long id) throws BarkWebException {
+
 		try {
 			dataAssetService.removeAssetById(id);
-			return "{\"status\":\"0\" , \"result\":\"success\"}";
+
 		} catch (BarkDbOperationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "{\"status\":\"-1\" , \"result\":\""+ e.getMessage() +"\"}";
+			throw new BarkWebException(
+					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+					e.getMessage());
 		}
 
 	}
 
 	/**
 	 * Update a new data asset
+	 *
 	 * @param input
 	 * @return
 	 */
 	@PUT
 	@Path("/")
-	public String updateDataAsset(DataAssetInput input) {
+	public void updateDataAsset(DataAssetInput input) throws BarkWebException{
+
 		try {
 			dataAssetService.updateDataAsset(input);
-			return "{\"status\":\"0\" , \"result\":\"success\"}";
+
 		} catch (BarkDbOperationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "{\"status\":\"-1\" , \"result\":\""+ e.getMessage() +"\"}";
+			throw new BarkWebException(
+					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+					e.getMessage());
 		}
 	}
-
-
 
 }
