@@ -121,8 +121,7 @@ object DataConverter {
       case x: Byte => x.toDouble
       case x: Float => x.toDouble
       case x: Date => x.getTime
-      //TODO
-      case x: Timestamp => x.getTime
+//      case x: Timestamp => x.getTime
       case x: String => x.toDouble
       case x: Boolean => if (x) 1 else 0
       case _ => 0
@@ -139,7 +138,7 @@ object DataConverter {
       case x: Float => x.toString
       case x: Double => x.toString
       case x: Date => x.toString
-      case x: Timestamp => x.toString
+//      case x: Timestamp => x.toString
       case x: Boolean => x.toString
       case _ => ""
     }

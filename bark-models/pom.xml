@@ -95,6 +95,12 @@
             <version>2.4.16</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.databricks</groupId>
+            <artifactId>spark-csv_2.10</artifactId>
+            <version>1.4.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

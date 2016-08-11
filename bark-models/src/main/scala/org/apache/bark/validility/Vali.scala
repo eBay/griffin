@@ -14,7 +14,7 @@ object Vali extends Logging {
   def main(args: Array[String]): Unit ={
     if (args.length < 2) {
       logError("Usage: class <input-conf-file> <outputPath>")
-      logError("For input-conf-file, please use accu_config.json as an template to reflect test dataset accordingly.")
+      logError("For input-conf-file, please use vali_config.json as an template to reflect test dataset accordingly.")
       sys.exit(-1)
     }
     val input = HdfsUtils.openFile(args(0))
@@ -46,7 +46,7 @@ object Vali extends Logging {
     val sojdf = sqlContext.sql(PartitionUtils.generateSourceSQLClause(configure.dataSet, configure.timePartitions))
 
     //-- algorithm --
-    calcVali(sc, configure, sojdf)
+    calcVali(configure, sojdf)
 
     //--output metrics data--
     val out = HdfsUtils.createFile(resultFile)
@@ -58,7 +58,7 @@ object Vali extends Logging {
     sc.stop()
   }
 
-  def calcVali(sc: SparkContext, configure: ValidityConfEntity, sojdf: DataFrame) : Unit = {
+  def calcVali(configure: ValidityConfEntity, sojdf: DataFrame) : Unit = {
     val dfCount = sojdf.count()
 
     //--1. get all cols name, and types--

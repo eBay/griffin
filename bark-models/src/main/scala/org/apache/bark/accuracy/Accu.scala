@@ -64,7 +64,7 @@ object Accu extends Logging{
     val bedf = sqlContext.sql(PartitionUtils.generateTargetSQLClause(configure.target, configure.tgtPartitions))
 
     //-- algorithm --
-    val ((missCount, srcCount), missedList) = calcAccu(sc, configure, sojdf, bedf)
+    val ((missCount, srcCount), missedList) = calcAccu(configure, sojdf, bedf)
 
     //record result and notify done
     HdfsUtils.writeFile(resultFile, ((1 - missCount.toDouble / srcCount) * 100).toString())
@@ -83,7 +83,7 @@ object Accu extends Logging{
 
   }
 
-  def calcAccu(sc: SparkContext, configure: AccuracyConfEntity, sojdf: DataFrame, bedf: DataFrame): ((Long, Long), List[String]) = {
+  def calcAccu(configure: AccuracyConfEntity, sojdf: DataFrame, bedf: DataFrame): ((Long, Long), List[String]) = {
     val mp = configure.accuracyMapping
 
     //--0. prepare to start job--
