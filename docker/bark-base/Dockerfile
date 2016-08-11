@@ -1,5 +1,5 @@
 FROM sequenceiq/spark:1.6.0
-MAINTAINER bark.ebay.com
+MAINTAINER com.ebay.oss
 
 #set java environment variables
 ENV JAVA_HOME /usr/java/jdk1.7.0_51

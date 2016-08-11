@@ -1,5 +1,5 @@
 FROM bark-base-env:latest
-MAINTAINER bark.ebay.com
+MAINTAINER com.ebay.oss
 
 #input files
 ADD script/env.sh /bark/
