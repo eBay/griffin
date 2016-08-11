@@ -42,6 +42,8 @@ import org.springframework.stereotype.Component;
 
 import com.ebay.oss.bark.domain.DqMetricsValue;
 import com.ebay.oss.bark.domain.SampleFilePathLKP;
+import com.ebay.oss.bark.error.BarkDbOperationException;
+import com.ebay.oss.bark.error.BarkWebException;
 import com.ebay.oss.bark.error.ErrorMessage;
 import com.ebay.oss.bark.service.DQMetricsService;
 import com.ebay.oss.bark.service.DqModelService;
@@ -50,7 +52,6 @@ import com.ebay.oss.bark.vo.DqModelVo;
 import com.ebay.oss.bark.vo.OverViewStatistics;
 import com.ebay.oss.bark.vo.SampleOut;
 import com.ebay.oss.bark.vo.SystemLevelMetrics;
-import com.sun.jersey.api.Responses;
 
 @Component
 // @Scope("request")
@@ -68,16 +69,23 @@ public class DQMetricsController {
 	@POST
 	@Path("/")
 	@Consumes({ "application/json" })
-	public Response insertMetadata(@Valid DqMetricsValue dq) {
+	public void insertMetadata(@Valid DqMetricsValue dq) {
 		if (dq != null) {
 			ErrorMessage err = dq.validate();
 			if (err != null) {
-				return Response.status(Responses.CLIENT_ERROR).entity(err).build();
+
+				throw new BarkWebException(Response.Status.BAD_REQUEST.getStatusCode(),
+					err.getMessage());
 			}
 		}
-
-		dqMetricsService.insertMetadata(dq);
-		return Response.status(Response.Status.CREATED).build();
+		
+		try{
+			dqMetricsService.insertMetadata(dq);
+		}catch(BarkDbOperationException e){
+			throw new BarkWebException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+					e.getMessage());
+		}
+		
 
 	}
 
