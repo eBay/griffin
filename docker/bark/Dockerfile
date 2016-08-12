@@ -8,7 +8,7 @@ RUN mkdir /bark/tmp && mkdir /bark/temp && mkdir /bark/log
 RUN chmod -R 755 /bark
 
 #add db
-ADD docker/bark/db /db
+ADD bark-doc/db /db
 
 #remove tomcat webapps
 ENV APACHE_HOME /apache/apache-tomcat-7.0.70
