@@ -6,10 +6,10 @@ import org.apache.bark.common.PartitionPair
   * Accurarcy configuration entity
   */
 class AccuracyConfEntity {
-  var source: String = null
-  var target: String = null
-  var dt: String = null
-  var hour: String = null
+  var source: String = _
+  var target: String = _
+  var dt: String = _
+  var hour: String = _
 
   var accuracyMapping: List[AccuracyMapping] = List()
   var srcPartitions: List[PartitionPair] = List()

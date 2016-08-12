@@ -3,7 +3,7 @@ package org.apache.bark.validility
 import org.apache.bark.common.PartitionPair
 
 class ValidityConfEntity {
-  var dataSet: String = null
+  var dataSet: String = _
 
   var validityReq: List[ValidityReq] = List()
 

@@ -3,3 +3,4 @@ test-coverage
 build
 /.idea/
 *.iml
+target

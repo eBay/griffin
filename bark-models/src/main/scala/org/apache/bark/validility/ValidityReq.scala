@@ -1,11 +1,11 @@
 package org.apache.bark.validility
 
 class ValidityReq {
-  var colId: Int = 0
-  var colName: String = null
+  var colId: Int = _
+  var colName: String = _
 
-  var colType: String = null
-  var isNum: Boolean = false
+  var colType: String = _
+  var isNum: Boolean = _
 
   var metrics: List[MetricsReq] = List()
 
@@ -15,8 +15,8 @@ class ValidityReq {
 }
 
 class MetricsReq {
-  var name: Int = 0
-  var result: Any = null
+  var name: Int = _
+  var result: Any = _
 
   override def toString = {
     s"name: $name, result: $result"
