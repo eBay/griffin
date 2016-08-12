@@ -9,16 +9,14 @@ class ValidityReq {
 
   var metrics: List[MetricsReq] = List()
 
-  override def toString = {
-    s"colId: $colId, colName: $colName, colType: $colType, isNum: $isNum, metrics: $metrics"
-  }
+  override def toString = "colId: "+colId+", colName: "+colName+", colType: "+colType+", isNum: "+isNum+", metrics: "+metrics
+
 }
 
 class MetricsReq {
   var name: Int = _
   var result: Any = _
 
-  override def toString = {
-    s"name: $name, result: $result"
-  }
+  override def toString = "name: "+name+", result: "+result
+
 }

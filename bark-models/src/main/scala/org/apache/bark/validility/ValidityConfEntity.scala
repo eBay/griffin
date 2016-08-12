@@ -9,7 +9,9 @@ class ValidityConfEntity {
 
   var timePartitions: List[PartitionPair] = List()
 
-  override def toString = {
-    s"dataSet: $dataSet, validityReq: $validityReq"
-  }
+  override def toString = "dataSet: " +dataSet+", validityReq: " +validityReq
+
+//  {
+//    s"dataSet: $dataSet, validityReq: $validityReq"
+//  }
 }
