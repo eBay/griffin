@@ -15,30 +15,33 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
 2. run "mvn install"
 
 ### How to run in docker
-1. Install [docker](https://www.docker.com)
-2. Pull pre-built docker image directly and tag it as bark-env
+1. Install [docker](https://www.docker.com) and [git](https://git-scm.com).
+2. Clone this repository to your work path.
     ```
-    docker pull lliu13/bark-env
-    docker tag lliu13/bark-env bark-env
+    cd <your work path>
+    git clone https://github.com/eBay/DQSolution.git
     ```
-    Optionally, you can build docker image yourself.
-    First, build image [bark-base-env](https://github.com/eBay/DQSolution/docker/bark-base)
+3. Enter production directory DQSolution, build docker image orderly.
     ```
-    docker build -t bark-base-env .
+    cd <your work path>/DQSolution    
     ```
-    Second, build image [bark-env](https://github.com/eBay/DQSolution/docker/bark)
+    In DQSolution directory, build docker image bark-base-env, which is the base environment of application.
     ```
-    docker build -t bark-env .
+    docker build -t bark-base-env -f docker/bark-base/Dockerfile .
     ```
-3. Run docker image bark-env
+    Then you can build docker image bark-env, containing the demo application, which is build from the latest version of project.
+    ```
+    docker build -t bark-env -f docker/bark/Dockerfile .
+    ```
+4. Run docker image bark-env, then the backend is ready.
     ```
     docker run -it -h sandbox --name bark -m 8G --memory-swap -1 \
     -p 40022:22 -p 47077:7077 -p 48088:8088 -p 48040:8040 -p 48042:8042 \
     -p 48080:8080 -p 27017:27017 bark-env bash
     ```
-4. Now you can visit bark UI
+5. Now you can visit UI through your browser.
     ```
-    http://[your docker host IP address]:48080/
+    http://<your local IP address>:48080/
     ```
 
 ### How to deploy and run at local
