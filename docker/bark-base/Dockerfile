@@ -22,20 +22,25 @@ RUN rm /usr/local/hadoop-2.6.0/share/hadoop/yarn/lib/jline-0.9.94.jar
 
 #install tomcat 7
 RUN cd /apache && wget http://apache.spinellicreations.com/tomcat/tomcat-7/v7.0.70/bin/apache-tomcat-7.0.70.tar.gz && tar -xvf apache-tomcat-7.0.70.tar.gz
-ADD config/tomcat /etc/init.d/
+ADD docker/bark-base/config/tomcat /etc/init.d/
 RUN chmod 775 /etc/init.d/tomcat
 
 #install mongodb
-ADD config/mongodb-org-3.2.repo /etc/yum.repos.d/
+ADD docker/bark-base/config/mongodb-org-3.2.repo /etc/yum.repos.d/
 RUN yum install -y mongodb-org mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools && yum clean all
 
 #expose ports
 EXPOSE 8080
 EXPOSE 27017
 
+#install maven
+RUN cd /apache && wget http://mirror.stjschools.org/public/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz && tar -xzvf apache-maven-3.3.9-bin.tar.gz
+ENV M2_HOME /apache/apache-maven-3.3.9
+ENV PATH $PATH:$M2_HOME/bin
+
 #add working directory
 RUN mkdir /bark
-ADD bark /bark
+ADD docker/bark-base/bark /bark
 RUN chmod -R 755 /bark
 
 #env
