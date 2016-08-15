@@ -341,7 +341,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 			DataAsset da = dataAssetRepo.getById(dataAssetId);
 			if (da != null) {
 				//delete all the accuracy models with this given source asset
-				List<DqModel> models = dqModelRepo.getByDataAsset(da, true);
+				List<DqModel> models = dqModelRepo.getByDataAsset(da);
 				for(DqModel each : models) {
 					dqModelService.deleteModel(each.getModelName());
 				}

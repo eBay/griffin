@@ -12,16 +12,19 @@
  */
 package com.ebay.oss.bark.service;
 
+import com.ebay.oss.bark.domain.DqModel;
 import com.ebay.oss.bark.vo.ModelInput;
 
 public interface DqModelCreator {
-
-    // FIXME the return value here doesn't mean anything
-    int newModel(ModelInput input);
 
     /** the minimum number of Jobs executed in the ModelStatus.TESTING, and then it could be shifted
      * to ModelStatus.VERIFIED.
      */
     int MIN_TESTING_JOB_NUMBER = 5;
+
+    boolean isSupport(ModelInput input);
+
+    // FIXME the return value here doesn't mean anything
+    DqModel newModel(ModelInput input);
 
 }

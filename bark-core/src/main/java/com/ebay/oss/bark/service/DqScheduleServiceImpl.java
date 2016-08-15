@@ -29,12 +29,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 //import org.springframework.validation.annotation.Validated;
+
 
 
 
@@ -107,7 +109,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 
 		checkAllJOBSStatus();
 
-		dqModelService.updateModelStatus(ModelStatus.TESTING, ModelStatus.VERIFIED);
+		updateModelStatus(ModelStatus.TESTING, ModelStatus.VERIFIED);
 
 		logger.info("===========checking jobs done===============");
 	}
@@ -243,9 +245,9 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 					if(model.getSchedule()==ScheduleType.HOURLY && model.getSystem()==SystemType.BULLSEYE)
 					{
 						Date dt4be = new Date(ts+3600000);
-						SimpleDateFormat formatter4be = new SimpleDateFormat("yyyyMMdd");
+//						SimpleDateFormat formatter4be = new SimpleDateFormat("yyyyMMdd");
 						String dateString4be = formatter.format(dt4be);
-						SimpleDateFormat formatter24be = new SimpleDateFormat("HH");
+//						SimpleDateFormat formatter24be = new SimpleDateFormat("HH");
 						String hourString4be = formatter2.format(dt4be);
 						doneFiles.append(updateHDFSDirTemplateString(tgtAsset.getAssetHDFSPath(),dateString4be,hourString4be)
 								+System.getProperty("line.separator"));
@@ -516,6 +518,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 						File rFile = new File(resultLocalFileDir);
 						BufferedReader reader = new BufferedReader(new FileReader(rFile));
 						String resultValue = reader.readLine();
+						IOUtils.closeQuietly(reader);
 
 						String metricsNames = jobID.substring(0, jobID.lastIndexOf("_"));
 						List<String> metricsNameArray = new ArrayList<String>();
@@ -660,5 +663,16 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 			return false;
 		}
 	}
+
+    protected void updateModelStatus(int fromStatus, int toStatus) {
+        List<DqModel> allmodels = dqModelRepo.getByStatus(fromStatus);
+        for (DqModel model : allmodels) {
+            List<DqMetricsValue> allMetrics = metricsRepo.getByMetricsName(model.getModelName());
+            if (allMetrics.size() >= DqModelCreator.MIN_TESTING_JOB_NUMBER) {
+                model.setStatus(toStatus);
+                dqModelRepo.update(model);
+            }
+        }
+    }
 
 }

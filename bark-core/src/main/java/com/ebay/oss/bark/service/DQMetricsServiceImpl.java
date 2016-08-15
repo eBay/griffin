@@ -241,10 +241,11 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		for(String sourceName : references.keySet()) {
 			String referencerNames = references.get(sourceName).toString();
 			List<String> rNames = new ArrayList<String>();
-			if (referencerNames.indexOf(",") == -1)
+			if (referencerNames.indexOf(",") == -1) {
 				rNames.add(referencerNames);
-			else
+			} else {
 				rNames = Arrays.asList(referencerNames.split(","));
+			}
 
 			for (String referencerName : rNames) {
 				logger.warn("==============anmoni loop start=================="
@@ -608,10 +609,6 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 
 		missedFileRepo.save(entity);
 
-	}
-
-	public void downloadSample(String filePath) {
-	    throw new RuntimeException("not impl yet.");
 	}
 
 }

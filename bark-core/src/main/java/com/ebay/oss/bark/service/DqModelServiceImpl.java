@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ebay.oss.bark.common.ScheduleModelSeperator;
-import com.ebay.oss.bark.domain.DqMetricsValue;
 import com.ebay.oss.bark.domain.DqModel;
 import com.ebay.oss.bark.domain.DqSchedule;
 import com.ebay.oss.bark.domain.ModelStatus;
@@ -32,8 +31,6 @@ import com.ebay.oss.bark.repo.DqMetricsRepo;
 import com.ebay.oss.bark.repo.DqModelRepo;
 import com.ebay.oss.bark.repo.DqScheduleRepo;
 import com.ebay.oss.bark.vo.DqModelVo;
-import com.ebay.oss.bark.vo.ModelBasicInputNew;
-import com.ebay.oss.bark.vo.ModelExtraInputNew;
 import com.ebay.oss.bark.vo.ModelInput;
 import com.mongodb.DBObject;
 
@@ -50,6 +47,9 @@ public class DqModelServiceImpl implements DqModelService {
 
 	@Autowired
 	private Converter<DqModel, DqModelVo> converter;
+	
+	@Autowired
+	Converter<DqModel, ModelInput> modelInputConverter;
 
 	@Autowired
     private DqMetricsRepo metricsRepo;
@@ -114,60 +114,14 @@ public class DqModelServiceImpl implements DqModelService {
 	}
 
 	@Override
-	public ModelInput getModelByName(String name)
-			throws BarkDbOperationException {
-		DqModel dqModel = null;
+	public ModelInput getModelByName(String name) throws BarkDbOperationException {
 		try {
-			dqModel = dqModelRepo.findByName(name);
-
+			DqModel dqModel = dqModelRepo.findByName(name);
+			return modelInputConverter.voOf(dqModel);
 		} catch (Exception e) {
 			logger.warn(e.toString());
 			throw new BarkDbOperationException("Failed to find model with name of '" + name + "'", e);
 		}
-
-		if(dqModel != null){
-			return convertModel(dqModel);
-		}else{
-			return null;
-		}
-	}
-
-	private ModelInput convertModel(DqModel sourceObject) {
-		// Object result = sourceObject;
-		int modelType = sourceObject.getModelType();
-		ModelInput result = new ModelInput();
-		result.setBasic(getViewModelForFront(sourceObject));
-
-		if (modelType == ModelType.ACCURACY) {
-			result.parseFromString(sourceObject.getModelContent());
-		} else if (modelType == ModelType.VALIDITY) {
-
-			ModelExtraInputNew extra = result.getExtra();
-			String content = sourceObject.getModelContent();
-			String[] contents = content.split("\\|");
-			extra.setSrcDb(contents[0]);
-			extra.setSrcDataSet(contents[1]);
-			extra.setColumn(contents[3]);
-
-			int type = Integer.parseInt(contents[2]);
-			extra.setVaType(type);
-
-		} else if (modelType == ModelType.ANOMALY) {
-
-			ModelExtraInputNew extra = result.getExtra();
-			String content = sourceObject.getModelContent();
-			String[] contents = content.split("\\|");
-			extra.setSrcDb(contents[0]);
-			extra.setSrcDataSet(contents[1]);
-			int type = Integer.parseInt(contents[2]);
-			extra.setAnType(type);
-
-		} else if (modelType == ModelType.PUBLISH) {
-
-			result.getExtra().setPublishUrl(sourceObject.getModelContent());
-		}
-
-		return result;
 	}
 
     @Override
@@ -218,37 +172,8 @@ public class DqModelServiceImpl implements DqModelService {
     DqModelCreator modelCreator;
     
 	@Override
-	public int newModel(ModelInput input) throws BarkDbOperationException {
+	public DqModel newModel(ModelInput input) throws BarkDbOperationException {
 	    return modelCreator.newModel(input);
 	}
-
-	private ModelBasicInputNew getViewModelForFront(DqModel sourceObject) {
-		ModelBasicInputNew basic = new ModelBasicInputNew();
-		basic.setDesc(sourceObject.getModelDesc());
-		basic.setName(sourceObject.getModelName());
-		basic.setDataaset(sourceObject.getAssetName());
-		basic.setDataasetId(sourceObject.getAssetId());
-		basic.setStatus(sourceObject.getStatus());
-		basic.setType(sourceObject.getModelType());
-		basic.setScheduleType(sourceObject.getSchedule());
-		basic.setSystem(sourceObject.getSystem());
-		basic.setEmail(sourceObject.getNotificationEmail());
-		basic.setOwner(sourceObject.getOwner());
-		basic.setThreshold(sourceObject.getThreshold());
-
-		return basic;
-	}
-
-	@Override
-    public void updateModelStatus(int fromStatus, int toStatus) {
-        List<DqModel> allmodels = dqModelRepo.getByStatus(fromStatus);
-        for (DqModel model : allmodels) {
-            List<DqMetricsValue> allMetrics = metricsRepo.getByMetricsName(model.getModelName());
-            if (allMetrics.size() >= DqModelCreator.MIN_TESTING_JOB_NUMBER) {
-                model.setStatus(toStatus);
-                dqModelRepo.update(model);
-            }
-        }
-    }
 
 }

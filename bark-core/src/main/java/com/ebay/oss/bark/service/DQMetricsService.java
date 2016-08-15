@@ -38,7 +38,7 @@ public interface DQMetricsService {
 	////////////// sample-file
 	public List<SampleOut> listSampleFile(String modelName);
 
-	public void downloadSample(String filePath);
+//	public void downloadSample(String filePath);
 
 	public void insertSampleFilePath(SampleFilePathLKP samplePath);
 

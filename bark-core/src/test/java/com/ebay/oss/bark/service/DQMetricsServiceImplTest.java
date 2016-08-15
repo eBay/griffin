@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,13 +181,6 @@ public class DQMetricsServiceImplTest {
         if (soList.size() == 0) System.out.println("Sample File List is empty");
     }
 
-    private void testDownloadSample(String path) {
-        System.out.println("===== Download Sample =====");
-        dqMetricsService.downloadSample(path);
-        System.out.println("Download Sample is not implemented yet");
-    }
-
-    @Ignore
     @Test
     public void testSampleFileProcess() {
         String modelName = "testModel100", path = "/user/b_des/bark/testPath/";
@@ -199,10 +191,6 @@ public class DQMetricsServiceImplTest {
         //list sample file
         testListSampleFile(modelName);
 
-        //download sample file
-        testDownloadSample(path);
-
-        //here we may need to remove the test samples
     }
 
     @Test
