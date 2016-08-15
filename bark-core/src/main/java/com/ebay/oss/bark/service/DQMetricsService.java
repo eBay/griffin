@@ -24,22 +24,28 @@ import com.ebay.oss.bark.vo.SampleOut;
 import com.ebay.oss.bark.vo.SystemLevelMetrics;
 
 public interface DQMetricsService {
-	public void insertMetadata(DqMetricsValue dq);
 
-	// public List<DQMetricsValue> getMetricsValueById(String assetId);
+	public void insertMetadata(DqMetricsValue dq);
 
 	public DqMetricsValue getLatestlMetricsbyId(String assetId);
 
-	// public AssetLevelMetrics getAssetLevelMetricsbyId(String assetId);
-	// public SystemLevelMetrics getSystemLevelMetricsbySystem(String system);
-
-	// public List<String> fetchAllAssetIdBySystem(String system);
-
-	// public List<SystemLevelMetrics> getAllSystemMetrcis();
-	public List<SystemLevelMetrics> heatMap();
-
 	public List<SystemLevelMetrics> briefMetrics(String system);
 
+	public void updateLatestDQList();
+
+	public OverViewStatistics getOverViewStats();
+
+	////////////// sample-file
+	public List<SampleOut> listSampleFile(String modelName);
+
+	public void downloadSample(String filePath);
+
+	public void insertSampleFilePath(SampleFilePathLKP samplePath);
+
+	////////////// HeatMap
+	public List<SystemLevelMetrics> heatMap();
+
+	///////////// dashboard
 	public List<SystemLevelMetrics> dashboard(String system);
 
 	public AssetLevelMetrics oneDataCompleteDashboard(String name);
@@ -48,16 +54,6 @@ public interface DQMetricsService {
 
 	public AssetLevelMetrics metricsForReport(String name);
 
-	public void updateLatestDQList();
-
-	public OverViewStatistics getOverViewStats();
-
 	public List<SystemLevelMetrics> mydashboard(String user);
-
-	public List<SampleOut> listSampleFile(String modelName);
-
-	public void downloadSample(String filePath);
-
-	public void insertSampleFilePath(SampleFilePathLKP samplePath);
 
 }

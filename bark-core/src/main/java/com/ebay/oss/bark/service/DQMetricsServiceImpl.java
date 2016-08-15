@@ -111,46 +111,24 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 
 	}
 
-	public List<String> fetchAllAssetIdBySystems() {
-
-		// List<String> assetIds = new ArrayList<String>();
-
-		List<DqModel> allModels = dqModelRepo.getAll();
-
-		for (DqModel model : allModels) {
-			// assetIds.add(asset.get("assetName").toString());
-			modelSystem.put(model.getModelName(),
-					SystemType.val(model.getSystem()));
+	void fetchAllAssetIdBySystems() {
+		for (DqModel model : dqModelRepo.getAll()) {
+			modelSystem.put(model.getModelName(), SystemType.val(model.getSystem()));
 		}
-
-		return null;
 
 	}
 
 	// FIXME to remove
 	public DqMetricsValue getLatestlMetricsbyId(String assetId) {
-
-		// Query<DQMetricsValue> q =
-		// dqMetricsDao.getDatastore().createQuery(DQMetricsValue.class).filter("assetId",
-		// assetId).order("-timestamp");
-		// List<DQMetricsValue> v = (List<DQMetricsValue>) q.asList();
-		//
-		// if(v.isEmpty()){
-		// return null;
-		// }
-		//
-		// return v.get(0);
 		return metricsRepo.getLatestByAssetId(assetId);
 	}
 
-	public void autoRefresh() {
+	void autoRefresh() {
 		updateLatestDQList();
 	}
 
-    public void refreshAllDQMetricsValuesinCache() {
+    void refreshAllDQMetricsValuesinCache() {
         fetchAllAssetIdBySystems();
-        // cacheValues = dqMetricsDao.findByFieldInValues(DQMetricsValue.class,
-        // "assetId", assetIds);
 
         cacheValues.clear();
         for (DqMetricsValue each : metricsRepo.getAll()) {
@@ -158,6 +136,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
         }
     }
 
+    @Override
 	public void updateLatestDQList() {
 		try {
 			logger.warn("==============updating all latest dq metrics==================");
@@ -194,7 +173,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	    return thresHolds;
     }
 
-    public List<MADEntity> MAD(List<String> list) {
+    List<MADEntity> MAD(List<String> list) {
 		List<MADEntity> result = new ArrayList<MADEntity>();
 		int preparePointNumber = 15;
 		float up_coff = (float) 2.3;
@@ -225,7 +204,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		return result;
 	}
 
-	public List<BollingerBandsEntity> bollingerBand(List<String> list) {
+	List<BollingerBandsEntity> bollingerBand(List<String> list) {
 		List<BollingerBandsEntity> result = new ArrayList<BollingerBandsEntity>();
 		int preparePointNumber = 30;
 		float up_coff = (float) 1.8;
@@ -253,7 +232,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		return result;
 	}
 
-	public void calculateReferenceMetrics() {
+	void calculateReferenceMetrics() {
 		if (totalSystemLevelMetricsList == null)
 			updateLatestDQList();
 
@@ -462,7 +441,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	    return map;
     }
 
-    public List<SystemLevelMetrics> addAssetNames(
+    List<SystemLevelMetrics> addAssetNames(
 			List<SystemLevelMetrics> result) {
 		List<DqModelVo> models = dqModelService.getAllModles();
 		Map<String, String> modelMap = new HashMap<String, String>();
@@ -486,7 +465,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		return result;
 	}
 
-	public Map<String, String> getAssetMap() {
+	Map<String, String> getAssetMap() {
 		List<DqModelVo> models = dqModelService.getAllModles();
 		Map<String, String> modelMap = new HashMap<String, String>();
 
@@ -632,7 +611,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	}
 
 	public void downloadSample(String filePath) {
-
+	    throw new RuntimeException("not impl yet.");
 	}
 
 }
