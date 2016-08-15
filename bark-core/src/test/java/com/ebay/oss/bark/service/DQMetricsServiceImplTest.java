@@ -202,14 +202,4 @@ public class DQMetricsServiceImplTest {
         }
     }
 
-    @Test
-    public void testGetReferences() {
-        Map<String, String> referenceMap = dqMetricsService.getReferences();
-        System.out.println("---- reference map ----");
-        for (Map.Entry<String, String> me : referenceMap.entrySet()) {
-            System.out.println(me.getKey() + " -> " + me.getValue());
-        }
-    }
-
-
 }

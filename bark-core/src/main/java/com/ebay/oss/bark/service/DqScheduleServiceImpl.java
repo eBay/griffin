@@ -525,29 +525,23 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 						if(!metricsNames.contains(ScheduleModelSeperator.SEPERATOR))
 						{
 							metricsNameArray.add(metricsNames);
-						}
-						else
-						{
+						} else {
 							metricsNameArray = Arrays.asList(metricsNames.split(ScheduleModelSeperator.SPLIT_SEPERATOR));
 						}
 
-						for(String metricsName : metricsNameArray)
-						{
+						for(String metricsName : metricsNameArray) {
 							DqModel model = dqModelRepo.findByName(metricsName);
-							if(model.getModelType() == ModelType.ACCURACY)
-							{
+							if(model.getModelType() == ModelType.ACCURACY) {
 								float floatResultValue = -1;
 								long ts = -1;
 								try{
 									floatResultValue = Float.parseFloat(resultValue);
 									ts = Long.parseLong(jobID.substring(jobID.lastIndexOf("_")+1));
-								}
-								catch(Exception e)
-								{
+								} catch(Exception e) {
 									logger.error(e.toString(), e);
 								}
-								if(floatResultValue >= 0 && ts>= 0)
-								{
+
+								if(floatResultValue >= 0 && ts>= 0) {
 									DqMetricsValue newDQMetricsValue = new DqMetricsValue();
 									newDQMetricsValue.setMetricName(jobID.substring(0, jobID.lastIndexOf("_")));
 									newDQMetricsValue.setTimestamp(ts);
@@ -573,9 +567,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 								dqMetricsService.insertSampleFilePath(sfp);
 
 
-							}
-							else if(model.getModelType() == ModelType.VALIDITY)
-							{
+							} else if(model.getModelType() == ModelType.VALIDITY) {
 								Gson gson = new Gson();
 								ValidateHiveJobConfig resultObject = gson.fromJson(resultValue.toString(), ValidateHiveJobConfig.class);
 								String content = model.getModelContent();
@@ -587,9 +579,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 								long ts = -1;
 								try{
 									ts = Long.parseLong(jobID.substring(jobID.lastIndexOf("_")+1));
-								}
-								catch(Exception e)
-								{
+								} catch(Exception e) {
 									logger.warn(e.toString(), e);
 								}
 
