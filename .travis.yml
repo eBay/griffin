@@ -1,4 +1,4 @@
 language: java
-script: mvn clean install -DskipTests
+script: mvn clean deploy -DskipTests
 jdk:
   - oraclejdk7
