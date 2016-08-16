@@ -56,22 +56,15 @@ public class DqMetricsRepoImpl extends BaseIdRepo<DqMetricsValue> implements DqM
 				latestObject = o;
 			}
 		}
-		if (latestObject == null)
-			return null;
-		else
-			return new DqMetricsValue(
-					latestObject.get("metricName").toString(),
-					Long.parseLong(latestObject.get("timestamp").toString()),
-					Float.parseFloat(latestObject.get("value").toString()));
-	}
 
-//	@Override
-//    public List<DBObject> getAll() {
-//		DBCursor temp = dbCollection.find().sort(
-//				new BasicDBObject("timestamp", -1));
-//		List<DBObject> all = temp.toArray();
-//		return all;
-//	}
+		if (latestObject == null) {
+			return null;
+		}
+		return new DqMetricsValue(
+		                latestObject.get("metricName").toString(),
+		                Long.parseLong(latestObject.get("timestamp").toString()),
+		                Float.parseFloat(latestObject.get("value").toString()));
+	}
 
 	@Override
     public List<DqMetricsValue> getByMetricsName(String name) {

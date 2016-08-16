@@ -26,6 +26,7 @@ public interface DqModelService {
 	public List<DqModelVo> getAllModles();
 
 	// FIXME what the return value means
+	// HACK why need to delete a model
 	public int deleteModel(String name) throws BarkDbOperationException;
 
 	public DqModel getGeneralModel(String name);
@@ -40,7 +41,5 @@ public interface DqModelService {
 	 * @param input
 	 * @return 0 if successful, -1 if already existing, other negative values for other reasons
 	 */
-	public int newModel(ModelInput input) throws BarkDbOperationException;
-
-    void updateModelStatus(int fromStatus, int toStatus);
+	public DqModel newModel(ModelInput input) throws BarkDbOperationException;
 }

@@ -188,71 +188,61 @@ public class SystemLevelMetricsList {
     }
 
 
-    public List<SystemLevelMetrics> getHeatMap(Map<String, String> thresholds)
-    {
+    public List<SystemLevelMetrics> getHeatMap(Map<String, String> thresholds) {
         List<SystemLevelMetrics> result = new ArrayList<SystemLevelMetrics>();
 
-        SystemLevelMetricsList latestSystemLevelMetricsList = new SystemLevelMetricsList();
-        latestSystemLevelMetricsList.setLatestDQList(latestDQList);
-        SystemLevelMetricsList resultSysLvlMetricsList = new SystemLevelMetricsList();
+        SystemLevelMetricsList latestSysMetricsList = new SystemLevelMetricsList();
+        latestSysMetricsList.setLatestDQList(latestDQList);
+        SystemLevelMetricsList resultSysMetricsList = new SystemLevelMetricsList();
 
-        for (SystemLevelMetrics tempSystemLevelMetrics : latestDQList)
-        {
+        for (SystemLevelMetrics tempSystemMetrics : latestDQList) {
             int size = 0;
-            for (AssetLevelMetrics tempAssetLevelMetrics : tempSystemLevelMetrics.getMetrics())
-            {
-                if (thresholds.containsKey(tempAssetLevelMetrics.getName()))
-                {
+            for (AssetLevelMetrics tempAssetLevelMetrics : tempSystemMetrics.getMetrics()) {
+                if (thresholds.containsKey(tempAssetLevelMetrics.getName())) {
                     if (tempAssetLevelMetrics.getDq() < Float.parseFloat(thresholds
-                                    .get(tempAssetLevelMetrics.getName())))
-                    {
+                                    .get(tempAssetLevelMetrics.getName()))) {
                         tempAssetLevelMetrics.setDqfail(1);
-                        resultSysLvlMetricsList.upsertNewAssetExecute(
+                        resultSysMetricsList.upsertNewAssetExecute(
                                         tempAssetLevelMetrics.getName(),
                                         tempAssetLevelMetrics.getMetricType(),
                                         tempAssetLevelMetrics.getTimestamp(),
                                         tempAssetLevelMetrics.getDq(),
-                                        tempSystemLevelMetrics.getName(),
-                                        tempAssetLevelMetrics.getDqfail(), 0, null);
+                                        tempSystemMetrics.getName(),
+                                        tempAssetLevelMetrics.getDqfail(), false, null);
 
                         size++;
                     }
                 }
             }
-            if (size == 0)
-                resultSysLvlMetricsList.getLatestDQList().add(
-                                new SystemLevelMetrics(tempSystemLevelMetrics.getName()));
+            if (size == 0) {
+                SystemLevelMetrics sysMetric = new SystemLevelMetrics(tempSystemMetrics.getName());
+                resultSysMetricsList.getLatestDQList().add(sysMetric);
+            }
         }
 
-        result = resultSysLvlMetricsList.getLatestDQList();
-        for (SystemLevelMetrics tempSystemLevelMetrics : result)
-        {
+        result = resultSysMetricsList.getLatestDQList();
+        for (SystemLevelMetrics tempSystemLevelMetrics : result) {
             int size = tempSystemLevelMetrics.getMetrics().size();
             String system = tempSystemLevelMetrics.getName();
-            if (size < 8)
-            {
-                SystemLevelMetrics currentLatestSystemLevelMetrics =
-                                latestSystemLevelMetricsList
-                                                .getSystemLevelMetrics(tempSystemLevelMetrics
-                                                                .getName());
-                for (AssetLevelMetrics currentLatestAssetLevelMetrics : currentLatestSystemLevelMetrics
-                                .getMetrics())
-                {
-                    if (!resultSysLvlMetricsList.containsAsset(system, currentLatestAssetLevelMetrics.getName())) {
-                        // resultSystemLevelMetricsList.upsertNewAsset(currentLatestAssetLevelMetrics,
-                        // system, assetSystem, 0);
-                        resultSysLvlMetricsList.upsertNewAssetExecute(
-                                        currentLatestAssetLevelMetrics.getName(),
-                                        currentLatestAssetLevelMetrics.getMetricType(),
-                                        currentLatestAssetLevelMetrics.getTimestamp(),
-                                        currentLatestAssetLevelMetrics.getDq(),
-                                        system,
-                                        currentLatestAssetLevelMetrics.getDqfail(),
-                                        0, null);
-                        size++;
-                        if (size >= 8)
-                            break;
-                    }
+            if (size >= 8) {
+                continue;
+            }
+
+            SystemLevelMetrics latestSystLvlMetrics = latestSysMetricsList.getSystemLevelMetrics(tempSystemLevelMetrics
+                                            .getName());
+            for (AssetLevelMetrics latestAssMetrics : latestSystLvlMetrics .getMetrics()) {
+                if (!resultSysMetricsList.containsAsset(system, latestAssMetrics.getName())) {
+                    resultSysMetricsList.upsertNewAssetExecute(
+                                    latestAssMetrics.getName(),
+                                    latestAssMetrics.getMetricType(),
+                                    latestAssMetrics.getTimestamp(),
+                                    latestAssMetrics.getDq(),
+                                    system,
+                                    latestAssMetrics.getDqfail(),
+                                    false, null);
+                    size++;
+                    if (size >= 8)
+                        break;
                 }
             }
         }
@@ -261,122 +251,108 @@ public class SystemLevelMetricsList {
     }
 
     public void upsertNewAssetExecute(String metricName, String metricType, long timestamp,
-                    float dq, String currentSystem, int dqfail, int needdetail,
-                    AssetLevelMetricsDetail otherAttributes)
-    {
-        int systemIndicator = 0;
-        if (currentSystem == null)
+                    float dq, String currentSystem, int dqfail, boolean needdetail,
+                    AssetLevelMetricsDetail otherAttributes) {
+        boolean systemFound = false;
+        if (currentSystem == null) {
             currentSystem = "unknown";
+        }
         try {
-            for (SystemLevelMetrics tempSystemLevelMetrics : latestDQList)
-            {
+            for (SystemLevelMetrics tmpSysMetrics : latestDQList) {
                 // find the system item
-                if (tempSystemLevelMetrics.getName().equals(currentSystem))
-                {
-                    List<AssetLevelMetrics> tempassetLevelMetricsArray =
-                                    tempSystemLevelMetrics.getMetrics();
-                    int metricIndicator = 0;
-                    for (int k = 0; k < tempassetLevelMetricsArray.size(); k++)
-                    {
-                        AssetLevelMetrics tempAssetLevelMetrics = tempassetLevelMetricsArray.get(k);
-                        // find the metric
-                        if (tempAssetLevelMetrics.getName().equals(metricName))
-                        {
-                            if (tempAssetLevelMetrics.getTimestamp() - (timestamp) < 0)
-                            {
-                                tempAssetLevelMetrics.setTimestamp(timestamp);
-                                tempAssetLevelMetrics.setDq(dq);
-                                tempAssetLevelMetrics.setDqfail(dqfail);
-                                tempassetLevelMetricsArray.set(k, tempAssetLevelMetrics);
-                            }
-                            metricIndicator = 1;
-                            if (needdetail == 1)
-                            {
-                                if (metricType.equals(MetricType.Bollinger.toString()))
-                                    tempAssetLevelMetrics
-                                                    .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
-                                                                    timestamp,
-                                                                    dq,
-                                                                    new BollingerBandsEntity(
-                                                                                    otherAttributes.getBolling()
-                                                                                                    .getUpper(),
-                                                                                    otherAttributes.getBolling()
-                                                                                                    .getLower(),
-                                                                                    otherAttributes.getBolling()
-                                                                                                    .getMean())));
-                                else if (metricType.equals(MetricType.Trend.toString()))
-                                    tempAssetLevelMetrics
-                                                    .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
-                                                                    timestamp,
-                                                                    dq,
-                                                                    otherAttributes.getComparisionValue()));
-                                else if (metricType.equals(MetricType.MAD.toString()))
-                                    tempAssetLevelMetrics
-                                                    .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
-                                                                    timestamp, dq, otherAttributes
-                                                                                    .getMAD()));
-                                else
-                                    tempAssetLevelMetrics
-                                                    .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
-                                                                    timestamp, dq));
-                            }
+                if (!tmpSysMetrics.getName().equals(currentSystem)) {
+                    continue;
+                }
+                systemFound = true;
+
+                List<AssetLevelMetrics> tmpAssMetricsList = tmpSysMetrics.getMetrics();
+                boolean metricFound = false;
+                for (int k = 0; k < tmpAssMetricsList.size(); k++) {
+                    AssetLevelMetrics tempAssetLevelMetrics = tmpAssMetricsList.get(k);
+                    // find the metric
+                    if (!tempAssetLevelMetrics.getName().equals(metricName)) {
+                        continue;
+                    }
+                    metricFound = true;
+
+                    if (tempAssetLevelMetrics.getTimestamp() - (timestamp) < 0) {
+                        tempAssetLevelMetrics.setTimestamp(timestamp);
+                        tempAssetLevelMetrics.setDq(dq);
+                        tempAssetLevelMetrics.setDqfail(dqfail);
+                        tmpAssMetricsList.set(k, tempAssetLevelMetrics); // FIXME why???
+                    }
+                    if (!needdetail) {
+                        continue;
+                    }
+
+                    if (metricType.equals(MetricType.Bollinger.toString())) {
+                        AssetLevelMetricsDetail detail =  new AssetLevelMetricsDetail(
+                                        timestamp,
+                                        dq, otherAttributes.getBolling().clone()
+                                        );
+                        tempAssetLevelMetrics.addAssetLevelMetricsDetail(detail);
+                    } else if (metricType.equals(MetricType.Trend.toString())) {
+                         AssetLevelMetricsDetail detail = new AssetLevelMetricsDetail(
+                                                            timestamp,
+                                                            dq,
+                                                            otherAttributes.getComparisionValue());
+                        tempAssetLevelMetrics.addAssetLevelMetricsDetail(detail);
+                    } else if (metricType.equals(MetricType.MAD.toString())) {
+                        tempAssetLevelMetrics
+                        .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
+                                        timestamp, dq, otherAttributes
+                                        .getMAD()));
+                    } else {
+                        tempAssetLevelMetrics
+                        .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
+                                        timestamp, dq));
+                    }
+                }
+
+                // didn't find the metric, create one 
+                if (!metricFound ) {
+                    AssetLevelMetrics newTempAssetLevelMetrics =
+                                    new AssetLevelMetrics(metricName, metricType, dq,
+                                                    timestamp, dqfail);
+                    if (needdetail ) {
+                        if (metricType.equals(MetricType.Bollinger.toString())) {
+                            AssetLevelMetricsDetail detail =  
+                                            new AssetLevelMetricsDetail(
+                                            timestamp,
+                                            dq,
+                                            otherAttributes.getBolling().clone());
+                            newTempAssetLevelMetrics .addAssetLevelMetricsDetail(detail);
+                        } else if (metricType.equals(MetricType.Trend.toString())) {
+                            newTempAssetLevelMetrics
+                            .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
+                                            timestamp,
+                                            dq,
+                                            otherAttributes.getComparisionValue()));
+                        } else if (metricType.equals(MetricType.MAD.toString())) {
+                            newTempAssetLevelMetrics
+                            .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
+                                            timestamp, dq, otherAttributes
+                                            .getMAD()));
+                        } else {
+                            newTempAssetLevelMetrics
+                            .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
+                                            timestamp, dq));
                         }
                     }
-                    // didn't find the metric, create one
-                    if (metricIndicator == 0)
-                    {
-                        AssetLevelMetrics newTempAssetLevelMetrics =
-                                        new AssetLevelMetrics(metricName, metricType, dq,
-                                                        timestamp, dqfail);
-                        if (needdetail == 1)
-                        {
-                            if (metricType.equals(MetricType.Bollinger.toString()))
-                                newTempAssetLevelMetrics
-                                                .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
-                                                                timestamp,
-                                                                dq,
-                                                                new BollingerBandsEntity(
-                                                                                otherAttributes.getBolling()
-                                                                                                .getUpper(),
-                                                                                otherAttributes.getBolling()
-                                                                                                .getLower(),
-                                                                                otherAttributes.getBolling()
-                                                                                                .getMean())));
-                            else if (metricType.equals(MetricType.Trend.toString()))
-                                newTempAssetLevelMetrics
-                                                .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
-                                                                timestamp,
-                                                                dq,
-                                                                otherAttributes.getComparisionValue()));
-                            else if (metricType.equals(MetricType.MAD.toString()))
-                                newTempAssetLevelMetrics
-                                                .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
-                                                                timestamp, dq, otherAttributes
-                                                                                .getMAD()));
-                            else
-                                newTempAssetLevelMetrics
-                                                .addAssetLevelMetricsDetail(new AssetLevelMetricsDetail(
-                                                                timestamp, dq));
-                        }
-                        tempassetLevelMetricsArray.add(newTempAssetLevelMetrics);
-                    }
-                    systemIndicator = 1;
+                    tmpAssMetricsList.add(newTempAssetLevelMetrics);
                 }
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.warn(e.toString());
             e.printStackTrace();
         }
 
         // can't find the system
-        if (systemIndicator == 0)
-        {
+        if (!systemFound ) {
             SystemLevelMetrics newSystemLevelMetrics = new SystemLevelMetrics(currentSystem);
             newSystemLevelMetrics.addAssetLevelMetrics(new AssetLevelMetrics(metricName,
                             metricType, dq, timestamp, dqfail));
-            if (needdetail == 1)
-            {
+            if (needdetail ) {
                 List<AssetLevelMetricsDetail> tempDetailList =
                                 new ArrayList<AssetLevelMetricsDetail>();
                 tempDetailList.add(new AssetLevelMetricsDetail(timestamp, dq));
