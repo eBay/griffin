@@ -102,4 +102,10 @@ public class DqMetricsValue extends BaseObj implements Comparable<DqMetricsValue
 //			(o.getTimestamp() > this.getTimestamp() ? 1 : -1);
 	}
 
+    @Override
+    public String toString() {
+        return "DqMetricsValue [_id=" + _id + ", metricName=" + metricName + ", timestamp="
+                        + timestamp + ", value=" + value + "]";
+    }
+
 }
