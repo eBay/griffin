@@ -261,6 +261,8 @@
 							<directory>${project.build.directory}/generated-resources/bark-ui-${bark.version}</directory>
 						</resource>
 					</webResources>
+					<attachClasses>true</attachClasses>
+					<classesClassifier>classes</classesClassifier>
 				</configuration>
 			</plugin>
 

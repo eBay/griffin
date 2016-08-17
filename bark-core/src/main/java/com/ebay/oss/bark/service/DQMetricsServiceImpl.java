@@ -55,18 +55,18 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	private SubscribeService subscribeService;
 
 	@Autowired
-    private DqMetricsRepo metricsRepo;
+	private DqMetricsRepo metricsRepo;
 
 	@Autowired
-    private DqModelRepo dqModelRepo;
+	private DqModelRepo dqModelRepo;
 
 	@Autowired
-    private DataAssetRepo dataAssetRepo;
+	private DataAssetRepo dataAssetRepo;
 
 	@Autowired
-    private SampleFilePathRepo missedFileRepo;
+	private SampleFilePathRepo missedFileRepo;
 
-    private RefMetrcsCalc refMetricCalc;
+	private RefMetrcsCalc refMetricCalc;
 
 	public static List<DqMetricsValue> cacheValues = new ArrayList<DqMetricsValue>();;
 
@@ -85,7 +85,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 
 		DBObject item = metricsRepo.getByCondition(queryList);
 
-		try{
+		try {
 			if (item == null) {
 				long seq = metricsRepo.getNextId();
 				logger.warn("log: new record inserted" + seq);
@@ -95,63 +95,64 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 				logger.warn("log: updated record");
 				metricsRepo.update(metrics, item);
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new BarkDbOperationException("Failed to save metrics value!", e);
 		}
 
 	}
 
-//	Map<String, String> modelSystem = new HashMap<String, String>();
-//	void fetchAllAssetIdBySystems() {
-//		for (DqModel model : dqModelRepo.getAll()) {
-//			modelSystem.put(model.getModelName(), SystemType.val(model.getSystem()));
-//		}
-//	}
+	// Map<String, String> modelSystem = new HashMap<String, String>();
+	// void fetchAllAssetIdBySystems() {
+	// for (DqModel model : dqModelRepo.getAll()) {
+	// modelSystem.put(model.getModelName(), SystemType.val(model.getSystem()));
+	// }
+	// }
 	String getModelSystem(String modelName) {
-//	    return modelSystem.get(modelName);
-	    int sysIdx = dqModelRepo.findByName(modelName).getSystem();
-	    return SystemType.val(sysIdx);
-    }
-
+		// return modelSystem.get(modelName);
+		int sysIdx = dqModelRepo.findByName(modelName).getSystem();
+		return SystemType.val(sysIdx);
+	}
 
 	// FIXME to remove
 	public DqMetricsValue getLatestlMetricsbyId(String assetId) {
 		return metricsRepo.getLatestByAssetId(assetId);
 	}
 
-	void autoRefresh() {
+	public void autoRefresh() {
 		updateLatestDQList();
 	}
 
-    void refreshAllDQMetricsValuesinCache() {
-//        fetchAllAssetIdBySystems();
+	void refreshAllDQMetricsValuesinCache() {
+		// fetchAllAssetIdBySystems();
+		synchronized (cacheValues) {
+			cacheValues.clear();
+			for (DqMetricsValue each : metricsRepo.getAll()) {
+				cacheValues.add(each);
+			}
+		}
+	}
 
-        cacheValues.clear();
-        for (DqMetricsValue each : metricsRepo.getAll()) {
-            cacheValues.add(each);
-        }
-    }
-
-    @Override
+	@Override
 	public void updateLatestDQList() {
 		try {
 			logger.warn("==============updating all latest dq metrics==================");
 			refreshAllDQMetricsValuesinCache();
 
 			totalSystemLevelMetricsList = new SystemLevelMetricsList();
-			for (DqMetricsValue temp : cacheValues) {
-				// totalSystemLevelMetricsList.upsertNewAsset(temp, assetSystem,
-				// 1);
-				totalSystemLevelMetricsList.upsertNewAssetExecute(
-						temp.getMetricName(), "", temp.getTimestamp(),
-						temp.getValue(), getModelSystem(temp.getMetricName()),
-						0, true, null);
+			synchronized (cacheValues) {
+				for (DqMetricsValue temp : cacheValues) {
+					// totalSystemLevelMetricsList.upsertNewAsset(temp,
+					// assetSystem,
+					// 1);
+					totalSystemLevelMetricsList.upsertNewAssetExecute(temp.getMetricName(), "", temp.getTimestamp(),
+							temp.getValue(), getModelSystem(temp.getMetricName()), 0, true, null);
+				}
 			}
 
 			totalSystemLevelMetricsList.updateDQFail(getThresholds());
-			
+
 			if (totalSystemLevelMetricsList == null) {
-			    updateLatestDQList();
+				updateLatestDQList();
 			}
 			refMetricCalc.calc(totalSystemLevelMetricsList);
 
@@ -162,24 +163,20 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		}
 	}
 
-    Map<String, String> getThresholds() {
-	    Map<String, String> thresHolds = new HashMap<>();
-	    for(DqModel each : dqModelRepo.getAll()) {
-	        thresHolds.put(each.getModelName(), "" + each.getThreshold());
-	    }
-	    return thresHolds;
-    }
+	Map<String, String> getThresholds() {
+		Map<String, String> thresHolds = new HashMap<>();
+		for (DqModel each : dqModelRepo.getAll()) {
+			thresHolds.put(each.getModelName(), "" + each.getThreshold());
+		}
+		return thresHolds;
+	}
 
-    List<SystemLevelMetrics> addAssetNames(
-			List<SystemLevelMetrics> result) {
+	List<SystemLevelMetrics> addAssetNames(List<SystemLevelMetrics> result) {
 		List<DqModelVo> models = dqModelService.getAllModles();
 		Map<String, String> modelMap = new HashMap<String, String>();
 
 		for (DqModelVo model : models) {
-			modelMap.put(
-					model.getName(),
-					model.getAssetName() == null ? "unknow" : model
-							.getAssetName());
+			modelMap.put(model.getName(), model.getAssetName() == null ? "unknow" : model.getAssetName());
 		}
 
 		for (SystemLevelMetrics sys : result) {
@@ -199,10 +196,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		Map<String, String> modelMap = new HashMap<String, String>();
 
 		for (DqModelVo model : models) {
-			modelMap.put(
-					model.getName(),
-					model.getAssetName() == null ? "unknow" : model
-							.getAssetName());
+			modelMap.put(model.getName(), model.getAssetName() == null ? "unknow" : model.getAssetName());
 		}
 
 		return modelMap;
@@ -212,8 +206,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	public List<SystemLevelMetrics> briefMetrics(String system) {
 		if (totalSystemLevelMetricsList == null)
 			updateLatestDQList();
-		return totalSystemLevelMetricsList.getListWithLatestNAssets(24, system,
-				null, null);
+		return totalSystemLevelMetricsList.getListWithLatestNAssets(24, system, null, null);
 	}
 
 	@Override
@@ -227,17 +220,15 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	public List<SystemLevelMetrics> dashboard(String system) {
 		if (totalSystemLevelMetricsList == null)
 			updateLatestDQList();
-		return addAssetNames(totalSystemLevelMetricsList
-				.getListWithLatestNAssets(30, system, null, null));
+		return addAssetNames(totalSystemLevelMetricsList.getListWithLatestNAssets(30, system, null, null));
 	}
 
 	@Override
 	public List<SystemLevelMetrics> mydashboard(String user) {
 		if (totalSystemLevelMetricsList == null)
 			updateLatestDQList();
-		return addAssetNames(totalSystemLevelMetricsList
-				.getListWithLatestNAssets(30, "all",
-						subscribeService.getSubscribe(user), getAssetMap()));
+		return addAssetNames(totalSystemLevelMetricsList.getListWithLatestNAssets(30, "all",
+				subscribeService.getSubscribe(user), getAssetMap()));
 	}
 
 	@Override
@@ -251,8 +242,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	public AssetLevelMetrics oneDataBriefDashboard(String name) {
 		if (totalSystemLevelMetricsList == null)
 			updateLatestDQList();
-		return totalSystemLevelMetricsList.getListWithSpecificAssetName(name,
-				30);
+		return totalSystemLevelMetricsList.getListWithSpecificAssetName(name, 30);
 	}
 
 	public OverViewStatistics getOverViewStats() {
@@ -267,8 +257,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 		if (totalSystemLevelMetricsList == null)
 			updateLatestDQList();
 
-		List<SystemLevelMetrics> allMetrics = totalSystemLevelMetricsList
-				.getLatestDQList();
+		List<SystemLevelMetrics> allMetrics = totalSystemLevelMetricsList.getLatestDQList();
 
 		int healthCnt = 0;
 		int invalidCnt = 0;
@@ -303,8 +292,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 	public AssetLevelMetrics metricsForReport(String name) {
 		if (totalSystemLevelMetricsList == null)
 			updateLatestDQList();
-		return totalSystemLevelMetricsList.getListWithSpecificAssetName(name,
-				24);
+		return totalSystemLevelMetricsList.getListWithSpecificAssetName(name, 24);
 	}
 
 	public List<SampleOut> listSampleFile(String modelName) {

@@ -1,6 +1,6 @@
 package com.ebay.oss.bark.resources;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,8 +23,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.ebay.oss.bark.domain.DataAsset;
 import com.ebay.oss.bark.domain.DqMetricsValue;
 import com.ebay.oss.bark.domain.UserSubscription;
-import com.ebay.oss.bark.resources.BarReport;
-import com.ebay.oss.bark.resources.LineReport;
 import com.ebay.oss.bark.vo.AssetLevelMetrics;
 import com.ebay.oss.bark.vo.DqModelVo;
 import com.ebay.oss.bark.vo.ModelInput;
@@ -523,40 +521,4 @@ public class ControllersTest {
 		Assert.assertNotNull(alm);
 	}
 
-	@Test
-	public void testReportControllerGetBarReport() throws IOException{
-		String org = "ebay";
-		String[] assets = {"viewitem", "search", "bid_new", "item_watch", "transaction_new"};
-		for (String asset : assets) {
-			ClientResponse resp = service.path(REST_PATH).path("report/bar")
-					.queryParam("org", org)
-					.queryParam("asset", asset)
-					.header("Content-Type", MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON)
-					.get(ClientResponse.class);
-
-			BarReport br = resp.getEntity(BarReport.class);
-			assertEquals(200, resp.getStatus());
-			Assert.assertNotNull(br);
-		}
-	}
-
-	@Test
-	public void testReportControllerGetLineReport() throws IOException{
-		String org = "ebay";
-		String[] assets = {"viewitem", "search"};
-		for (String asset : assets) {
-			ClientResponse resp = service.path(REST_PATH).path("report/line")
-					.queryParam("org", org)
-					.queryParam("asset", asset)
-					.header("Content-Type", MediaType.APPLICATION_JSON)
-					.accept(MediaType.APPLICATION_JSON)
-					.get(ClientResponse.class);
-
-			LineReport br = resp.getEntity(LineReport.class);
-			assertEquals(200, resp.getStatus());
-			Assert.assertNotNull(br);
-		}
-
-	}
 }
