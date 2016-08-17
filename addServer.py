@@ -19,7 +19,7 @@ if not serversNodes:
   settings.appendChild(serversNode)
 else:
   serversNode = serversNodes[0]
-  
+
 sonatypeServerNode = m2.createElement("server")
 sonatypeServerId = m2.createElement("id")
 sonatypeServerUser = m2.createElement("username")
@@ -38,8 +38,9 @@ sonatypeServerNode.appendChild(sonatypeServerUser)
 sonatypeServerNode.appendChild(sonatypeServerPass)
 
 serversNode.appendChild(sonatypeServerNode)
-  
+
 m2Str = m2.toxml()
+print m2Str
 f = open(homedir + '/.m2/mySettings.xml', 'w')
 f.write(m2Str)
 f.close()
