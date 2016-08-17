@@ -117,7 +117,7 @@ public class AssetLevelMetricsDetail implements Comparable<AssetLevelMetricsDeta
 
 	@Override
 	public int compareTo(AssetLevelMetricsDetail o) {
-		return o.getTimestamp() == this.getValue() ? 0
+		return o.getTimestamp() == this.getTimestamp() ? 0
 				: (o.getTimestamp() > this.getTimestamp() ? 1 : -1);
 	}
 
