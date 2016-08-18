@@ -33,14 +33,6 @@ RUN yum install -y mongodb-org mongodb-org-server mongodb-org-shell mongodb-org-
 EXPOSE 8080
 EXPOSE 27017
 
-#install maven
-RUN cd /apache && wget http://mirror.stjschools.org/public/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz && tar -xzvf apache-maven-3.3.9-bin.tar.gz
-ENV M2_HOME /apache/apache-maven-3.3.9
-ENV PATH $PATH:$M2_HOME/bin
-
-#install git
-RUN yum install -y git
-
 #add working directory
 RUN mkdir /bark
 ADD bark /bark

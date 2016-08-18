@@ -1,0 +1,25 @@
+#!/bin/bash
+
+URI=https://oss.sonatype.org/content/repositories/snapshots/com/ebay/oss
+MODEL_DIR=bark-models/0.1.0-SNAPSHOT
+MODEL_JAR=bark-models-0.1.0-20160818.073206-1.jar
+CORE_DIR=bark-core/0.1.0-SNAPSHOT
+CORE_WAR=bark-core-0.1.0-20160818.073124-7.war
+
+MODEL_PATH=$URI/$MODEL_DIR/$MODEL_JAR
+CORE_PATH=$URI/$CORE_DIR/$CORE_WAR
+
+MODEL_JAR_NEW=bark-models.jar
+CORE_WAR_NEW=ROOT.war
+
+MODEL_JAR_NEW_PATH=/bark/$MODEL_JAR_NEW
+CORE_WAR_NEW_PATH=$APACHE_HOME/webapps/$CORE_WAR_NEW
+
+wget $MODEL_PATH
+wget $CORE_PATH
+
+mv $MODEL_JAR $MODEL_JAR_NEW_PATH
+mv $CORE_WAR $CORE_WAR_NEW_PATH
+
+chmod 755 $MODEL_JAR_NEW_PATH
+chmod 755 $CORE_WAR_NEW_PATH
