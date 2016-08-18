@@ -20,7 +20,7 @@
     <artifactId>bark-parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Apache Bark Parent</name>
+    <name>eBay Bark Parent</name>
     <modules>
     	  <module>bark-ui</module>
         <module>bark-core</module>
@@ -40,6 +40,27 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <distributionManagement>
+      <snapshotRepository>
+        <id>ossrh</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+      <repository>
+        <id>ossrh</id>
+        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      </repository>
+    </distributionManagement>
+    <repositories>
+      <repository>
+          <id>oss-sonatype</id>
+          <name>oss-sonatype</name>
+          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+          <snapshots>
+              <enabled>true</enabled>
+          </snapshots>
+      </repository>
+    </repositories>
 
     <prerequisites>
         <maven>${maven.version}</maven>
@@ -820,6 +841,35 @@
                     <groupId>org.scalatest</groupId>
                     <artifactId>scalatest-maven-plugin</artifactId>
                     <version>${maven-scalatest.version}</version>
+                </plugin>
+
+                <!-- deploy to sonatype.org
+                    http://central.sonatype.org/pages/apache-maven.html
+                -->
+                <plugin>
+                  <groupId>org.sonatype.plugins</groupId>
+                  <artifactId>nexus-staging-maven-plugin</artifactId>
+                  <version>1.6.7</version>
+                  <extensions>true</extensions>
+                  <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                  </configuration>
+                </plugin>
+                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <version>1.5</version>
+                  <executions>
+                    <execution>
+                      <id>sign-artifacts</id>
+                      <phase>verify</phase>
+                      <goals>
+                        <goal>sign</goal>
+                      </goals>
+                    </execution>
+                  </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

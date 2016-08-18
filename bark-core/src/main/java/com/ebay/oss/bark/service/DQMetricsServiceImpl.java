@@ -46,297 +46,276 @@ import com.mongodb.DBObject;
 @Service("dqmetrics")
 public class DQMetricsServiceImpl implements DQMetricsService {
 
-	private static Logger logger = LoggerFactory.getLogger(DQMetricsServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(DQMetricsServiceImpl.class);
 
-	@Autowired
-	private DqModelService dqModelService;
+    @Autowired
+    private DqModelService dqModelService;
 
-	@Autowired
-	private SubscribeService subscribeService;
+    @Autowired
+    private SubscribeService subscribeService;
 
-	@Autowired
+    @Autowired
     private DqMetricsRepo metricsRepo;
 
-	@Autowired
-    private DqModelRepo dqModelRepo;
+    @Autowired
+    private DqModelRepo modelRepo;
 
-	@Autowired
+    @Autowired
     private DataAssetRepo dataAssetRepo;
 
-	@Autowired
+    @Autowired
     private SampleFilePathRepo missedFileRepo;
 
+    @Autowired
     private RefMetrcsCalc refMetricCalc;
+    
+    public static List<DqMetricsValue> cacheValues = new ArrayList<DqMetricsValue>();;
 
-	public static List<DqMetricsValue> cacheValues = new ArrayList<DqMetricsValue>();;
+    public static SystemLevelMetricsList totalSystemLevelMetricsList;
 
-	public static SystemLevelMetricsList totalSystemLevelMetricsList;
+    public void insertMetadata(DqMetricsValue metrics) {
 
-	public void insertMetadata(DqMetricsValue metrics) {
+        List<Pair> queryList = new ArrayList<Pair>();
+        queryList.add(new Pair("metricName", metrics.getMetricName()));
+        // queryList.add(new KeyValue("metricType", dq.getMetricType()));
+        // queryList.add(new KeyValue("assetId", dq.getAssetId()));
+        queryList.add(new Pair("timestamp", metrics.getTimestamp()));
 
-		List<Pair> queryList = new ArrayList<Pair>();
-		queryList.add(new Pair("metricName", metrics.getMetricName()));
-		// queryList.add(new KeyValue("metricType", dq.getMetricType()));
-		// queryList.add(new KeyValue("assetId", dq.getAssetId()));
-		queryList.add(new Pair("timestamp", metrics.getTimestamp()));
+        List<Pair> updateValues = new ArrayList<Pair>();
+        updateValues.add(new Pair("value", metrics.getValue()));
 
-		List<Pair> updateValues = new ArrayList<Pair>();
-		updateValues.add(new Pair("value", metrics.getValue()));
+        DBObject item = metricsRepo.getByCondition(queryList);
 
-		DBObject item = metricsRepo.getByCondition(queryList);
+        try {
+            if (item == null) {
+                long seq = metricsRepo.getNextId();
+                logger.info("log: new record inserted" + seq);
+                metrics.set_id(seq);
+                metricsRepo.save(metrics);
+            } else {
+                logger.info("log: updated record");
+                metricsRepo.update(metrics, item);
+            }
+        }catch(Exception e) {
+            throw new BarkDbOperationException("Failed to save metrics value!", e);
+        }
 
-		try{
-			if (item == null) {
-				long seq = metricsRepo.getNextId();
-				logger.warn("log: new record inserted" + seq);
-				metrics.set_id(seq);
-				metricsRepo.save(metrics);
-			} else {
-				logger.warn("log: updated record");
-				metricsRepo.update(metrics, item);
-			}
-		}catch(Exception e){
-			throw new BarkDbOperationException("Failed to save metrics value!", e);
-		}
-
-	}
-
-//	Map<String, String> modelSystem = new HashMap<String, String>();
-//	void fetchAllAssetIdBySystems() {
-//		for (DqModel model : dqModelRepo.getAll()) {
-//			modelSystem.put(model.getModelName(), SystemType.val(model.getSystem()));
-//		}
-//	}
-	String getModelSystem(String modelName) {
-//	    return modelSystem.get(modelName);
-	    int sysIdx = dqModelRepo.findByName(modelName).getSystem();
-	    return SystemType.val(sysIdx);
     }
 
-
-	// FIXME to remove
-	public DqMetricsValue getLatestlMetricsbyId(String assetId) {
-		return metricsRepo.getLatestByAssetId(assetId);
-	}
-
-	void autoRefresh() {
-		updateLatestDQList();
-	}
+    public DqMetricsValue getLatestlMetricsbyId(String assetId) {
+        return metricsRepo.getLatestByAssetId(assetId);
+    }
 
     void refreshAllDQMetricsValuesinCache() {
-//        fetchAllAssetIdBySystems();
+        refreshModelSystemCache();
 
         cacheValues.clear();
         for (DqMetricsValue each : metricsRepo.getAll()) {
             cacheValues.add(each);
         }
     }
+    Map<String, String> modelSystem = new HashMap<String, String>();
+    void refreshModelSystemCache() {
+        for (DqModel model : modelRepo.getAll()) {
+            modelSystem.put(model.getModelName(), SystemType.val(model.getSystem()));
+        }
+    }
 
-    @Override
-	public void updateLatestDQList() {
-		try {
-			logger.warn("==============updating all latest dq metrics==================");
-			refreshAllDQMetricsValuesinCache();
+    public synchronized void updateLatestDQList() {
+        try {
+            logger.info("==============updating all latest dq metrics==================");
+            refreshAllDQMetricsValuesinCache();
 
-			totalSystemLevelMetricsList = new SystemLevelMetricsList();
-			for (DqMetricsValue temp : cacheValues) {
-				// totalSystemLevelMetricsList.upsertNewAsset(temp, assetSystem,
-				// 1);
-				totalSystemLevelMetricsList.upsertNewAssetExecute(
-						temp.getMetricName(), "", temp.getTimestamp(),
-						temp.getValue(), getModelSystem(temp.getMetricName()),
-						0, true, null);
-			}
+            totalSystemLevelMetricsList = new SystemLevelMetricsList();
+            for (DqMetricsValue temp : cacheValues) {
+                // totalSystemLevelMetricsList.upsertNewAsset(temp, assetSystem,
+                // 1);
+                totalSystemLevelMetricsList.upsertNewAssetExecute(
+                        temp.getMetricName(), "", temp.getTimestamp(),
+                        temp.getValue(), modelSystem.get(temp.getMetricName()),
+                        0, true, null);
+            }
 
-			totalSystemLevelMetricsList.updateDQFail(getThresholds());
-			
-			if (totalSystemLevelMetricsList == null) {
-			    updateLatestDQList();
-			}
-			refMetricCalc.calc(totalSystemLevelMetricsList);
+            totalSystemLevelMetricsList.updateDQFail(getThresholds());
+            refMetricCalc.calc(totalSystemLevelMetricsList);
 
-			logger.warn("==============update all latest dq metrics done==================");
-		} catch (Exception e) {
-			logger.warn(e.toString());
-			e.printStackTrace();
-		}
-	}
+            logger.info("==============update all latest dq metrics done==================");
+        } catch (Exception e) {
+            logger.error("{}", e);
+        }
+    }
 
     Map<String, String> getThresholds() {
-	    Map<String, String> thresHolds = new HashMap<>();
-	    for(DqModel each : dqModelRepo.getAll()) {
-	        thresHolds.put(each.getModelName(), "" + each.getThreshold());
-	    }
-	    return thresHolds;
+        Map<String, String> thresHolds = new HashMap<>();
+        for(DqModel each : modelRepo.getAll()) {
+            thresHolds.put(each.getModelName(), "" + each.getThreshold());
+        }
+        return thresHolds;
     }
 
     List<SystemLevelMetrics> addAssetNames(
-			List<SystemLevelMetrics> result) {
-		List<DqModelVo> models = dqModelService.getAllModles();
-		Map<String, String> modelMap = new HashMap<String, String>();
+            List<SystemLevelMetrics> result) {
+        List<DqModelVo> models = dqModelService.getAllModles();
+        Map<String, String> modelMap = new HashMap<String, String>();
 
-		for (DqModelVo model : models) {
-			modelMap.put(
-					model.getName(),
-					model.getAssetName() == null ? "unknow" : model
-							.getAssetName());
-		}
+        for (DqModelVo model : models) {
+            modelMap.put(
+                    model.getName(),
+                    model.getAssetName() == null ? "unknow" : model
+                            .getAssetName());
+        }
 
-		for (SystemLevelMetrics sys : result) {
-			List<AssetLevelMetrics> assetList = sys.getMetrics();
-			if (assetList != null && assetList.size() > 0) {
-				for (AssetLevelMetrics metrics : assetList) {
-					metrics.setAssetName(modelMap.get(metrics.getName()));
-				}
-			}
-		}
+        for (SystemLevelMetrics sys : result) {
+            List<AssetLevelMetrics> assetList = sys.getMetrics();
+            if (assetList != null && assetList.size() > 0) {
+                for (AssetLevelMetrics metrics : assetList) {
+                    metrics.setAssetName(modelMap.get(metrics.getName()));
+                }
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	Map<String, String> getAssetMap() {
-		List<DqModelVo> models = dqModelService.getAllModles();
-		Map<String, String> modelMap = new HashMap<String, String>();
+    Map<String, String> getAssetMap() {
+        Map<String, String> modelMap = new HashMap<String, String>();
 
-		for (DqModelVo model : models) {
-			modelMap.put(
-					model.getName(),
-					model.getAssetName() == null ? "unknow" : model
-							.getAssetName());
-		}
+        for (DqModelVo model : dqModelService.getAllModles()) {
+            modelMap.put( model.getName(),
+                            model.getAssetName() == null ? "unknow" : model.getAssetName());
+        }
 
-		return modelMap;
-	}
+        return modelMap;
+    }
 
-	@Override
-	public List<SystemLevelMetrics> briefMetrics(String system) {
-		if (totalSystemLevelMetricsList == null)
-			updateLatestDQList();
-		return totalSystemLevelMetricsList.getListWithLatestNAssets(24, system,
-				null, null);
-	}
+    @Override
+    public List<SystemLevelMetrics> briefMetrics(String system) {
+        if (totalSystemLevelMetricsList == null)
+            updateLatestDQList();
+        return totalSystemLevelMetricsList.getListWithLatestNAssets(24, system, null, null);
+    }
 
-	@Override
-	public List<SystemLevelMetrics> heatMap() {
-		if (totalSystemLevelMetricsList == null)
-			updateLatestDQList();
-		return totalSystemLevelMetricsList.getHeatMap(getThresholds());
-	}
+    @Override
+    public List<SystemLevelMetrics> heatMap() {
+        if (totalSystemLevelMetricsList == null)
+            updateLatestDQList();
+        return totalSystemLevelMetricsList.getHeatMap(getThresholds());
+    }
 
-	@Override
-	public List<SystemLevelMetrics> dashboard(String system) {
-		if (totalSystemLevelMetricsList == null)
-			updateLatestDQList();
-		return addAssetNames(totalSystemLevelMetricsList
-				.getListWithLatestNAssets(30, system, null, null));
-	}
+    @Override
+    public List<SystemLevelMetrics> dashboard(String system) {
+        if (totalSystemLevelMetricsList == null)
+            updateLatestDQList();
+        return addAssetNames(totalSystemLevelMetricsList
+                .getListWithLatestNAssets(30, system, null, null));
+    }
 
-	@Override
-	public List<SystemLevelMetrics> mydashboard(String user) {
-		if (totalSystemLevelMetricsList == null)
-			updateLatestDQList();
-		return addAssetNames(totalSystemLevelMetricsList
-				.getListWithLatestNAssets(30, "all",
-						subscribeService.getSubscribe(user), getAssetMap()));
-	}
+    @Override
+    public List<SystemLevelMetrics> mydashboard(String user) {
+        if (totalSystemLevelMetricsList == null)
+            updateLatestDQList();
+        return addAssetNames(totalSystemLevelMetricsList
+                .getListWithLatestNAssets(30, "all",
+                        subscribeService.getSubscribe(user), getAssetMap()));
+    }
 
-	@Override
-	public AssetLevelMetrics oneDataCompleteDashboard(String name) {
-		if (totalSystemLevelMetricsList == null)
-			updateLatestDQList();
-		return totalSystemLevelMetricsList.getListWithSpecificAssetName(name);
-	}
+    @Override
+    public AssetLevelMetrics oneDataCompleteDashboard(String name) {
+        if (totalSystemLevelMetricsList == null)
+            updateLatestDQList();
+        return totalSystemLevelMetricsList.getListWithSpecificAssetName(name);
+    }
 
-	@Override
-	public AssetLevelMetrics oneDataBriefDashboard(String name) {
-		if (totalSystemLevelMetricsList == null)
-			updateLatestDQList();
-		return totalSystemLevelMetricsList.getListWithSpecificAssetName(name,
-				30);
-	}
+    @Override
+    public AssetLevelMetrics oneDataBriefDashboard(String name) {
+        if (totalSystemLevelMetricsList == null)
+            updateLatestDQList();
+        return totalSystemLevelMetricsList.getListWithSpecificAssetName(name, 30);
+    }
 
-	public OverViewStatistics getOverViewStats() {
+    public OverViewStatistics getOverViewStats() {
 
-		OverViewStatistics os = new OverViewStatistics();
+        OverViewStatistics os = new OverViewStatistics();
 
-		os.setAssets(dataAssetRepo.getAll().size());
-		os.setMetrics(dqModelRepo.getAll().size());
+        os.setAssets(dataAssetRepo.getAll().size());
+        os.setMetrics(modelRepo.getAll().size());
 
-		DQHealthStats health = new DQHealthStats();
+        DQHealthStats health = new DQHealthStats();
 
-		if (totalSystemLevelMetricsList == null)
-			updateLatestDQList();
+        if (totalSystemLevelMetricsList == null)
+            updateLatestDQList();
 
-		List<SystemLevelMetrics> allMetrics = totalSystemLevelMetricsList
-				.getLatestDQList();
+        List<SystemLevelMetrics> allMetrics = totalSystemLevelMetricsList
+                .getLatestDQList();
 
-		int healthCnt = 0;
-		int invalidCnt = 0;
+        int healthCnt = 0;
+        int invalidCnt = 0;
 
-		for (SystemLevelMetrics metricS : allMetrics) {
+        for (SystemLevelMetrics metricS : allMetrics) {
 
-			List<AssetLevelMetrics> metricsA = metricS.getMetrics();
+            List<AssetLevelMetrics> metricsA = metricS.getMetrics();
 
-			for (AssetLevelMetrics m : metricsA) {
-				if (m.getDqfail() == 0) {
-					healthCnt++;
-				} else {
-					invalidCnt++;
-				}
-			}
-		}
+            for (AssetLevelMetrics m : metricsA) {
+                if (m.getDqfail() == 0) {
+                    healthCnt++;
+                } else {
+                    invalidCnt++;
+                }
+            }
+        }
 
-		health.setHealth(healthCnt);
-		health.setInvalid(invalidCnt);
+        health.setHealth(healthCnt);
+        health.setInvalid(invalidCnt);
 
-		health.setWarn(0);
-		os.setStatus(health);
+        health.setWarn(0);
+        os.setStatus(health);
 
-		return os;
+        return os;
 
-	}
+    }
 
-	@Override
-	/**
-	 * Get the metrics for 24 hours
-	 */
-	public AssetLevelMetrics metricsForReport(String name) {
-		if (totalSystemLevelMetricsList == null)
-			updateLatestDQList();
-		return totalSystemLevelMetricsList.getListWithSpecificAssetName(name,
-				24);
-	}
+    /**
+     * Get the metrics for 24 hours
+     */
+    @Override
+    public AssetLevelMetrics metricsForReport(String name) {
+        if (totalSystemLevelMetricsList == null)
+            updateLatestDQList();
+        return totalSystemLevelMetricsList.getListWithSpecificAssetName(name, 24);
+    }
 
-	public List<SampleOut> listSampleFile(String modelName) {
+    @Override
+    public List<SampleOut> listSampleFile(String modelName) {
 
-		List<SampleOut> samples = new ArrayList<SampleOut>();
+        List<SampleOut> samples = new ArrayList<SampleOut>();
 
-		List<DBObject> dbos = missedFileRepo.findByModelName(modelName);
+        List<DBObject> dbos = missedFileRepo.findByModelName(modelName);
 
-		for (DBObject dbo : dbos) {
+        for (DBObject dbo : dbos) {
 
-			SampleOut so = new SampleOut();
+            SampleOut so = new SampleOut();
 
-			so.setDate(Long.parseLong(dbo.get("timestamp").toString()));
-			so.setPath(dbo.get("hdfsPath").toString());
+            so.setDate(Long.parseLong(dbo.get("timestamp").toString()));
+            so.setPath(dbo.get("hdfsPath").toString());
 
-			samples.add(so);
-		}
+            samples.add(so);
+        }
 
-		return samples;
+        return samples;
 
-	}
+    }
 
-	public void insertSampleFilePath(SampleFilePathLKP samplePath) {
-		SampleFilePathLKP entity = new SampleFilePathLKP();
+    @Override
+    public void insertSampleFilePath(SampleFilePathLKP samplePath) {
+        SampleFilePathLKP entity = new SampleFilePathLKP();
 
-		entity.setId(missedFileRepo.getNextId());
-		entity.setModelName(samplePath.getModelName());
-		entity.setTimestamp(samplePath.getTimestamp());
-		entity.setHdfsPath(samplePath.getHdfsPath());
+        entity.setId(missedFileRepo.getNextId());
+        entity.setModelName(samplePath.getModelName());
+        entity.setTimestamp(samplePath.getTimestamp());
+        entity.setHdfsPath(samplePath.getHdfsPath());
 
-		missedFileRepo.save(entity);
+        missedFileRepo.save(entity);
 
-	}
+    }
 
 }
