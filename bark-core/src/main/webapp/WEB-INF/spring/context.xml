@@ -30,8 +30,8 @@
 	
 
 	<task:scheduled-tasks scheduler="barkScheduler">
-		<task:scheduled ref="dqmetrics" method="autoRefresh" fixed-delay="3600000"/>
-		<task:scheduled ref="scheduleService" method="schedulingJobs" fixed-delay="120000"/>
+		<task:scheduled ref="dqmetrics" method="updateLatestDQList" fixed-delay="3600000"/>
+		<!-- <task:scheduled ref="scheduleService" method="schedulingJobs" fixed-delay="120000"/> -->
     </task:scheduled-tasks>
 	<task:scheduler id="barkScheduler"/> 
 	

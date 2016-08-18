@@ -64,8 +64,17 @@ public class DqModel extends IdEntity{
 	private int schedule;
 
 	/**
-	 * modelType=ModelType.VALIDITY, content[2]=>ValidityType
-	 * modelType=ModelType.Anomaly,  content[2]=>AnomalType
+	 * <ul>
+	 * <li>ModelType.ACCURACY</li>
+	 * <pre>
+	 * srcDb | srcDataSet | dstDB | dstDataSet | [MappingItemInput.src, MII.dst, MII.isPk, MII.matchedMethod];
+	 * </pre>
+	 * <li>ModelType.VALIDITY</li>
+	 * <pre> srcDb | srcDataSet | validityType | column </pre>
+	 * <li>ModelType.Anomaly</li>  
+	 * <pre> srcDb | srcDataSet | anomalType </pre>
+	 * <li>ModelType.Publish</li>
+	 * <pre> publishUrl </pre>
 	 */
 	// FIXME should model this explicitly, ASAP. 
 	@Property("modelContent")

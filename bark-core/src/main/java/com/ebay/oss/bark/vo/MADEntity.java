@@ -36,5 +36,9 @@ public class MADEntity {
         this.lower = lower;
     }
 
+    public MADEntity clone() {
+        return new MADEntity(getUpper(), getLower());
+
+    }
 
 }

@@ -16,6 +16,10 @@ package com.ebay.oss.bark.service;
 
 
 
+/** 
+ * TODO: to decouple the schedule/job from model/metrics. schedule/job depends on model/metric, but 
+ * not vice versa.
+ */
 public interface DqScheduleService {
 
     void schedulingJobs();

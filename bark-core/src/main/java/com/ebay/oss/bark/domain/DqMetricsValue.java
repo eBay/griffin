@@ -97,8 +97,15 @@ public class DqMetricsValue extends BaseObj implements Comparable<DqMetricsValue
 
 	@Override
 	public int compareTo(DqMetricsValue o) {
-		return o.getTimestamp() == this.getValue() ? 0 :
-			(o.getTimestamp() > this.getTimestamp() ? 1 : -1);
+	    return (int) Math.signum(o.getTimestamp() - this.getTimestamp());
+//		return o.getTimestamp() == this.getTimestamp() ? 0 :
+//			(o.getTimestamp() > this.getTimestamp() ? 1 : -1);
 	}
+
+    @Override
+    public String toString() {
+        return "DqMetricsValue [_id=" + _id + ", metricName=" + metricName + ", timestamp="
+                        + timestamp + ", value=" + value + "]";
+    }
 
 }

@@ -4,45 +4,57 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
 
 
 ### Contact us
-[DL-eBay-bark-dev@ebay.com](mailto://DL-eBay-bark-dev@ebay.com)
+[Google Groups](ebay-bark-devs@googlegroups.com)
 
 [Slack](https://ebay-eng.slack.com/messages/ebaysf-bark/)
 
 
+### CI
+https://travis-ci.org/eBay/DQSolution
+
+### Repository
+Snapshot: https://oss.sonatype.org/content/repositories/snapshots
+
+Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 
 ### How to build
 1. git clone the repository of https://github.com/eBay/DQSolution
 2. run "mvn install"
 
 ### How to run in docker
-1. Install [docker](https://www.docker.com) and [git](https://git-scm.com).
+1. Install [docker](https://www.docker.com) and [git](https://git-scm.com).  
 2. Clone this repository to your work path.
     ```
     cd <your work path>
     git clone https://github.com/eBay/DQSolution.git
     ```
+    
 3. Enter production directory DQSolution, build docker image orderly.
     ```
     cd <your work path>/DQSolution    
     ```
+    
     In DQSolution directory, build docker image bark-base-env, which is the base environment of application.
     ```
     docker build -t bark-base-env -f docker/bark-base/Dockerfile .
     ```
+    
     Then you can build docker image bark-env, containing the demo application, which is build from the latest version of project.
     ```
     docker build -t bark-env -f docker/bark/Dockerfile .
     ```
+    
 4. Run docker image bark-env, then the backend is ready.
     ```
     docker run -it -h sandbox --name bark -m 8G --memory-swap -1 \
     -p 40022:22 -p 47077:7077 -p 48088:8088 -p 48040:8040 -p 48042:8042 \
     -p 48080:8080 -p 27017:27017 bark-env bash
     ```
+    
 5. Now you can visit UI through your browser.
     ```
     http://<your local IP address>:48080/
-    ```
+    ```  
 
 ### How to deploy and run at local
 1. Install jdk (1.7 or later versions)
@@ -100,9 +112,9 @@ Now you can put your data into Hive by running "hive" here. You can get sample d
 
     LOAD DATA LOCAL INPATH '<your data path>/MovieLensSample_Target.dat' OVERWRITE INTO TABLE movie_target;
     ```
-    
+
     If you use hive command mode to input data, remember to create _SUCCESS file in hdfs table path as following
-    
+
     ```
     hadoop fs -touchz /user/hive/warehouse/movie_source/_SUCCESS
     hadoop fs -touchz /user/hive/warehouse/movie_target/_SUCCESS
@@ -122,9 +134,9 @@ Now you can put your data into Hive by running "hive" here. You can get sample d
     spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
     ```
 
-    These commands submit the jobs to spark, if you want to try your own model or modify some parameters, please edit it. 
+    These commands submit the jobs to spark, if you want to try your own model or modify some parameters, please edit it.
     If you want to use your own model, change "bark-models-0.0.1-SNAPSHOT.jar" to "your path/your model.jar", and change the class name.  
-    
+
     Put these script files in **your local path**, run bark_regular_run.sh as following
     ```
     nohup ./bark_regular_run.sh &

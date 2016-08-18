@@ -14,10 +14,10 @@
  */
 package com.ebay.oss.bark.service;
 
-public interface Converter<E, V> {
+import com.ebay.oss.bark.vo.SystemLevelMetricsList;
 
-    V voOf(E e);
-    
-    E entityOf(V vo);
+public interface RefMetrcsCalc {
+
+    void calc(SystemLevelMetricsList totalSystemLevelMetricsList);
 
 }

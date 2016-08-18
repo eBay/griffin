@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ebay.oss.bark.domain.DataAsset;
-import com.ebay.oss.bark.service.DataAssetService;
 import com.ebay.oss.bark.vo.DataAssetInput;
 import com.ebay.oss.bark.vo.PlatformMetadata;
 
