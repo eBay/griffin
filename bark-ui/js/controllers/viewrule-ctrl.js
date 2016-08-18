@@ -57,7 +57,7 @@ define(['./module'], function (controllers) {
         if(answer){
           $http.get(deployModelUrl).success(function(){
             $scope.ruleData.basic.status = 2;
-            toaster.pop('info', 'Your model has be deployed to prduction!');
+            toaster.pop('info', 'Your model has been deployed to prduction!');
           });
         }
 

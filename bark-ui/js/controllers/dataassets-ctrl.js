@@ -31,11 +31,17 @@ define(['./module'], function (controllers) {
 
         if(start == 0 && !$scope.rowCollection){
           $http.get(allModels).success(function(data) {
+            if(data){
+              data.sort(function(a,b){
+                return -(a.timestamp - b.timestamp);
+              });
+            }
+
             originalRowCollection = angular.copy(data);
             $scope.rowCollection = angular.copy(data);
-            $scope.rowCollection.sort(function(a,b){
-              return (a.assetName<b.assetName?-1:(a.assetName>b.assetName?1:0));
-            });
+            // $scope.rowCollection.sort(function(a,b){
+            //   return (a.assetName<b.assetName?-1:(a.assetName>b.assetName?1:0));
+            // });
 
             $scope.displayed = $scope.rowCollection.slice(start, start+number);
             tableState.pagination.numberOfPages = Math.ceil($scope.rowCollection.length/number);
@@ -65,7 +71,7 @@ define(['./module'], function (controllers) {
           || include(keyword, assetItem.assetHDFSPath)
           || include(keyword, date);
       };
-      
+
       $scope.$watch('keyword', function(newValue){
         if(originalRowCollection){
           start = 0;

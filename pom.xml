@@ -24,6 +24,7 @@
     <modules>
     	  <module>bark-ui</module>
         <module>bark-core</module>
+        <module>bark-models</module>
     </modules>
     <inceptionYear>2016</inceptionYear>
     <description>
@@ -51,6 +52,7 @@
         <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
       </repository>
     </distributionManagement>
+
     <repositories>
       <repository>
           <id>oss-sonatype</id>

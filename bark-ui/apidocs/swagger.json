@@ -17,21 +17,22 @@
         "/dataassets/{id}": {
             "delete": {
                 "summary": "Delete a data asset by id",
-                "description": "If you want to delete model, just input the model's id.",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "description": "id like 1,2,3, ...",
-                        "type": "integer"
-                    }
-                ],
+                "description": "Delete a data asset with the given id.",
+                "parameters": [{
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "id like 1,2,3, ...",
+                    "type": "integer"
+                }],
                 "tags": [
                     "Dataassets"
                 ],
                 "responses": {
                     "200": {
+                        "schema": {
+                            "$ref": "#/definitions/deleteDataassetResponse"
+                        },
                         "description": "success"
                     },
                     "default": {
@@ -41,16 +42,14 @@
             },
             "get": {
                 "summary": "Retrieve a data asset by id",
-                "description": "id is required",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "description": "id like 1,2,3...",
-                        "type": "integer"
-                    }
-                ],
+                "description": "Get the detail information of a data asset by the given id.",
+                "parameters": [{
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "id like 1,2,3...",
+                    "type": "integer"
+                }],
                 "tags": [
                     "Dataassets"
                 ],
@@ -70,7 +69,7 @@
         "/dataassets": {
             "get": {
                 "summary": "Get all dataassets",
-                "description": "You can find all dataassets in here",
+                "description": "Get all dataassets.",
                 "tags": [
                     "Dataassets"
                 ],
@@ -87,25 +86,23 @@
                 }
             },
             "post": {
-                "summary": "Add new dataasset",
-                "description": "If you want to create datasets, please input object like example",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "description": "Please click the text box on right to copy the example data ",
-                        "schema": {
-                            "$ref": "#/definitions/addDataassets"
-                        }
+                "summary": "Add new data asset",
+                "description": "If you want to create data asset, please input object like example.",
+                "parameters": [{
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "description": "Please click the text box on right to copy the example data ",
+                    "schema": {
+                        "$ref": "#/definitions/addDataassets"
                     }
-                ],
+                }],
                 "tags": [
                     "Dataassets"
                 ],
                 "responses": {
-                    "200": {
-                        "description": "success"
+                    "201": {
+                        "description": "created"
                     },
                     "default": {
                         "description": "Unexpected error"
@@ -114,24 +111,25 @@
             },
             "put": {
                 "summary": "Update a dataasset",
-                "description": "If you want to update dataset, please input object like example",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "description": "Please change the 'desc' and 'sample' in 'schema' ",
-                        "schema": {
-                            "$ref": "#/definitions/addDataassets"
-                        }
+                "description": "If you want to update dataset, please input object like example.",
+                "parameters": [{
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "description": "Please change the 'desc' and 'sample' in 'schema' ",
+                    "schema": {
+                        "$ref": "#/definitions/addDataassets"
                     }
-                ],
+                }],
                 "tags": [
                     "Dataassets"
                 ],
                 "responses": {
                     "200": {
-                        "description": "success"
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/addDataassetsResult"
+                        }
                     },
                     "default": {
                         "description": "Unexpected error"
@@ -142,7 +140,7 @@
         "/dataassets/metadata": {
             "get": {
                 "summary": "Metadata information",
-                "description": "Get all metadata definition",
+                "description": "Get all the metadata definition.",
                 "tags": [
                     "Dataassets"
                 ],
@@ -159,27 +157,24 @@
                 }
             }
         },
-
         "/models": {
             "post": {
                 "summary": "Create new model",
-                "description": "Where you can add accuracy, validity, anomaly and publish models. The example is just for accuracy model. If you want to create validity model just operate the following tips, REMOVE: 'desc' in 'basic', 'targetDb' and 'targetDataSet' in 'extra', 'mappings', ADD: 'vaType' and 'column' in 'extra'. If you want to create anomaly model, just REMOVE: 'targetDb' in 'extra', 'mappings'. publish model is the same as anomaly model.",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "description": "The example is just for accuracy model. ",
-                        "schema": {
-                            "$ref": "#/definitions/createModel"
-                        }
+                "description": "You can add accuracy, validity, anomaly and publish models. The example below is just for accuracy model. <br/>If you want to create validity model, just operate the following tips, REMOVE: 'targetDb' and 'targetDataSet' in 'extra', 'mappings', ADD: 'vaType' and 'column' in 'extra'. For example, [validity.json](example/validity.json). <br/>If you want to create anomaly model, REMOVE: 'targetDb' and 'targetDataSet' in 'extra', 'mappings', ADD: 'anType' in 'extra'. For example, [anomaly.json](example/anomaly.json). <br/>If you want to create publish model, REMOVE: 'srcDb', 'srcDataSet', 'targetDb' and 'targetDataSet' in 'extra', 'mappings', ADD: 'publishUrl' in 'extra'. For example, [publish.json](example/publish.json).",
+                "parameters": [{
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "description": "The example is just for accuracy model. ",
+                    "schema": {
+                        "$ref": "#/definitions/createModel"
                     }
-                ],
+                }],
                 "tags": [
                     "Models"
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Profile information for a user"
                     },
                     "default": {
@@ -189,7 +184,7 @@
             },
             "get": {
                 "summary": "Get all models",
-                "description": "get all models",
+                "description": "Get all the models.",
                 "tags": [
                     "Models"
                 ],
@@ -208,22 +203,20 @@
         },
         "/models/{modelName}": {
             "delete": {
-                "summary": "Delete model depend on model's name",
-                "description": "If you want to delete model, just input the model's name.",
-                "parameters": [
-                    {
-                        "name": "modelName",
-                        "in": "path",
-                        "required": true,
-                        "description": "Models'name like wx_publish, ...",
-                        "type": "string"
-                    }
-                ],
+                "summary": "Delete a model by the model name",
+                "description": "If you want to delete a model, just input the model name.",
+                "parameters": [{
+                    "name": "modelName",
+                    "in": "path",
+                    "required": true,
+                    "description": "Model name like wx_publish, ...",
+                    "type": "string"
+                }],
                 "tags": [
                     "Models"
                 ],
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "success"
                     },
                     "default": {
@@ -232,17 +225,15 @@
                 }
             },
             "get": {
-                "summary": "Get model depend on model's name",
-                "description": "If you want to check model, just input the model's name.",
-                "parameters": [
-                    {
-                        "name": "modelName",
-                        "in": "path",
-                        "required": true,
-                        "description": "Models'name like wx_publish, ...",
-                        "type": "string"
-                    }
-                ],
+                "summary": "Get the model information by the model name",
+                "description": "If you want to check a model, just input the model name.",
+                "parameters": [{
+                    "name": "modelName",
+                    "in": "path",
+                    "required": true,
+                    "description": "Model name like wx_publish, ...",
+                    "type": "string"
+                }],
                 "tags": [
                     "Models"
                 ],
@@ -253,44 +244,46 @@
                         },
                         "description": "success"
                     },
+                    "204": {
+                        "description": "No content"
+                    },
                     "default": {
                         "description": "Unexpected error"
                     }
                 }
             }
         },
-        "/metrics":{
-          "post": {
-              "summary": "Publish metrics",
-              "description": "You can publish your own metric by POSTing",
-              "parameters": [
-                  {
-                      "name": "body",
-                      "in": "body",
-                      "required": true,
-                      "description": "Please click the text box on right to copy the example data ",
-                      "schema": {
-                          "$ref": "#/definitions/publishMetrics"
-                      }
-                  }
-              ],
-              "tags": [
-                  "Metrics"
-              ],
-              "responses": {
-                  "204": {
-                      "description": "success"
-                  },
-                  "default": {
-                      "description": "Unexpected error"
-                  }
-              }
-          }
+        "/models/enableModel/{modelName}": {
+            "get": {
+                "summary": "Deploy the model to production",
+                "description": "Deploy the model to production.",
+                "parameters": [{
+                    "name": "modelName",
+                    "in": "path",
+                    "required": true,
+                    "description": "Model name like wx_publish, ...",
+                    "type": "string"
+                }],
+                "tags": [
+                    "Models"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "204": {
+                        "description": "No content"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
         },
         "/metrics/heatmap": {
             "get": {
-                "summary": "Heatmap",
-                "description": "Heatmap",
+                "summary": "Get the heatmap",
+                "description": "Get the basic information of all the metrics, including the metric name, the organization name and the latest DQ.",
                 "tags": [
                     "Metrics"
                 ],
@@ -309,8 +302,8 @@
         },
         "/metrics/briefmetrics": {
             "get": {
-                "summary": "Briefmetrics",
-                "description": "Metrics on side bar",
+                "summary": "Get all the brief metrics",
+                "description": "Get the latest 24-dots data for all the metrics on the side bar.",
                 "tags": [
                     "Metrics"
                 ],
@@ -327,39 +320,17 @@
                 }
             }
         },
-        "/metrics/complete/{id}": {
+        "/metrics/briefmetrics/{orgName}": {
             "get": {
-                "summary": "complete",
-                "description": "Get complete data depend on id",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID like accuracy_viewitem_queue, accuracy_bid_new_queue,...",
-                        "type": "string"
-                    }
-                ],
-                "tags": [
-                    "Metrics"
-                ],
-                "responses": {
-                    "200": {
-                        "schema": {
-                            "$ref": "#/definitions/getComplete"
-                        },
-                        "description": "success"
-                    },
-                    "default": {
-                        "description": "Unexpected error"
-                    }
-                }
-            }
-        },
-        "/metrics/dashboard/Bullseye": {
-            "get": {
-                "summary": "Bullseye",
-                "description": "Get Bullseye data from server",
+                "summary": "Get the brief metrics by organization name",
+                "description": "Get the latest 24-dots data for the metrics in the given organization.",
+                "parameters": [{
+                    "name": "orgName",
+                    "in": "path",
+                    "required": true,
+                    "description": "Organization name like Bullseye, Hadoop,...",
+                    "type": "string"
+                }],
                 "tags": [
                     "Metrics"
                 ],
@@ -378,8 +349,8 @@
         },
         "/metrics/dashboard": {
             "get": {
-                "summary": "Dashboa",
-                "description": "dashboard",
+                "summary": "Get all the metrics",
+                "description": "Get the latest 30-dots data for all the metrics.",
                 "tags": [
                     "Metrics"
                 ],
@@ -395,11 +366,263 @@
                     }
                 }
             }
+        },
+        "/metrics/dashboard/{orgName}": {
+            "get": {
+                "summary": "Get the metrics by organization name",
+                "description": "Get the latest 30-dots data for the metrics in the given organization.",
+                "parameters": [{
+                    "name": "orgName",
+                    "in": "path",
+                    "required": true,
+                    "description": "Organization name like Bullseye, Hadoop,...",
+                    "type": "string"
+                }],
+                "tags": [
+                    "Metrics"
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/getBriefmetrics"
+                        },
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
+        },
+        "/metrics/complete/{modelName}": {
+            "get": {
+                "summary": "Get the complete data by model name",
+                "description": "Get the complete data of the given model name",
+                "parameters": [{
+                    "name": "modelName",
+                    "in": "path",
+                    "required": true,
+                    "description": "Model name like test_accuracy_1, TotalCount_p13nquality.dmg_target,...",
+                    "type": "string"
+                }],
+                "tags": [
+                    "Metrics"
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/getComplete"
+                        },
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
+        },
+        "/metrics/statics": {
+            "get": {
+                "summary": "Get the statistics",
+                "description": "Get the statistics of all the metrics, including the total number of data assets, the total number of DQ metrics, and the number of metrics in health/warn/invalid status.",
+                "tags": [
+                    "Metrics"
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/getStatistics"
+                        },
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
+        },
+        "/metrics/brief/{modelName}": {
+            "get": {
+                "summary": "Get the rule metrics by model name",
+                "description": "Get the rule metrics by the given model name.",
+                "parameters": [{
+                    "name": "modelName",
+                    "in": "path",
+                    "required": true,
+                    "description": "Model name like accuracy_viewitem_queue, accuracy_bid_new_queue,...",
+                    "type": "string"
+                }],
+                "tags": [
+                    "Metrics"
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/getBrief"
+                        },
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
+        },
+        "/metrics/sample/{modelName}": {
+            "get": {
+                "summary": "Get the samples by model name",
+                "description": "Get the paths of the metrics samples by the given model name.",
+                "parameters": [{
+                    "name": "metricName",
+                    "in": "path",
+                    "required": true,
+                    "description": "Model name like test_accuracy_1, TotalCount_p13nquality.dmg_target,...",
+                    "type": "string"
+                }],
+                "tags": [
+                    "Metrics"
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/getMetricsample"
+                        },
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
+        },
+        "/metrics/download/{path}": {
+            "get": {
+                "summary": "Download sample",
+                "description": "Download the metrics sample by the given path.",
+                "parameters": [{
+                    "name": "path",
+                    "in": "path",
+                    "required": true,
+                    "description": "Path like /user/test/bark,...",
+                    "type": "string"
+                }],
+                "tags": [
+                    "Metrics"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
+        },
+        "/metrics/mydashboard/{userName}": {
+            "get": {
+                "summary": "Get my dashboard by user name",
+                "description": "Get the models subscribed by the user name.",
+                "parameters": [{
+                    "name": "userName",
+                    "in": "path",
+                    "required": true,
+                    "description": "NT account",
+                    "type": "string"
+                }],
+                "tags": [
+                    "Mydashboard"
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/getMydashboard"
+                        },
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
+        },
+        "/subscribe/{userName}": {
+            "get": {
+                "summary": "Get the subscribed data assets",
+                "description": "Get the subscribed data assets by the user",
+                "parameters": [{
+                    "name": "userName",
+                    "in": "path",
+                    "required": true,
+                    "description": "NT account",
+                    "type": "string"
+                }],
+                "tags": [
+                    "Mydashboard"
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/getSubscribe"
+                        },
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
+        },
+        "/subscribe": {
+            "post": {
+                "summary": "Subscribe data assets",
+                "description": "Subscribe data assets.",
+                "parameters": [{
+                    "name": "body",
+                    "in": "body",
+                    "required": true,
+                    "description": "The example is just for accuracy model. ",
+                    "schema": {
+                        "$ref": "#/definitions/newSubscribe"
+                    }
+                }],
+                "tags": [
+                    "Mydashboard"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
+        },
+        "/notifications": {
+            "get": {
+                "summary": "Get the notifications",
+                "description": "Get the operation notifications.",
+                "tags": [
+                    "Notification"
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/notifications"
+                        },
+                        "description": "success"
+                    },
+                    "default": {
+                        "description": "Unexpected error"
+                    }
+                }
+            }
         }
 
     },
     "definitions": {
-        "mappingsItem":{
+        "mappingsItem": {
             "type": "object",
             "properties": {
                 "target": {
@@ -452,7 +675,7 @@
                         },
                         "email": {
                             "type": "string",
-                            "enum": ["g@g"]
+                            "enum": ["g@g.com"]
                         },
                         "dataaset": {
                             "type": "string",
@@ -466,11 +689,11 @@
                             "type": "integer",
                             "enum": [90]
                         },
-                        "status":{
+                        "status": {
                             "type": "integer",
                             "enum": [0]
                         },
-                        "starttime":{
+                        "starttime": {
                             "type": "integer",
                             "enum": [0]
                         }
@@ -495,19 +718,19 @@
                             "type": "string",
                             "enum": ["SiteSpeed"]
                         },
-                        "vaType":{
+                        "vaType": {
                             "type": "integer",
                             "enum": [-1]
                         },
-                        "anType":{
+                        "anType": {
                             "type": "integer",
                             "enum": [-1]
                         },
-                        "column":{
+                        "column": {
                             "type": "string",
                             "enum": ["null"]
                         },
-                        "publishUrl":{
+                        "publishUrl": {
                             "type": "integer",
                             "enum": ["null"]
                         }
@@ -515,8 +738,8 @@
                 },
                 "mappings": {
                     "type": "array",
-                    "items":{
-                        "$ref": "mappingsItem"
+                    "items": {
+                        "$ref": "#/definitions/mappingsItem"
                     }
                 }
             }
@@ -557,7 +780,7 @@
                         },
                         "email": {
                             "type": "string",
-                            "enum": ["g@g"]
+                            "enum": ["g@g.com"]
                         },
                         "dataaset": {
                             "type": "string",
@@ -592,48 +815,48 @@
                 },
                 "mappings": {
                     "type": "array",
-                    "items":{
-                        "$ref": "mappingsItem"
+                    "items": {
+                        "$ref": "#/definitions/mappingsItem"
                     }
                 }
             }
         },
-        "getMetaData":{
+        "getMetaData": {
             "type": "array",
             "items": {
-                "type":"object",
-                "properties":{
-                    "id":{
-                        "type":"string",
-                        "enum":["null"]
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "enum": ["null"]
                     },
-                    "platform":{
-                        "type":"string",
-                        "enum":["Apollo"]
+                    "platform": {
+                        "type": "string",
+                        "enum": ["Apollo"]
                     },
-                    "systems":{
+                    "systems": {
                         "type": "array",
-                        "items":{
-                            "type":"object",
-                            "properties":{
-                               "id":{
-                                    "type":"string",
-                                    "enum":["null"]
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "enum": ["null"]
                                 },
-                                "name":{
-                                    "type":"string",
-                                    "enum":["Bullseye"]
+                                "name": {
+                                    "type": "string",
+                                    "enum": ["Bullseye"]
                                 },
-                                "assets":{
+                                "assets": {
                                     "type": "array",
                                     "items": {
                                         "type": "object",
                                         "properties": {
-                                            "id":{
+                                            "id": {
                                                 "type": "number",
                                                 "enum": [108]
                                             },
-                                            "name":{
+                                            "name": {
                                                 "type": "string",
                                                 "enum": ["dw_bid"]
                                             }
@@ -646,129 +869,153 @@
                 }
             }
         },
-        "getAllModels":{
+        "getAllModels": {
             "type": "array",
             "items": {
-                "type":"object",
-                "properties":{
-                    "name":{
-                        "type":"string",
+                "type": "object",
+                "properties": {
+                    "assetName": {
+                        "type": "string",
+                        "enum": ["asset1"]
+                    },
+                    "name": {
+                        "type": "string",
                         "enum": ["wx_ac"]
                     },
-                    "system":{
-                        "type":"number",
-                        "format":"int32",
+                    "system": {
+                        "type": "integer",
+                        "format": "int32",
                         "enum": [2]
                     },
-                    "description":{
-                        "type":"string",
+                    "description": {
+                        "type": "string",
                         "enum": ["ggggg"]
                     },
-                    "type":{
-                        "type":"number",
-                        "format":"int32",
+                    "type": {
+                        "type": "integer",
+                        "format": "int32",
                         "enum": [0]
                     },
-                    "createDate":{
-                        "type":"string",
-                        "format":"date",
+                    "createDate": {
+                        "type": "string",
+                        "format": "date",
                         "enum": [1463445405278]
                     },
-                    "status":{
-                        "type":"string",
-                        "format":"int32",
-                        "enum": ["Testing"]
+                    "status": {
+                        "type": "string",
+                        "format": "int32",
+                        "enum": ["2"]
+                    },
+                    "owner": {
+                        "type": "string",
+                        "enum": ["test"]
                     }
                 }
             }
         },
-        "dataassetsFromId":{
+        "dataassetsFromId": {
             "type": "object",
             "properties": {
-                "_id":{
-                    "type":"number",
-                    "format":"int32",
-                    "enum":[3]
+                "_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "enum": [3]
                 },
-                "platform":{
-                    "type":"string",
-                    "enum":["Apollo"]
+                "platform": {
+                    "type": "string",
+                    "enum": ["Apollo"]
                 },
-                "system":{
-                    "type":"string",
-                    "enum":["Bullseye"]
+                "system": {
+                    "type": "string",
+                    "enum": ["Bullseye"]
                 },
-                "assetName":{
-                    "type":"string",
-                    "enum":["be_item_watch_event_queue"]
+                "assetName": {
+                    "type": "string",
+                    "enum": ["be_item_watch_event_queue"]
                 },
-                "assetType":{
-                    "type":"string",
-                    "enum":["hivetable"]
+                "assetType": {
+                    "type": "string",
+                    "enum": ["hivetable"]
                 },
-                "assetHDFSPath":{
-                    "type":"string",
-                    "enum":["/apps/hdmi-technology/b_des/hive/be_item_watch_event_queue"]
+                "assetHDFSPath": {
+                    "type": "string",
+                    "enum": ["/apps/hdmi-technology/b_des/hive/be_item_watch_event_queue", "/apps/hdmi-technology/b_des/hive/be_item_watch_event_queue/[YYYY][MM][DD]"]
                 },
-                "owner":{
-                    "type" : "string",
-                    "enum":["null"]
+                "owner": {
+                    "type": "string",
+                    "enum": ["null"]
                 },
-                "timestamp":{
-                    "type":"string",
-                    "format":"date",
-                    "enum":[1463387788064]
+                "timestamp": {
+                    "type": "string",
+                    "format": "date",
+                    "enum": [1463387788064]
                 },
-                "schema":{
+                "schema": {
                     "type": "array",
                     "items": {
                         "type": "object",
                         "properties": {
-                            "name":{
-                                "type":"string",
-                                "enum":["seller_id"]
+                            "name": {
+                                "type": "string",
+                                "enum": ["seller_id"]
                             },
-                            "type":{
-                                "type":"string",
-                                "enum":["string"]
+                            "type": {
+                                "type": "string",
+                                "enum": ["string"]
                             },
-                            "desc":{
-                                "type":"string",
-                                "enum":[""]
+                            "desc": {
+                                "type": "string",
+                                "enum": [""]
                             },
-                            "sample":{
-                                "type":"string",
-                                "enum":[""]
+                            "sample": {
+                                "type": "string",
+                                "enum": [""]
+                            }
+                        }
+                    }
+                },
+                "partitions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "enum": ["start"]
+                            },
+                            "format": {
+                                "type": "string",
+                                "enum": ["yyyyMMdd", "yyyy-MM-dd", "HH"]
                             }
                         }
                     }
                 }
             }
         },
-        "getHeatmap":{
+        "getHeatmap": {
             "type": "array",
-            "items":{
-               "type":"object",
-               "properties":{
-                    "name":{
-                        "type":"string",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
                         "enum": ["Bullseye"]
                     },
                     "dq": {
                         "type": "integer",
                         "enum": [0]
                     },
-                    "metrics":{
+                    "metrics": {
                         "type": "array",
-                        "items":{
+                        "items": {
                             "type": "object",
                             "properties": {
-                                "assetid": {
-                                    "type": "integer",
-                                    "enum": [2]
+                                "assetName": {
+                                    "type": "String",
+                                    "enum": ["null"]
                                 },
-                                "name":{
-                                    "type":"string",
+                                "name": {
+                                    "type": "string",
                                     "enum": ["accuracy_search_queue"]
                                 },
                                 "dq": {
@@ -779,93 +1026,95 @@
                                     "type": "integer",
                                     "enum": [0]
                                 },
-                                "timestamp":{
-                                    "type":"string",
-                                    "format":"date",
+                                "timestamp": {
+                                    "type": "string",
+                                    "format": "date",
                                     "enum": [1463317200000]
                                 },
                                 "metricType": {
-                                    "type":"string",
+                                    "type": "string",
                                     "enum": ["rule_build"]
                                 },
-                                "details":{
+                                "details": {
                                     "type": "string",
-                                    "enum":[[]]
+                                    "enum": [
+                                        []
+                                    ]
                                 }
                             }
                         }
                     }
-               }
+                }
             }
         },
-        "getBriefmetrics":{
+        "getBriefmetrics": {
             "type": "array",
-            "items":{
-               "type":"object",
-               "properties":{
-                    "name":{
-                        "type":"string",
-                        "enum":["Bullseye"]
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "enum": ["Bullseye"]
                     },
                     "dq": {
                         "type": "integer",
-                        "enum":[0]
+                        "enum": [0]
                     },
-                    "metrics":{
+                    "metrics": {
                         "type": "array",
-                        "items":{
+                        "items": {
                             "type": "object",
                             "properties": {
-                                "assetid": {
-                                    "type": "integer",
-                                    "enum":[0]
+                                "assetName": {
+                                    "type": "string",
+                                    "enum": ["asset1"]
                                 },
-                                "name":{
-                                    "type":"string",
-                                    "enum":["accuracy_search_queue"]
+                                "name": {
+                                    "type": "string",
+                                    "enum": ["accuracy_search_queue"]
                                 },
                                 "dq": {
                                     "type": "integer",
-                                    "enum":[99.994]
+                                    "enum": [99.994]
                                 },
                                 "dqfail": {
                                     "type": "integer",
-                                    "enum":[0]
+                                    "enum": [0]
                                 },
-                                "timestamp":{
-                                    "type":"string",
-                                    "format":"date",
-                                    "enum":[ 1463317200000]
+                                "timestamp": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "enum": [1463317200000]
                                 },
                                 "metricType": {
-                                    "type": "integer",
-                                    "enum":["rule_build"]
+                                    "type": "string",
+                                    "enum": ["rule_build"]
                                 },
-                                "details":{
+                                "details": {
                                     "type": "array",
-                                    "items":{
+                                    "items": {
                                         "type": "object",
-                                        "properties":{
-                                            "timestamp":{
-                                                "type":"string",
-                                                "format":"date",
-                                                "enum":[1462798800000]
+                                        "properties": {
+                                            "timestamp": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "enum": [1462798800000]
                                             },
                                             "value": {
                                                 "type": "integer",
-                                                "enum":[99.995]
+                                                "enum": [99.995]
                                             },
-                                            "bolling":{
-                                                "type" : "string",
-                                                "enum":["null"]
+                                            "bolling": {
+                                                "type": "string",
+                                                "enum": ["null"]
                                             },
                                             "comparisionValue": {
                                                 "type": "integer",
-                                                "enum":[0]
+                                                "enum": [0]
                                             },
-                                            "mad":{
-                                                "type" : "string",
-                                                "enum":["null"]
+                                            "mad": {
+                                                "type": "string",
+                                                "enum": ["null"]
                                             }
                                         }
                                     }
@@ -873,58 +1122,58 @@
                             }
                         }
                     }
-               }
+                }
             }
         },
-        "getComplete":{
+        "getComplete": {
             "type": "object",
             "properties": {
-                "assetid": {
-                    "type": "integer",
-                    "enum": [1]
+                "assetName": {
+                    "type": "string",
+                    "enum": ["null"]
                 },
-                "name":{
-                    "type":"string",
+                "name": {
+                    "type": "string",
                     "enum": ["accuracy_viewitem_queue"]
                 },
                 "dq": {
                     "type": "integer",
-                    "enum": [ 99.536]
+                    "enum": [99.536]
                 },
                 "dqfail": {
                     "type": "integer",
                     "enum": [0]
                 },
-                "timestamp":{
-                    "type":"string",
-                    "format":"date",
+                "timestamp": {
+                    "type": "string",
+                    "format": "date",
                     "enum": [1460210400000]
                 },
                 "metricType": {
                     "type": "string",
                     "enum": ["rule_build"]
                 },
-                "details":{
+                "details": {
                     "type": "array",
                     "items": {
                         "type": "object",
                         "properties": {
-                            "timestamp":{
-                                "type":"string",
-                                "format":"date",
+                            "timestamp": {
+                                "type": "string",
+                                "format": "date",
                                 "enum": [1460210400000]
                             },
-                            "value":{
-                                "type":"integer",
-                                "enum":[ 99.532]
+                            "value": {
+                                "type": "integer",
+                                "enum": [99.532]
                             },
                             "bolling": {
                                 "type": "string",
                                 "enum": ["null"]
                             },
-                            "comparisionValue":{
-                                "type":"integer",
-                                "enum":[0]
+                            "comparisionValue": {
+                                "type": "integer",
+                                "enum": [0]
                             },
                             "mad": {
                                 "type": "string",
@@ -935,80 +1184,449 @@
                 }
             }
         },
-        "publishMetrics":{
-           "type": "object",
-           "properties":{
-                "metricName":{
-                    "type":"string",
-                    "enum":["test_publish"]
+        "publishMetrics": {
+            "type": "object",
+            "properties": {
+                "metricName": {
+                    "type": "string",
+                    "enum": ["test_publish"]
                 },
-                "timestamp":{
+                "timestamp": {
                     "type": "long",
                     "enum": [1463994766925]
                 },
-                "value":{
-                    "type":"float",
+                "value": {
+                    "type": "float",
                     "enum": [99.8]
                 }
-           }
+            }
         },
-        "addDataassets":{
-           "type": "object",
-           "properties":{
-                "system":{
-                    "type":"string",
-                    "enum":["Bullseye"]
+        "addDataassets": {
+            "type": "object",
+            "properties": {
+                "system": {
+                    "type": "string",
+                    "enum": ["Bullseye"]
                 },
-                "assetType":{
+                "assetType": {
                     "type": "string",
                     "enum": ["hdfsfile"]
                 },
-                "assetName":{
-                    "type":"string",
+                "assetName": {
+                    "type": "string",
                     "enum": ["a_test"]
                 },
-                "assetHDFSPath":{
-                    "type":"string",
-                    "enum": ["/user/xxx/asset"]
+                "assetHDFSPath": {
+                    "type": "string",
+                    "enum": ["/user/xxx/asset", "/user/xxx/asset/[YYYY][MM][DD]"]
                 },
-                "platform":{
-                    "type":"string",
+                "platform": {
+                    "type": "string",
                     "enum": ["Apollo"]
                 },
-                "schema":{
+                "schema": {
                     "type": "array",
                     "items": {
                         "type": "object",
                         "properties": {
-                            "name":{
-                                "type":"string",
+                            "name": {
+                                "type": "string",
                                 "enum": ["dd"]
                             },
-                            "type":{
-                                "type":"string",
-                                "enum": ["stringdd"]
+                            "type": {
+                                "type": "string",
+                                "enum": ["string"]
                             },
-                            "desc":{
-                                "type":"string",
+                            "desc": {
+                                "type": "string",
                                 "enum": ["ff"]
                             },
-                            "sample":{
-                                "type":"string",
+                            "sample": {
+                                "type": "string",
                                 "enum": ["ff"]
                             }
                         }
                     }
                 },
-                "owner":{
-                    "type" : "string",
+                "owner": {
+                    "type": "string",
                     "enum": ["xwang21"]
+                },
+                "partitions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "enum": ["start"]
+                            },
+                            "format": {
+                                "type": "string",
+                                "enum": ["yyyyMMdd", "yyyy-MM-dd", "HH"]
+                            }
+                        }
+                    }
                 }
-           }
+            }
         },
-        "getAllDataassets":{
+        "getAllDataassets": {
             "type": "array",
-            "items":{
+            "items": {
                 "$ref": "dataassetsFromId"
+            }
+        },
+        "deleteDataassetResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "enum": ["0"]
+                },
+                "result": {
+                    "type": "string",
+                    "enum": ["success"]
+                }
+            }
+        },
+        "addDataassetsResult": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "enum": ["0"]
+                },
+                "result": {
+                    "type": "string",
+                    "enum": ["success"]
+                }
+            }
+        },
+        "getMydashboard": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "enum": ["Bullseye"]
+                    },
+                    "dq": {
+                        "type": "integer",
+                        "enum": [0]
+                    },
+                    "metrics": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "enum": ["test_accuracy_2"]
+                                },
+                                "dq": {
+                                    "type": "integer",
+                                    "enum": [99.994]
+                                },
+                                "dqfail": {
+                                    "type": "integer",
+                                    "enum": [0]
+                                },
+                                "timestamp": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "enum": [1463317200000]
+                                },
+                                "metricType": {
+                                    "type": "string",
+                                    "enum": [""]
+                                },
+                                "assetName": {
+                                    "type": "string",
+                                    "enum": ["test_accuracy_2"]
+                                },
+                                "details": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "timestamp": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "enum": [1462798800000]
+                                            },
+                                            "value": {
+                                                "type": "integer",
+                                                "enum": [99.995]
+                                            },
+                                            "bolling": {
+                                                "type": "string",
+                                                "enum": ["null"]
+                                            },
+                                            "comparisionValue": {
+                                                "type": "integer",
+                                                "enum": [0]
+                                            },
+                                            "mad": {
+                                                "type": "string",
+                                                "enum": ["null"]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "getSubscribe": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "enum": ["test"]
+                },
+                "ntaccount": {
+                    "type": "string",
+                    "enum": ["test"]
+                },
+                "subscribes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "platform": {
+                                "type": "string",
+                                "enum": ["Apollo"]
+                            },
+                            "selectAll": {
+                                "type": "boolean",
+                                "enum": [false]
+                            },
+                            "systems": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "system": {
+                                            "type": "string",
+                                            "enum": ["Bullseye"]
+                                        },
+                                        "selectAll": {
+                                            "type": "boolean",
+                                            "enum": [false]
+                                        },
+                                        "dataassets": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "enum": ["asset1"]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        },
+        "newSubscribe": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "enum": ["test"]
+                },
+                "ntaccount": {
+                    "type": "string",
+                    "enum": ["test"]
+                },
+                "subscribes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "platform": {
+                                "type": "string",
+                                "enum": ["Apollo"]
+                            },
+                            "selectAll": {
+                                "type": "boolean",
+                                "enum": [false]
+                            },
+                            "systems": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "system": {
+                                            "type": "string",
+                                            "enum": ["Bullseye"]
+                                        },
+                                        "selectAll": {
+                                            "type": "boolean",
+                                            "enum": [false]
+                                        },
+                                        "dataassets": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "enum": ["asset1"]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        },
+        "getStatistics": {
+            "type": "object",
+            "properties": {
+                "assets": {
+                    "type": "integer",
+                    "enum": [24]
+                },
+                "metrics": {
+                    "type": "integer",
+                    "enum": [44]
+                },
+                "status": {
+                    "type": "object",
+                    "properties": {
+                        "health": {
+                            "type": "integer",
+                            "enum": [13]
+                        },
+                        "warn": {
+                            "type": "integer",
+                            "enum": [0]
+                        },
+                        "invalid": {
+                            "type": "integer",
+                            "enum": [2]
+                        }
+                    }
+                }
+            }
+        },
+        "getBrief": {
+            "type": "object",
+            "properties": {
+                "assetName": {
+                    "type": "string",
+                    "enum": ["null"]
+                },
+                "dq": {
+                    "type": "integer",
+                    "enum": [99.80]
+                },
+                "dqfail": {
+                    "type": "integer",
+                    "enum": [0]
+                },
+                "metricType": {
+                    "type": "string",
+                    "enum": [""]
+                },
+                "name": {
+                    "type": "string",
+                    "enum": ["TotalCount_p13nquality.dmg_target"]
+                },
+                "timestamp": {
+                    "type": "integer",
+                    "format": "date",
+                    "enum": [1462798800000]
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "timestamp": {
+                                "type": "string",
+                                "format": "date",
+                                "enum": [1462798800000]
+                            },
+                            "value": {
+                                "type": "integer",
+                                "enum": [99.995]
+                            },
+                            "bolling": {
+                                "type": "string",
+                                "enum": ["null"]
+                            },
+                            "comparisionValue": {
+                                "type": "integer",
+                                "enum": [0]
+                            },
+                            "mad": {
+                                "type": "string",
+                                "enum": ["null"]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "getMetricsample": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "integer",
+                        "format": "date",
+                        "enum": [1462798800000]
+                    },
+                    "path": {
+                        "type": "string",
+                        "enum": ["/user/b_des/test"]
+                    }
+                }
+            }
+        },
+        "notifications": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "enum": [1]
+                    },
+                    "link": {
+                        "type": "string",
+                        "enum": ["null"]
+                    },
+                    "name": {
+                        "type": "string",
+                        "enum": ["aa"]
+                    },
+                    "operation": {
+                        "type": "string",
+                        "enum": ["create"]
+                    },
+                    "owner": {
+                        "type": "string",
+                        "enum": ["test"]
+                    },
+                    "target": {
+                        "type": "string",
+                        "enum": ["model"]
+                    },
+                    "timestamp": {
+                        "type": "integer",
+                        "format": "date",
+                        "enum": [1462798800000]
+                    }
+                }
             }
         }
     }

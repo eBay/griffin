@@ -132,22 +132,19 @@ define(['./module'], function (controllers) {
                     //this.data.basic.path += (this.basic.folderFormat==undefined?"":this.basic.folderFormat);
 
 
+
                     $('#confirm-pu').modal('show');
                 }
             },
 
             save: function() {
-                $('#confirm-pu').on('hidden.bs.modal', function(e) {
-                    $('#confirm-pu').off('hidden.bs.modal');
-                    $location.path('/dataassets');
-                    $scope.$apply();
-                });
+
 
                 var msg = {
                 	'system' : $scope.systemOptions[$scope.form.basic.system],
                 	'assetType' : $scope.assetTypeOptions[$scope.form.basic.type],
                   'assetName' : $scope.form.basic.assetName,
-                	'assetHDFSPath' : $scope.form.data.basic.path + $scope.form.data.basic.folderFormat,
+                	'assetHDFSPath' : $scope.form.data.basic.path + ($scope.form.data.basic.folderFormat==undefined?"":$scope.form.data.basic.folderFormat),
                 	'platform' : $scope.form.basic.platform,
                 	'schema' : $scope.form.basic.schema,
                   'partitions' : $scope.form.basic.partitions,
@@ -155,6 +152,12 @@ define(['./module'], function (controllers) {
                 }
 
                 $http.post($config.uri.adddataasset, msg).success(function() {
+                    $('#confirm-pu').on('hidden.bs.modal', function(e) {
+                        $('#confirm-pu').off('hidden.bs.modal');
+                        $location.path('/dataassets');
+                        $scope.$apply();
+                    });
+
 	                  $('#confirm-pu').modal('hide');
 
                 }).error(function(data){

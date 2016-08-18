@@ -28,47 +28,6 @@ define(['./module'], function(controllers) {
 
         var dbtreeUrl = $config.uri.dbtree;
         var schemaDefinitionUrl = $config.uri.schemadefinition;
-/*
-        $http.get(dbtreeUrl).success(function(data) {
-            var dbList = [];
-            if (data && data.length > 0) {
-                data.forEach(function(db) {
-                    var dbNode = {
-                        name: db.platform,
-                        l1: true,
-                        children: []
-                    };
-                    dbList.push(dbNode);
-                    if (db.datasets && db.datasets.length > 0) {
-                        db.datasets.forEach(function(dataset) {
-                            var dsNode = {
-                                name: dataset.name,
-                                l2: true,
-                                children: []
-                            };
-                            dbNode.children.push(dsNode);
-                            dsNode.parent = db;
-
-
-                            if (dataset.tables && dataset.tables.length > 0) {
-                                dataset.tables.forEach(function(schema) {
-                                    var schemaNode = {
-                                        name: schema,
-                                        l3: true
-                                    };
-                                    schemaNode.parent = dsNode;
-                                    dsNode.children.push(schemaNode);
-                                });
-                            }
-                        });
-                    }
-
-                });
-            }
-            $scope.dbList = dbList;
-            $scope.dbListTarget = angular.copy(dbList);
-        });
-*/
 
         $http.get(dbtreeUrl).success(function(data) {
             var dbList = [];
@@ -287,7 +246,7 @@ define(['./module'], function(controllers) {
 
             // $('.formStep').css({height: 800});
         });
-        
+
         $scope.$on('resizeHandler', function(e) {
             if ($route.current.$$route.controller == "CreateRuleACCtrl") {
                 $scope.$emit('initReq');
@@ -454,7 +413,7 @@ define(['./module'], function(controllers) {
             // },
             //
             // ruleType: 1
-        };
+        }
 
 
         var nextStep = function() {
@@ -463,23 +422,32 @@ define(['./module'], function(controllers) {
                 resizeWindow();
             }, 0);
         }
-        ;
+
         var prevStep = function() {
             $scope.currentStep--;
             $timeout(function(){
                 resizeWindow();
             }, 0);
         }
-        ;
+
         var goToStep = function(i) {
             $scope.currentStep = i;
+
             $timeout(function(){
                 resizeWindow();
             }, 0);
         }
-        ;
+
+        $scope.$watch('currentStep', function(newValue){
+          if(newValue == 3){ //step 3
+            if($scope.selectionTarget.length < $scope.mappings.length){
+              $scope.mappings.splice($scope.selectionTarget.length);
+            }
+          }
+        });
 
         var existDuplicatedElement = function(arr){
+
             for (var i = 0; i < arr.length; i++) {
                 for (var j = i+1; j < arr.length; j++) {
                     if(arr[i] == arr[j]){

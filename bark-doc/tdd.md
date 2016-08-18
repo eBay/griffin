@@ -8,7 +8,7 @@ There are 3 main parts of the system: Web UI, Backend Services, and Model engine
 
 ## Web UI
 - AngularJS 1.5.7 - https://angularjs.org/
-- D3.js 4.1.1 - https://d3js.org/
+- eCharts 3.2.2 - http://echarts.baidu.com/
 - Bootstrap 3.3.6 - http://getbootstrap.com
 
 ## Backend Service Layer
