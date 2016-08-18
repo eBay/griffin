@@ -122,9 +122,11 @@
           </label>
 
           <div class="col-xs-6" >
-            <label class="label label-success">
-              {{ruleData.basic.status|strmap:'modelstatus'}}
-            </label>
+            <label class="label" ng-class="ruleData.basic.status==0?'label-default':ruleData.basic.status==1?'label-info':'label-success'" >{{ruleData.basic.status|strmap:'modelstatus'}}</label>
+
+            <!-- <label class="label label-success">
+
+            </label> -->
           </div>
         </div>
 
@@ -135,7 +137,8 @@
 
           <div class="col-xs-6" >
             <label class="label label-info">
-              {{modelresultData.dq}}<span ng-show="ruleData.basic.type==0">%</span>
+              <span ng-show="ruleData.basic.type == 0">{{modelresultData.dq | number:2}}%</span>
+              <span ng-show="ruleData.basic.type > 0">{{modelresultData.dq}}</span>
             </label>
           </div>
         </div>
