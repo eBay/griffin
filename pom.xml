@@ -40,7 +40,8 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <!-- <distributionManagement>
+
+    <distributionManagement>
       <snapshotRepository>
         <id>ossrh</id>
         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -49,12 +50,6 @@
         <id>ossrh</id>
         <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
       </repository>
-    </distributionManagement> -->
-    <distributionManagement>
-      <snapshotRepository>
-        <id>ossrh</id>
-        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      </snapshotRepository>
     </distributionManagement>
     <repositories>
       <repository>
@@ -66,6 +61,7 @@
           </snapshots>
       </repository>
     </repositories>
+
     <prerequisites>
         <maven>${maven.version}</maven>
     </prerequisites>

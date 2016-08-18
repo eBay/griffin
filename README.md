@@ -4,11 +4,18 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
 
 
 ### Contact us
-[DL-eBay-bark-dev@ebay.com](mailto://DL-eBay-bark-dev@ebay.com)
+[Google Groups](ebay-bark-devs@googlegroups.com)
 
 [Slack](https://ebay-eng.slack.com/messages/ebaysf-bark/)
 
 
+### CI
+https://travis-ci.org/eBay/DQSolution
+
+### Repository
+Snapshot: https://oss.sonatype.org/content/repositories/snapshots
+
+Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 
 ### How to build
 1. git clone the repository of https://github.com/eBay/DQSolution
@@ -100,9 +107,9 @@ Now you can put your data into Hive by running "hive" here. You can get sample d
 
     LOAD DATA LOCAL INPATH '<your data path>/MovieLensSample_Target.dat' OVERWRITE INTO TABLE movie_target;
     ```
-    
+
     If you use hive command mode to input data, remember to create _SUCCESS file in hdfs table path as following
-    
+
     ```
     hadoop fs -touchz /user/hive/warehouse/movie_source/_SUCCESS
     hadoop fs -touchz /user/hive/warehouse/movie_target/_SUCCESS
@@ -122,9 +129,9 @@ Now you can put your data into Hive by running "hive" here. You can get sample d
     spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
     ```
 
-    These commands submit the jobs to spark, if you want to try your own model or modify some parameters, please edit it. 
+    These commands submit the jobs to spark, if you want to try your own model or modify some parameters, please edit it.
     If you want to use your own model, change "bark-models-0.0.1-SNAPSHOT.jar" to "your path/your model.jar", and change the class name.  
-    
+
     Put these script files in **your local path**, run bark_regular_run.sh as following
     ```
     nohup ./bark_regular_run.sh &
