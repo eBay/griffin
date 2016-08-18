@@ -520,17 +520,17 @@ public class VoResourceTest {
 
         AssetLevelMetricsDetail detail = new AssetLevelMetricsDetail(12346L, 20.1f, 20.0f);
         detail.setBolling(new BollingerBandsEntity(300L, 100L, 200L));
-        ml.upsertNewAssetExecute("almName", MetricType.Bollinger.toString(), 12346L, 18.6f, "system", 0, 1, detail);
-        ml.upsertNewAssetExecute("almName", MetricType.Trend.toString(), 12346L, 18.6f, "system", 0, 1, detail);
-        ml.upsertNewAssetExecute("almName", MetricType.MAD.toString(), 12346L, 18.6f, "system", 0, 1, detail);
-        ml.upsertNewAssetExecute("almName", "", 12346L, 18.6f, "system", 0, 1, detail);
+        ml.upsertNewAssetExecute("almName", MetricType.Bollinger.toString(), 12346L, 18.6f, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName", MetricType.Trend.toString(), 12346L, 18.6f, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName", MetricType.MAD.toString(), 12346L, 18.6f, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName", "", 12346L, 18.6f, "system", 0, true, detail);
         assertEquals(1, ml.getLatestDQList().size());
-        ml.upsertNewAssetExecute("almName2", MetricType.Bollinger.toString(), 12346L, 18.6f, "system", 0, 1, detail);
-        ml.upsertNewAssetExecute("almName3", MetricType.Trend.toString(), 12346L, 18.6f, "system", 0, 1, detail);
-        ml.upsertNewAssetExecute("almName4", MetricType.MAD.toString(), 12346L, 18.6f, "system", 0, 1, detail);
-        ml.upsertNewAssetExecute("almName5", "", 12346L, 18.6f, "system", 0, 1, detail);
+        ml.upsertNewAssetExecute("almName2", MetricType.Bollinger.toString(), 12346L, 18.6f, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName3", MetricType.Trend.toString(), 12346L, 18.6f, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName4", MetricType.MAD.toString(), 12346L, 18.6f, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName5", "", 12346L, 18.6f, "system", 0, true, detail);
         assertEquals(1, ml.getLatestDQList().size());
-        ml.upsertNewAssetExecute("almName2", "metricType2", 12346L, 18.6f, "system2", 0, 1, detail);
+        ml.upsertNewAssetExecute("almName2", "metricType2", 12346L, 18.6f, "system2", 0, true, detail);
         assertEquals(2, ml.getLatestDQList().size());
     }
 
@@ -568,5 +568,53 @@ public class VoResourceTest {
 
         config.setDataSet("dataset");
         assertEquals("dataset", config.getDataSet());
+
+        List<ValidateHiveJobConfigLv1Detail> details = new ArrayList<ValidateHiveJobConfigLv1Detail>();
+        List<ValidateHiveJobConfigLv2Detail> lv2Details = new ArrayList<ValidateHiveJobConfigLv2Detail>();
+        lv2Details.add(new ValidateHiveJobConfigLv2Detail(2, 13.3));
+        details.add(new ValidateHiveJobConfigLv1Detail(1, "col1", lv2Details));
+        config.setValidityReq(details);
+        assertEquals(details, config.getValidityReq());
+
+        List<PartitionConfig> partitions = new ArrayList<PartitionConfig>();
+        config.setTimePartitions(partitions);
+        assertEquals(partitions, config.getTimePartitions());
+
+        config.addColumnCalculation(1, "col1", 1);
+        assertEquals(1, config.getValidityReq().size());
+
+        // QUESTION: the result in lv2Detail is double, but getValue here returns long
+        long result = config.getValue("col1", 2);
+        assertEquals(13, result);
+        result = config.getValue("col1", 3);
+        assertEquals(Long.MIN_VALUE, result);
+
+        ValidateHiveJobConfig config1 = new ValidateHiveJobConfig("dataset1");
+        config1.addColumnCalculation(1, "col1", 1);
+        assertEquals(1, config1.getValidityReq().size());
+    }
+
+    @Test
+    public void testValidateHiveJobConfigLv1Detail() {
+        ValidateHiveJobConfigLv1Detail detail = new ValidateHiveJobConfigLv1Detail();
+
+        detail.setColId(1);
+        assertEquals(1, detail.getColId());
+        detail.setColName("name");
+        assertEquals("name", detail.getColName());
+
+        List<ValidateHiveJobConfigLv2Detail> lv2Details = new ArrayList<ValidateHiveJobConfigLv2Detail>();
+        detail.setMetrics(lv2Details);
+        assertEquals(lv2Details, detail.getMetrics());
+    }
+
+    @Test
+    public void testValidateHiveJobConfigLv2Detail() {
+        ValidateHiveJobConfigLv2Detail detail = new ValidateHiveJobConfigLv2Detail();
+
+        detail.setName(1);
+        assertEquals(1, detail.getName());
+        detail.setResult(23.2);
+        assertTrue(23.2 == detail.getResult());
     }
 }

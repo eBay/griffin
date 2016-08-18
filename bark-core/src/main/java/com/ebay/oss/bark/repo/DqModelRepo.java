@@ -19,23 +19,22 @@ import java.util.List;
 
 import com.ebay.oss.bark.domain.DataAsset;
 import com.ebay.oss.bark.domain.DqModel;
-import com.mongodb.DBObject;
 
 public interface DqModelRepo extends BarkIdRepo<DqModel> {
 
-    void update(DqModel model);
+    DqModel update(DqModel model);
 
     ///////////
-    DBObject findCountModelByAssetID(long dataasetId);
+    DqModel findCountModelByAssetID(long dataasetId);
 
-    void addReference(DBObject countModel, String name);
-
-    List<DqModel> getByDataAsset(DataAsset da, boolean b);
+    List<DqModel> getByDataAsset(DataAsset da);
 
     List<DqModel> getByStatus(int testing);
 
     DqModel findByColumn(String string, String modelid);
 
     DqModel findByName(String name);
+
+    void addReference(DqModel countModel, String name);
 
 }

@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ebay.oss.bark.domain.DqMetricsValue;
 import com.ebay.oss.bark.domain.SampleFilePathLKP;
-import com.ebay.oss.bark.service.DQMetricsServiceImpl;
 import com.ebay.oss.bark.vo.AssetLevelMetrics;
 import com.ebay.oss.bark.vo.OverViewStatistics;
 import com.ebay.oss.bark.vo.SampleOut;
@@ -23,7 +22,7 @@ import com.ebay.oss.bark.vo.SystemLevelMetrics;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:context.xml"})
-public class DQMetricsServiceTest {
+public class DQMetricsServiceImplTest {
 
     @Autowired
     private DQMetricsServiceImpl dqMetricsService;
@@ -182,12 +181,6 @@ public class DQMetricsServiceTest {
         if (soList.size() == 0) System.out.println("Sample File List is empty");
     }
 
-    private void testDownloadSample(String path) {
-        System.out.println("===== Download Sample =====");
-        dqMetricsService.downloadSample(path);
-        System.out.println("Download Sample is not implemented yet");
-    }
-
     @Test
     public void testSampleFileProcess() {
         String modelName = "testModel100", path = "/user/b_des/bark/testPath/";
@@ -198,10 +191,6 @@ public class DQMetricsServiceTest {
         //list sample file
         testListSampleFile(modelName);
 
-        //download sample file
-        testDownloadSample(path);
-
-        //here we may need to remove the test samples
     }
 
     @Test
@@ -212,15 +201,5 @@ public class DQMetricsServiceTest {
             System.out.println(me.getKey() + " -> " + me.getValue());
         }
     }
-
-    @Test
-    public void testGetReferences() {
-        Map<String, String> referenceMap = dqMetricsService.getReferences();
-        System.out.println("---- reference map ----");
-        for (Map.Entry<String, String> me : referenceMap.entrySet()) {
-            System.out.println(me.getKey() + " -> " + me.getValue());
-        }
-    }
-
 
 }
