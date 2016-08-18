@@ -31,7 +31,7 @@ public class DataAssetServiceTest {
     @Test
     public void testGetSourceTree() {
         List<PlatformMetadata> pmdList = dataAssetService.getSourceTree();
-        System.out.println("source tree count: " + pmdList.size());
+        assertNotNull(pmdList);
     }
 
     private List<DataAsset> testGetAllDataAssets() {
