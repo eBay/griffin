@@ -251,6 +251,10 @@ public class VoResourceTest {
         assertEquals(100L, mad.getLower());
 
         MADEntity mad1 = new MADEntity(300L, 100L);
+
+        MADEntity mad2 = mad1.clone();
+        assertEquals(300L, mad2.getUpper());
+        assertEquals(100L, mad2.getLower());
     }
 
     @Test
