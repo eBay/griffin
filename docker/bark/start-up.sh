@@ -18,6 +18,9 @@ service sshd start
 $HADOOP_PREFIX/sbin/start-dfs.sh
 $HADOOP_PREFIX/sbin/start-yarn.sh
 
+#spark start
+$SPARK_HOME/sbin/start-all.sh
+
 #start tomcat service
 /etc/init.d/tomcat start
 mongod -f /etc/mongod.conf
