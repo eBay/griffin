@@ -44,6 +44,6 @@ ENV PATH $PATH:$HADOOP_HOME/bin
 
 #prepare env data
 WORKDIR /bark
-RUN ./hadoop-start.sh && ./pre-start.sh && hive -f hive-input.hql && ./hd-after-hive.sh && ./hd-test-json.sh && ./hadoop-end.sh && rm hadoop-start.sh pre-start.sh hive-input.hql hd-after-hive.sh hd-test-json.sh hadoop-end.sh
+RUN ./hadoop-start.sh && ./pre-start.sh && ./hd-before-hive.sh && hive -f hive-input.hql && ./hd-after-hive.sh && ./hd-test-json.sh && ./hadoop-end.sh && rm hadoop-start.sh pre-start.sh hd-before-hive.sh hive-input.hql hd-after-hive.sh hd-test-json.sh hadoop-end.sh
 
 
