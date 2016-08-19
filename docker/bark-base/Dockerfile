@@ -46,4 +46,6 @@ ENV PATH $PATH:$HADOOP_HOME/bin
 WORKDIR /bark
 RUN ./hadoop-start.sh && ./pre-start.sh && ./hd-before-hive.sh && hive -f hive-input.hql && ./hd-after-hive.sh && ./hd-test-json.sh && ./hadoop-end.sh && rm hadoop-start.sh pre-start.sh hd-before-hive.sh hive-input.hql hd-after-hive.sh hd-test-json.sh hadoop-end.sh
 
-
+#modify spark webui port
+ADD config/spark-conf-mod.sh /bark
+RUN ./spark-conf-mod.sh && rm spark-conf-mod.sh
