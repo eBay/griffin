@@ -32,7 +32,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     The second step is to build bark-env, which contains examples for bark demo.
     ```
     cd <your work path>/docker/bark
-    docker build --no-cache -t bark-env .
+    docker build -t bark-env .
     ```
 
 3. Run docker image bark-env, then the backend is ready.

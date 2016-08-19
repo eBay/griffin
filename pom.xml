@@ -22,7 +22,7 @@
     <packaging>pom</packaging>
     <name>eBay Bark Parent</name>
     <modules>
-    	  <module>bark-ui</module>
+    	<module>bark-ui</module>
         <module>bark-core</module>
         <module>bark-models</module>
     </modules>
