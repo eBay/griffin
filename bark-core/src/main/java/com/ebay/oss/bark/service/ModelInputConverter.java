@@ -1,11 +1,14 @@
 package com.ebay.oss.bark.service;
 
+import org.springframework.stereotype.Component;
+
 import com.ebay.oss.bark.domain.DqModel;
 import com.ebay.oss.bark.domain.ModelType;
 import com.ebay.oss.bark.vo.ModelBasicInputNew;
 import com.ebay.oss.bark.vo.ModelExtraInputNew;
 import com.ebay.oss.bark.vo.ModelInput;
 
+@Component("modelInputConverter")
 public class ModelInputConverter implements Converter<DqModel, ModelInput> {
 
     @Override

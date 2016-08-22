@@ -21,11 +21,15 @@ import org.springframework.stereotype.Component;
 import com.ebay.oss.bark.domain.DqModel;
 import com.ebay.oss.bark.vo.DqModelVo;
 
-@Component
+@Component("modelVoConverter")
 public class DqModelConverter implements Converter<DqModel, DqModelVo>{
 
     @Override
 	public DqModelVo voOf(DqModel o) {
+        if(o == null) {
+            return null;
+        }
+
 	    DqModelVo vo = new DqModelVo();
 	    vo.setName(o.getModelName());
 	    vo.setSystem(o.getSystem());

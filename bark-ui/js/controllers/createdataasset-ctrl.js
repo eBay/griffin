@@ -170,9 +170,9 @@ define(['./module'], function (controllers) {
         var errorMessage = function(i, msg) {
             var errorMsgs = ['Please input valid values'];
             if (!msg) {
-                toaster.pop('error', 'Error', errorMsgs[i - 1]);
+                toaster.pop('error', 'Error', errorMsgs[i - 1], 0);
             } else {
-                toaster.pop('error', 'Error', msg);
+                toaster.pop('error', 'Error', msg, 0);
             }
         };
 

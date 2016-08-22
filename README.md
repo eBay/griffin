@@ -4,7 +4,7 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
 
 
 ### Contact us
-[Google Groups](ebay-bark-devs@googlegroups.com)
+[Google Groups](mailto://ebay-bark-devs@googlegroups.com)
 
 [Slack](https://ebay-eng.slack.com/messages/ebaysf-bark/)
 
@@ -24,7 +24,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 ### How to run in docker
 1. Download [docker](https://github.com/eBay/DQSolution/tree/master/docker) folder to your work path.
 2. Enter docker directory and build images.  
-    The first step is to build bark-base-env, which prepares the environment for bark. 
+    The first step is to build bark-base-env, which prepares the environment for bark.
     ```
     cd <your work path>/docker/bark-base
     docker build -t bark-base-env .
@@ -34,14 +34,14 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     cd <your work path>/docker/bark
     docker build -t bark-env .
     ```
-    
+
 3. Run docker image bark-env, then the backend is ready.
     ```
     docker run -it -h sandbox --name bark -m 8G --memory-swap -1 \
     -p 40022:22 -p 47077:7077 -p 48088:8088 -p 48040:8040 -p 48042:8042 \
     -p 48080:8080 -p 27017:27017 bark-env bash
     ```
-    
+
 4. Now you can visit UI through your browser.
     ```
     http://<your local IP address>:48080/

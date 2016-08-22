@@ -140,21 +140,21 @@ define(['./module'], function (services) {
     if (params.length > 0) {
 
         if(metricType == 'Bollinger'){
-        result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
-                    '<br /> Value : ' + params[2].data[1] +
-                    '<br /> Average : ' + params[3].data[1] +
-                    '<br /> Bands : ' + params[0].data[1] + '--' + params[1].data[1];
+          result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
+                      '<br /> Value : ' + params[2].data[1] +
+                      '<br /> Average : ' + params[3].data[1] +
+                      '<br /> Bands : ' + params[0].data[1] + '--' + params[1].data[1];
         }else if(metricType == 'Trend'){
-        result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
-                    '<br /> Value : ' + params[0].data[1] +
-                    '<br /> Average : ' + params[1].data[1];
+          result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
+                      '<br /> Value : ' + params[0].data[1] +
+                      '<br /> -7 days : ' + params[1].data[1];
         }else if(metricType == 'MAD'){
-        result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
-                    '<br /> Value : ' + params[2].data[1] +
-                    '<br /> Bands : ' + params[0].data[1] + '--' + params[1].data[1];
+          result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
+                      '<br /> Value : ' + params[2].data[1] +
+                      '<br /> Bands : ' + params[0].data[1] + '--' + params[1].data[1];
         }else if(metricType == 'Count' || metricType == ''){
-        result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
-                    '<br /> Value : ' + params[0].data[1];
+          result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
+                      '<br /> Value : ' + params[0].data[1];
         }
     }
 
@@ -317,7 +317,7 @@ define(['./module'], function (services) {
               var diff = Number(dataLow[i][1])-Number(data[i][1]);
               item.label = {
                   normal: {
-                      formatter: 'low '+diff
+                      formatter: Math.round(diff/1000) + 'K below lower band'
                   }
               };
               item.itemStyle = {
@@ -430,6 +430,7 @@ define(['./module'], function (services) {
     series.push({
           type: 'line',
           data: data,
+          smooth:true,
           lineStyle: {
             normal: {
                 color: '#d48265'
@@ -450,6 +451,7 @@ define(['./module'], function (services) {
     var dataComparision = getSeriesTrendComparision(metric);
     series.push({
           type: 'line',
+          smooth:true,
           data: data,
           lineStyle: {
             normal: {
@@ -464,6 +466,7 @@ define(['./module'], function (services) {
       });
       series.push({
           type: 'line',
+          smooth:true,
           data: dataComparision,
           lineStyle: {
             normal: {
@@ -489,6 +492,7 @@ define(['./module'], function (services) {
       series.push({
           name: 'L',
           type: 'line',
+          smooth:true,
           data: dataLow,
           lineStyle: {
               normal: {
@@ -501,6 +505,7 @@ define(['./module'], function (services) {
       series.push({
           name: 'U',
           type: 'line',
+          smooth:true,
           data: dataUp,
           lineStyle: {
               normal: {
@@ -518,6 +523,7 @@ define(['./module'], function (services) {
       });
       series.push({
           type: 'line',
+          smooth:true,
           data: data,
           lineStyle: {
             normal: {
@@ -531,7 +537,8 @@ define(['./module'], function (services) {
           }
       });
       series.push({
-        type: 'line',
+          type: 'line',
+          smooth:true,
           data: dataMean,
           lineStyle: {
             normal: {
@@ -556,6 +563,7 @@ define(['./module'], function (services) {
       series.push({
           name: 'L',
           type: 'line',
+          smooth:true,
           data: dataLow,
           lineStyle: {
               normal: {
@@ -568,6 +576,7 @@ define(['./module'], function (services) {
       series.push({
           name: 'U',
           type: 'line',
+          smooth:true,
           data: dataUp,
           lineStyle: {
               normal: {
@@ -585,6 +594,7 @@ define(['./module'], function (services) {
       });
       series.push({
           type: 'line',
+          smooth:true,
           data: data,
           lineStyle: {
             normal: {

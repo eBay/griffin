@@ -320,9 +320,9 @@ define(['./module'], function(controllers) {
         var errorMessage = function(i, msg) {
             var errorMsgs = ['Please select one attribute!', 'Please select at least one attribute!', 'Please make sure to map all fields and select primary key'];
             if (!msg) {
-                toaster.pop('error', 'Error', errorMsgs[i - 1]);
+                toaster.pop('error', 'Error', errorMsgs[i - 1], 0);
             } else {
-                toaster.pop('error', 'Error', msg);
+                toaster.pop('error', 'Error', msg, 0);
             }
         }
         ;
