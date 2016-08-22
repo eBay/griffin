@@ -467,9 +467,12 @@ define(['./module'], function(controllers) {
             if (step == 1) {
                 return $scope.selection && $scope.selection.length > 0;
             } else if (step == 2) {
-                return $scope.selectionTarget && $scope.selectionTarget.length > 0;
+                return ($scope.selectionTarget && $scope.selectionTarget.length > 0)//at least one target is selected
+                        && !(($scope.currentNode.name == $scope.currentNodeTarget.name)&&($scope.currentNode.parent.name == $scope.currentNodeTarget.parent.name));//target and source should be different
             } else if (step == 3) {
-                return $scope.selectionTarget && $scope.selectionTarget.length == $scope.mappings.length && $scope.mappings.indexOf('') == -1 && !existDuplicatedElement($scope.mappings) &&$scope.selectionPK && $scope.selectionPK.length>0;
+                return $scope.selectionTarget && $scope.selectionTarget.length == $scope.mappings.length
+                        && $scope.mappings.indexOf('') == -1 && !existDuplicatedElement($scope.mappings)
+                        && $scope.selectionPK && $scope.selectionPK.length>0;
             } else if (step == 4) {
 
             }
@@ -478,11 +481,11 @@ define(['./module'], function(controllers) {
         }
 
         var errorMessage = function(i, msg) {
-            var errorMsgs = ['Please select at least one attribute!', 'Please select at least one attribute!', 'Please make sure to map each target to a unique source and select at least one primary key.', 'please complete the form in this step before proceeding'];
+            var errorMsgs = ['Please select at least one attribute!', 'Please select at least one attribute in target, make sure target is different from source!', 'Please make sure to map each target to a unique source and select at least one primary key.', 'please complete the form in this step before proceeding'];
             if (!msg) {
-                toaster.pop('error', 'Error', errorMsgs[i - 1]);
+                toaster.pop('error', 'Error', errorMsgs[i - 1], 0);
             } else {
-                toaster.pop('error', 'Error', msg);
+                toaster.pop('error', 'Error', msg, 0);
             }
         }
         ;
