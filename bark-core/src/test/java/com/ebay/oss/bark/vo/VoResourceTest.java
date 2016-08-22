@@ -3,7 +3,6 @@ package com.ebay.oss.bark.vo;
 import com.ebay.oss.bark.domain.*;
 import com.ebay.oss.bark.vo.PlatformSubscription;
 import com.ebay.oss.bark.vo.SystemSubscription;
-import com.sun.tools.javac.util.Log;
 import org.junit.Test;
 
 import java.util.*;
