@@ -21,7 +21,7 @@ RUN ./hadoop-start.sh && ./pre-start.sh && ./hadoop-end.sh && rm hadoop-start.sh
 
 #download resources
 WORKDIR /bark
-RUN ./download-resouces.sh && rm download-resouces.sh
+RUN ./download-resources.sh && rm download-resources.sh
 
 #workdir
 WORKDIR /bark
