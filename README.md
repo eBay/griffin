@@ -46,6 +46,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     ```
     http://<your local IP address>:48080/
     ```  
+    If you are blocked at the login page, try account "test" with password "test".
 
 ### How to deploy and run at local
 1. Install jdk (1.7 or later versions)
