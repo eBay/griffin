@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +47,10 @@ public class DqModelServiceImpl implements DqModelService {
 	@Autowired
     private DqScheduleRepo scheduleRepo;
 
-	@Autowired
+	@Resource(name = "modelVoConverter")
 	private Converter<DqModel, DqModelVo> converter;
 	
-	@Autowired
+	@Resource(name = "modelInputConverter")
 	Converter<DqModel, ModelInput> modelInputConverter;
 
 	@Autowired
@@ -119,7 +121,7 @@ public class DqModelServiceImpl implements DqModelService {
 			DqModel dqModel = dqModelRepo.findByName(name);
 			return modelInputConverter.voOf(dqModel);
 		} catch (Exception e) {
-			logger.warn(e.toString());
+			logger.error(e.toString());
 			throw new BarkDbOperationException("Failed to find model with name of '" + name + "'", e);
 		}
 	}
