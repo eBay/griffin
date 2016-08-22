@@ -6,8 +6,6 @@ Bark is a Data Quality solution for distributed data systems at any scale in bot
 ### Contact us
 [Google Groups](mailto://ebay-bark-devs@googlegroups.com)
 
-[Slack](https://ebay-eng.slack.com/messages/ebaysf-bark/)
-
 
 ### CI
 https://travis-ci.org/eBay/DQSolution
@@ -168,7 +166,7 @@ To start frontend, please follow up the below steps.
    - bower install
    - npm start
 
-4. Then the UI will be opened in browser automatically, please follow the [userGuide](https://github.com/eBay/DQSolution/tree/master/bark-doc/userguide.md), enjoy your journey!
+4. Then the UI will be opened in browser automatically, please follow the [User Guide](https://github.com/eBay/DQSolution/tree/master/bark-doc/userguide.md), enjoy your journey!
 
 **Note**: The front-end UI is still under development, you can only access some basic features currently.
 
