@@ -64,7 +64,7 @@ public class DataAssetServiceTest {
         while (itr.hasNext()) {
             DataAsset da = itr.next();
             if (da.getAssetName().equals(name)) {
-                newId = da.getId();
+                newId = da.get_id();
                 break ;
             }
         }

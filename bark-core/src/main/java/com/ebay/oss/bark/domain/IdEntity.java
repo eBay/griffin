@@ -21,8 +21,8 @@ public class IdEntity {
 	@Id
 	private Long _id; // table id primary key
 
-	public Long getId() { return _id; }
+	public Long get_id() { return _id; }
 
-	public void setId(Long _id) { this._id = _id; }
+	public void set_id(Long _id) { this._id = _id; }
 
 }

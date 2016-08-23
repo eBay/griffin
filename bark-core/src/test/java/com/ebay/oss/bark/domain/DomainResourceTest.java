@@ -170,8 +170,8 @@ public class DomainResourceTest {
     public void testIdEntity() {
         IdEntity ide = new IdEntity();
 
-        ide.setId(12345L);
-        assertEquals(new Long(12345L), ide.getId());
+        ide.set_id(12345L);
+        assertEquals(new Long(12345L), ide.get_id());
     }
 
     @Test

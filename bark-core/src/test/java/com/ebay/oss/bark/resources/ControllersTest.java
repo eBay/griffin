@@ -157,7 +157,7 @@ public class ControllersTest {
 		while (itr.hasNext()) {
 			DataAsset da = itr.next();
 			if (da.getAssetName().equals(name)) {
-				id = da.getId();
+				id = da.get_id();
 				break ;
 			}
 		}

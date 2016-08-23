@@ -72,7 +72,7 @@ public class DataAsset extends IdEntity{
 	// FIXME should be somewhere else, ORM
 	@SuppressWarnings({"unchecked", "deprecation"})
     public DataAsset(DBObject o) {
-		this.setId(Long.parseLong(o.get("_id").toString()));
+		this.set_id(Long.parseLong(o.get("_id").toString()));
 		this.setAssetHDFSPath((String)o.get("assetHDFSPath"));
 		this.setAssetName((String)o.get("assetName"));
 		this.setAssetType((String)o.get("assetType"));

@@ -309,7 +309,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
     public void insertSampleFilePath(SampleFilePathLKP samplePath) {
         SampleFilePathLKP entity = new SampleFilePathLKP();
 
-        entity.setId(missedFileRepo.getNextId());
+        entity.set_id(missedFileRepo.getNextId());
         entity.setModelName(samplePath.getModelName());
         entity.setTimestamp(samplePath.getTimestamp());
         entity.setHdfsPath(samplePath.getHdfsPath());
