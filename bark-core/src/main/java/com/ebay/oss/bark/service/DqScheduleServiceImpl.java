@@ -114,7 +114,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 		logger.info("===========checking jobs done===============");
 	}
 
-    public void createJobToRunBySchedule() {
+    void createJobToRunBySchedule() {
         for (DqSchedule schedule : scheduleRepo.getAll()) {
             long now = new Date().getTime();
             long startTime = schedule.getStarttime();
@@ -137,6 +137,8 @@ public class DqScheduleServiceImpl implements DqScheduleService {
             } else {
                 continue;
             }
+            startTime = c.getTime().getTime();
+            schedule.setStarttime(startTime);
 
             DqJob job = new DqJob();
             job.setModelList(schedule.getModelList());
@@ -150,14 +152,12 @@ public class DqScheduleServiceImpl implements DqScheduleService {
                 continue;
             }
 
-            startTime = c.getTime().getTime();
-            schedule.setStarttime(startTime);
             scheduleRepo.save(schedule);
 
         }
 	}
 
-	public String updateHDFSDirTemplateString(String dir,String dateString,String hourString) {
+	String updateHDFSDirTemplateString(String dir,String dateString,String hourString) {
 		String result = dir;
 		result = result.replaceAll("\\[YYYYMMDD\\]", dateString);
 		result = result.replaceAll("\\[YYYY\\-MM\\-DD\\]", dateString.substring(0,4)+"-"+dateString.substring(4,6)+"-"+dateString.substring(6,8));
@@ -176,7 +176,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 		return result;
 	}
 
-	public void generateAllWaitingJobsRunningConfigs() {
+	void generateAllWaitingJobsRunningConfigs() {
 		try{
 			logger.info("===========generating running config===============");
 			Properties env = new Properties();
@@ -399,7 +399,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 
 	}
 
-	public List<PartitionConfig> getPartitionList(DataAsset srcAsset, long ts) {
+	List<PartitionConfig> getPartitionList(DataAsset srcAsset, long ts) {
 		Date dt = new Date(ts);
 		List<PartitionConfig> partitions = new ArrayList<PartitionConfig>();
 		List<PartitionFormat> lv1partitions = srcAsset.getPartitions();
@@ -415,8 +415,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 		return partitions;
 	}
 
-	public void checkAllJOBSStatus()
-	{
+	void checkAllJOBSStatus() {
 		try {
 			Properties env = new Properties();
 			env.load(Thread.currentThread().getContextClassLoader()
@@ -629,7 +628,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 		}
 	}
 
-	public boolean createFile(String destFileName) {
+	boolean createFile(String destFileName) {
 		File file = new File(destFileName);
 		if(file.exists()) {
 			return false;

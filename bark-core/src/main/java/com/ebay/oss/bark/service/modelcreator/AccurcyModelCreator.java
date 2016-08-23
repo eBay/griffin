@@ -1,11 +1,14 @@
 package com.ebay.oss.bark.service.modelcreator;
 
+import org.springframework.stereotype.Component;
+
 import com.ebay.oss.bark.domain.DqModel;
 import com.ebay.oss.bark.domain.ModelStatus;
 import com.ebay.oss.bark.domain.ModelType;
 import com.ebay.oss.bark.vo.MappingItemInput;
 import com.ebay.oss.bark.vo.ModelInput;
 
+@Component("accuracyModelCreator")
 public class AccurcyModelCreator extends BaseModelCreator {
 
     @Override
