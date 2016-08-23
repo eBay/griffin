@@ -65,7 +65,7 @@ public abstract class BaseModelCreator implements DqModelCreator {
 
     protected DqModel createModel(ModelInput input) {
         DqModel entity = new DqModel();
-        entity.setId(dqModelRepo.getNextId());
+        entity.set_id(dqModelRepo.getNextId());
         entity.setModelId(input.getBasic().getName());
         entity.setModelName(input.getBasic().getName());
         entity.setNotificationEmail(input.getBasic().getEmail());

@@ -97,7 +97,7 @@ public class DqModelRepoImpl extends BaseIdRepo<DqModel> implements DqModelRepo 
         Iterator<DqModel> itr = allModels.iterator();
         while (itr.hasNext()) {
             DqModel me = itr.next();
-            if (me.getAssetId() == da.getId()) { // concerned directly
+            if (me.getAssetId() == da.get_id()) { // concerned directly
                 result.add(me);
             }
         }

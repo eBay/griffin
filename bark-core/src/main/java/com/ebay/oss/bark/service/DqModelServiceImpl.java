@@ -74,7 +74,7 @@ public class DqModelServiceImpl implements DqModelService {
 			// TODO need to mark related metrics as deleted, instead of real deletion
 			// markMetricsDeleted(dqModel);
 
-			dqModelRepo.delete(dqModel.getId());
+			dqModelRepo.delete(dqModel.get_id());
 
 			if (dqModel.getModelType() == ModelType.ACCURACY) {
 				scheduleRepo.deleteByModelList(name);
@@ -136,7 +136,7 @@ public class DqModelServiceImpl implements DqModelService {
 		if (dqModel.getModelType() == ModelType.ACCURACY
 				|| dqModel.getModelType() == ModelType.VALIDITY) {
 			DqSchedule schedule = new DqSchedule();
-			schedule.setId(scheduleRepo.getNextId());
+			schedule.set_id(scheduleRepo.getNextId());
 			schedule.setScheduleType(dqModel.getSchedule());
 			Date d = new Date(dqModel.getStarttime());
 			d.setMinutes(0);

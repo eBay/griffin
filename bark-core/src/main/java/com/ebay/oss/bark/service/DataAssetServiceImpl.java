@@ -150,7 +150,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 		try {
 
 			long seq = dataAssetRepo.getNextId();
-			da.setId(seq);
+			da.set_id(seq);
 			da.setAssetName(input.getAssetName());
 			da.setAssetType(input.getAssetType());
 			da.setPlatform(input.getPlatform());
@@ -233,7 +233,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 
 			logger.warn( "log: updated record, id is: "
 			                + (long) Double.parseDouble(item.get("_id").toString()));
-			da.setId(new Long((long) Double.parseDouble(item.get("_id")
+			da.set_id(new Long((long) Double.parseDouble(item.get("_id")
 			                .toString())));
 			dataAssetRepo.update(da, item);
 		} catch (Exception e) {
@@ -316,7 +316,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 		Map<Long, String> p = new HashMap<Long, String>();
 		for (DataAsset o : records) {
 			if (o.getPlatform().equals(platform) && o.getSystem().equals(system)) {
-				p.put(o.getId(), o.getAssetName());
+				p.put(o.get_id(), o.getAssetName());
 			}
 		}
 		return p;
