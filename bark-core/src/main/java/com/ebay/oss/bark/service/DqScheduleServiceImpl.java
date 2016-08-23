@@ -200,8 +200,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 					String hourString = formatter2.format(dt);
 
 					DqModel model = dqModelRepo.findByColumn("modelId", modelid);
-					if(model==null)
-					{
+					if(model==null) {
 						logger.warn( "===================can not find model "+modelid);
 						continue;
 					}
