@@ -61,7 +61,7 @@ public class DataAsset extends IdEntity{
 	// home-made schema, DataSchema is atually a simple schemaItem, a schema consists of a list of 
 	// schemaItem 
 	@Embedded
-	private List<DataSchema> schema;
+	private List<DataSchema> schema = new ArrayList<>();
 
 	// hive table partition format
 	@Embedded
@@ -186,8 +186,12 @@ public class DataAsset extends IdEntity{
 	}
 
     public int getColId(String colName) {
+        if(schema == null || schema.isEmpty()) {
+            return -1;
+        }
+
         for (int i = 0; i < schema.size(); i++) {
-            if (schema.get(i).getName().equals(colName))
+            if (colName.equals(schema.get(i).getName()))
                 return i;
         }
         return -1;

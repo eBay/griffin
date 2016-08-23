@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.ebay.oss.bark.common.NumberUtils;
 import com.ebay.oss.bark.domain.DqJob;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
@@ -74,12 +75,12 @@ public class DqJobRepoImpl extends BaseRepo<DqJob> implements DqJobRepo {
         DqJob entity = new DqJob();
         entity.setId((String)o.get("_id"));
         entity.setModelList((String)o.get("modelList"));
-        entity.setJobType((Integer) o.get("jobType"));
-        entity.setStatus((Integer) o.get("status"));
-        entity.setStarttime((Long) o.get("starttime"));
+        entity.setJobType(NumberUtils.parseInt( o.get("jobType")));
+        entity.setStatus(NumberUtils.parseInt( o.get("status")));
+        entity.setStarttime(NumberUtils.parseLong(o.get("starttime")));
         entity.setContent((String) o.get("content"));
-        entity.setEndtime((Long) o.get("endtime"));
-        entity.setValue((Long) o.get("value"));
+        entity.setEndtime(NumberUtils.parseLong( o.get("endtime")));
+        entity.setValue(NumberUtils.parseLong(o.get("value")));
 
         return entity;
     }
@@ -95,6 +96,4 @@ public class DqJobRepoImpl extends BaseRepo<DqJob> implements DqJobRepo {
         
         return list;
 	}
-
-
 }
