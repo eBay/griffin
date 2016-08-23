@@ -170,7 +170,7 @@ public class DqModelServiceImpl implements DqModelService {
 		}
 	}
 
-    @Autowired
+    @Resource(name = "modelCreatorChain")
     DqModelCreator modelCreator;
     
 	@Override

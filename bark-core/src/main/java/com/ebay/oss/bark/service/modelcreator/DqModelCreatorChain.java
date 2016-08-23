@@ -1,6 +1,5 @@
 package com.ebay.oss.bark.service.modelcreator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -9,18 +8,10 @@ import com.ebay.oss.bark.domain.DqModel;
 import com.ebay.oss.bark.service.DqModelCreator;
 import com.ebay.oss.bark.vo.ModelInput;
 
-@Component
+@Component("modelCreatorChain")
 public class DqModelCreatorChain implements DqModelCreator {
     
     private final List<DqModelCreator> list;
-
-    public DqModelCreatorChain() {
-        list = new ArrayList<>();
-        list.add(new AccurcyModelCreator());
-        list.add(new ValidityModelCreator());
-        list.add(new AnomalyModelCreator());
-        list.add(new PublishModelCreator());
-    }
     
     public DqModelCreatorChain(List<DqModelCreator> list) {
         this.list = list;

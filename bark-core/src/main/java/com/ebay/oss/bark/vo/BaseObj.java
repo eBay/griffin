@@ -24,6 +24,7 @@ import javax.validation.ValidatorFactory;
 import com.ebay.oss.bark.error.ErrorMessage;
 
 public class BaseObj {
+
 	public ErrorMessage validate() {
 		ErrorMessage msg = null;
 

@@ -1,11 +1,14 @@
 package com.ebay.oss.bark.service.modelcreator;
 
+import org.springframework.stereotype.Component;
+
 import com.ebay.oss.bark.domain.DqModel;
 import com.ebay.oss.bark.domain.ModelStatus;
 import com.ebay.oss.bark.domain.ModelType;
 import com.ebay.oss.bark.domain.ValidityType;
 import com.ebay.oss.bark.vo.ModelInput;
 
+@Component("validityModelCreator")
 public class ValidityModelCreator extends BaseModelCreator {
 
     @Override

@@ -1,10 +1,13 @@
 package com.ebay.oss.bark.service.modelcreator;
 
+import org.springframework.stereotype.Component;
+
 import com.ebay.oss.bark.domain.DqModel;
 import com.ebay.oss.bark.domain.ModelStatus;
 import com.ebay.oss.bark.domain.ModelType;
 import com.ebay.oss.bark.vo.ModelInput;
 
+@Component("anomalyModelCreator")
 public class AnomalyModelCreator extends BaseModelCreator {
 
     @Override

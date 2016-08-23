@@ -1,10 +1,13 @@
 package com.ebay.oss.bark.service.modelcreator;
 
+import org.springframework.stereotype.Component;
+
 import com.ebay.oss.bark.domain.DqModel;
 import com.ebay.oss.bark.domain.ModelStatus;
 import com.ebay.oss.bark.domain.ModelType;
 import com.ebay.oss.bark.vo.ModelInput;
 
+@Component("publishModelCreator")
 public class PublishModelCreator extends BaseModelCreator {
 
     @Override
@@ -14,9 +17,6 @@ public class PublishModelCreator extends BaseModelCreator {
 
     @Override
     protected void enhance(DqModel entity, ModelInput input) {
-        enrichPublish(entity, input);
-    }
-    protected void enrichPublish(DqModel entity, ModelInput input) {
         entity.setStatus(ModelStatus.DEPLOYED);
     }
 
