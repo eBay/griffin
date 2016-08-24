@@ -100,7 +100,7 @@ define(['./module'], function (controllers) {
 
 		$scope.sendDeleteRequest = function() {
 			$http.delete($config.uri.deletedataasset+'/'+$scope.selectedRow._id).success(function(data){
-				if(data.result == 'success'){
+
 					$('#confirm-delete').modal('hide');
           var index = $scope.rowCollection.indexOf($scope.selectedRow);
           $scope.rowCollection.splice(index, 1);
@@ -108,10 +108,9 @@ define(['./module'], function (controllers) {
           index = $scope.displayed.indexOf($scope.selectedRow);
           $scope.displayed.splice(index, 1);
 
-				}else{
-					console.log(data);
-				}
-			})
+			}).error(function(data, status){
+        toaster.pop('error', 'Error when deleting record', data);
+      });
 
 		}
 
