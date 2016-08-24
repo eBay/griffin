@@ -30,14 +30,14 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     The second step is to build bark-env, which contains examples for bark demo.
     ```
     cd <your work path>/docker/bark
-    docker build -t bark-env .
+    docker build --no-cache -t bark-env .
     ```
 
 3. Run docker image bark-env, then the backend is ready.
     ```
     docker run -it -h sandbox --name bark -m 8G --memory-swap -1 \
-    -p 40022:22 -p 47077:7077 -p 48088:8088 -p 48040:8040 -p 48042:8042 \
-    -p 48080:8080 -p 27017:27017 bark-env bash
+    -p 40022:22 -p 47077:7077 -p 46066:6066 -p 48088:8088 -p 48040:8040 \
+    -p 48042:8042 -p 48080:8080 -p 27017:27017 bark-env bash
     ```
 
 4. Now you can visit UI through your browser.
