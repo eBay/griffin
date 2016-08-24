@@ -67,6 +67,9 @@ public class DqJobRepoImpl extends BaseRepo<DqJob> implements DqJobRepo {
     @Override
     public DqJob getById(String jobId) {
         DBObject dbo = dbCollection.findOne(new BasicDBObject("_id", jobId));
+        if (dbo == null) {
+            return null;
+        }
         return toEntity(dbo);
     }
 
