@@ -386,7 +386,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 				new File(env.getProperty("job.local.folder")+File.separator+jobid).delete();
 				logger.info( "====================delete file done");
 
-				eachJob.setJobType(JobStatus.WAITING); // FIXME numeric issue???!!!
+				eachJob.setStatus(JobStatus.WAITING);
 				jobRepo.update(eachJob);
 				logger.info("====================udpate status done");
 			}
