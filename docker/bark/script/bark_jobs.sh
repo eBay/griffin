@@ -56,8 +56,8 @@ do
         spark-submit --class org.apache.bark.accuracy.Accu --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/
       elif [ $rc2 -eq 0 ]
       then
-        echo "spark-submit --class org.apache.bark.accuracy.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ "
-        spark-submit --class org.apache.bark.accuracy.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/
+        echo "spark-submit --class org.apache.bark.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ "
+        spark-submit --class org.apache.bark.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/
       fi
 
       echo "watch file ready" >> $logfile
