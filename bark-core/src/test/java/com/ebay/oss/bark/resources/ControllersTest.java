@@ -101,19 +101,19 @@ public class ControllersTest {
 		//		Client client = Client.create(new DefaultClientConfig());
 		//		WebResource service = client.resource(getBaseURI());
 
-		String input = "{\"username\":\"_http_dart_service\",\"password\":\"P[q}X9t9_N\"}";
-
-
-		ClientResponse resp = service.path(REST_PATH).path("login/authenticate")
-				.header("Content-Type", MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, input);
-		// .get(ClientResponse.class);
-		//System.out.println("Got stuff: " + resp);
-		String text = resp.getEntity(String.class);
-
-		assertEquals(200, resp.getStatus());
-		Assert.assertNotNull(text);
+		// String input = "{\"username\":\"test\",\"password\":\"test\"}";
+		//
+		//
+		// ClientResponse resp = service.path(REST_PATH).path("login/authenticate")
+		// 		.header("Content-Type", MediaType.APPLICATION_JSON)
+		// 		.accept(MediaType.APPLICATION_JSON)
+		// 		.post(ClientResponse.class, input);
+		// // .get(ClientResponse.class);
+		// //System.out.println("Got stuff: " + resp);
+		// String text = resp.getEntity(String.class);
+		//
+		// assertEquals(200, resp.getStatus());
+		// Assert.assertNotNull(text);
 	}
 
 
