@@ -25,6 +25,7 @@ public interface DqJobRepo extends BarkRepo<DqJob> {
 
     void update(DqJob DqJob);
 
+    /** return null if not found. */
     DqJob getById(String jobID);
 
     List<DqJob> getByStatus(int ready);
