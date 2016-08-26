@@ -22,7 +22,7 @@ public interface DqModelCreator {
     /** the minimum number of Jobs executed in the ModelStatus.TESTING, and then it could be shifted
      * to ModelStatus.VERIFIED.
      */
-    int MIN_TESTING_JOB_NUMBER = 5;
+    int MIN_TESTING_JOB_NUMBER = 1;         // here set only 1 time to execute a job, for test
 
     boolean isSupport(ModelInput input);
 
