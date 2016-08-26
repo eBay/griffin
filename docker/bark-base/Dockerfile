@@ -12,7 +12,7 @@ RUN yum install -y wget
 RUN mkdir /apache
 
 #install hive 1.2.1 and set environment variables
-RUN cd /apache && wget http://ftp.wayne.edu/apache/hive/hive-1.2.1/apache-hive-1.2.1-bin.tar.gz && tar -xvf apache-hive-1.2.1-bin.tar.gz
+RUN cd /apache && wget https://www.apache.org/dist/hive/hive-1.2.1/apache-hive-1.2.1-bin.tar.gz && tar -xvf apache-hive-1.2.1-bin.tar.gz
 ENV HIVE_HOME /apache/apache-hive-1.2.1-bin
 ENV PATH $HIVE_HOME/bin:$PATH
 
@@ -21,7 +21,7 @@ ENV HADOOP_USER_CLASSPATH_FIRST true
 RUN rm /usr/local/hadoop-2.6.0/share/hadoop/yarn/lib/jline-0.9.94.jar
 
 #install tomcat 7
-RUN cd /apache && wget http://apache.spinellicreations.com/tomcat/tomcat-7/v7.0.70/bin/apache-tomcat-7.0.70.tar.gz && tar -xvf apache-tomcat-7.0.70.tar.gz
+RUN cd /apache && wget https://www.apache.org/dist/tomcat/tomcat-7/v7.0.70/bin/apache-tomcat-7.0.70.tar.gz && tar -xvf apache-tomcat-7.0.70.tar.gz
 ADD config/tomcat /etc/init.d/
 RUN chmod 775 /etc/init.d/tomcat
 
