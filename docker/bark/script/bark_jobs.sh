@@ -14,53 +14,64 @@ mkdir -p $LOG_DIR
 
 lv1tempfile=$TEMP_DIR/temp.txt
 lv2tempfile=$TEMP_DIR/temp2.txt
-logfile=$LOG_DIR/log.txt
 
 set +e
 
 hadoop fs -ls $HDFS_WORKDIR > $lv1tempfile
 
-rm -rf $logfile
-touch $logfile
-
 while read line
 do
   lv1dir=${line##* }
-  echo $lv1dir
+  jobid=${lv1dir##*/}
+  logfile=$LOG_DIR/${jobid}.dqjoblog
+  rm -rf $logfile
+  touch $logfile
+
   hadoop fs -test -f $lv1dir/_START
-  if [ $? -ne 0 ] && [ "${lv1dir:0:1}" == "/" ]
+  rc=$?
+  echo "$rc $lv1dir/_START" >> $logfile
+  if [ $rc -ne 0 ] && [ "${lv1dir:0:1}" == "/" ]
   then
     hadoop fs -cat $lv1dir/_watchfile > $lv2tempfile
+    cat $lv2tempfile >> $logfile
 
     watchfiledone=1
+    hascontent=0
     while read watchline
     do
-      echo $watchline >> $logfile
+      hascontent=1
       hadoop fs -test -f $watchline/_SUCCESS
-      if [ $? -ne 0 ]
+      rcode1=$?
+      hadoop fs -test -f $watchline/*done
+      rcode2=$?
+      echo "$rcode1 $watchline/_SUCCESS  $rcode2 $watchline/*done" >> $logfile
+      if [ $rcode1 -ne 0 ] && [ $rcode2 -ne 0 ]
       then
         watchfiledone=0
+        break
       fi
     done < $lv2tempfile
 
-    if [ $watchfiledone -eq 1 ]
+    if [ $watchfiledone -eq 1 ] && [ $hascontent -eq 1 ]
     then
       hadoop fs -touchz $lv1dir/_START
       hadoop fs -test -f $lv1dir/_type_0.done
       rc1=$?
+      echo "$rc1 $lv1dir/_type_0.done" >> $logfile
       hadoop fs -test -f $lv1dir/_type_1.done
       rc2=$?
+      echo "$rc2 $lv1dir/_type_1.done" >> $logfile
       if [ $rc1 -eq 0 ]
       then
-        echo "spark-submit --class org.apache.bark.accuracy.Accu --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ "
-        spark-submit --class org.apache.bark.accuracy.Accu --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/
+        echo "spark-submit --class org.apache.bark.accuracy.Accu --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ " >> $logfile
+        spark-submit --class org.apache.bark.accuracy.Accu --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
       elif [ $rc2 -eq 0 ]
       then
-        echo "spark-submit --class org.apache.bark.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ "
-        spark-submit --class org.apache.bark.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/
+        echo "spark-submit --class org.apache.bark.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ " >> $logfile
+        spark-submit --class org.apache.bark.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 10 /bark/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
       fi
 
-      echo "watch file ready" >> $logfile
+      echo "done" >> $logfile
       exit
     fi
   fi
