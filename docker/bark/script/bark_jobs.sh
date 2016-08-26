@@ -32,7 +32,9 @@ do
   echo "$rc $lv1dir/_START" >> $logfile
   if [ $rc -ne 0 ] && [ "${lv1dir:0:1}" == "/" ]
   then
-    hadoop fs -cat $lv1dir/_watchfile > $lv2tempfile
+    lv2tempfile=${LOG_DIR}/${jobid}_watch
+    rm -rf $lv2tempfile
+    hadoop fs -get $lv1dir/_watchfile $lv2tempfile
     cat $lv2tempfile >> $logfile
 
     watchfiledone=1
