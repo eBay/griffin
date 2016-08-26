@@ -24,6 +24,7 @@ RUN rm /usr/local/hadoop-2.6.0/share/hadoop/yarn/lib/jline-0.9.94.jar
 RUN cd /apache && wget https://www.apache.org/dist/tomcat/tomcat-7/v7.0.70/bin/apache-tomcat-7.0.70.tar.gz && tar -xvf apache-tomcat-7.0.70.tar.gz
 ADD config/tomcat /etc/init.d/
 RUN chmod 775 /etc/init.d/tomcat
+ENV TOMCAT_HOME /apache/apache-tomcat-7.0.70
 
 #install mongodb
 ADD config/mongodb-org-3.2.repo /etc/yum.repos.d/

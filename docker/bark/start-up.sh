@@ -21,18 +21,10 @@ $HADOOP_PREFIX/sbin/start-yarn.sh
 #spark start
 $SPARK_HOME/sbin/start-all.sh
 
-#start tomcat service
-/etc/init.d/tomcat start
+#start mongodb
 mongod -f /etc/mongod.conf
 #start script
 nohup ./bark_regular_run.sh &
 
-
-CMD=${1:-"exit 0"}
-if [[ "$CMD" == "-d" ]];
-then
-	service sshd stop
-	/usr/sbin/sshd -D -d
-else
-	/bin/bash -c "$*"
-fi
+#start tomcat
+$TOMCAT_HOME/bin/catalina.sh run
