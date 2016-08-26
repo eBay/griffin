@@ -23,7 +23,9 @@ while read line
 do
   lv1dir=${line##* }
   jobid=${lv1dir##*/}
-  logfile=$LOG_DIR/${jobid}.dqjoblog
+  ts=`date -d "$current" +%s`
+  echo $ts
+  logfile=$LOG_DIR/${jobid}_${ts}.dqjoblog
   rm -rf $logfile
   touch $logfile
 

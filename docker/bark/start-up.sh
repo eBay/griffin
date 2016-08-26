@@ -1,6 +1,7 @@
 #!/bin/bash
 
-: ${HADOOP_PREFIX:=/usr/local/hadoop}
+: ${HADOOP_PREFIX:=/usr/local/hadoop}i
+: ${TOMCAT_HOME:=/apache/apache-tomcat-7.0.70}
 
 $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
@@ -26,5 +27,13 @@ mongod -f /etc/mongod.conf
 #start script
 nohup ./bark_regular_run.sh &
 
-#start tomcat
-$TOMCAT_HOME/bin/catalina.sh run
+
+CMD=${1:-"log"}
+if [[ "$CMD" == "bash" ]];
+then
+	#start tomcat
+	/etc/init.d/tomcat start
+	/bin/bash -c "$*"
+else
+	${TOMCAT_HOME}/bin/catalina.sh run
+fi
