@@ -20,6 +20,7 @@ define(['./module'], function(controllers) {
 
         pageInit();
 
+
         function pageInit() {
           var url = $config.uri.statistics;
 
@@ -31,12 +32,12 @@ define(['./module'], function(controllers) {
               sideBarList();
           });
 
-          
+
         }
 
         var renderDataAssetPie = function(status) {
             resizePieChart();
-            $scope.dataAssetPieChart = echarts.init(document.getElementById('data-asset-pie'), 'dark');
+            $scope.dataAssetPieChart = echarts.init($('#data-asset-pie')[0], 'dark');
             $scope.dataAssetPieChart.setOption($barkChart.getOptionPie(status));
         }
 
@@ -62,7 +63,7 @@ define(['./module'], function(controllers) {
             $('#'+chartId).click(function() {
               showBig($scope.briefmetrics[parentIndex].metrics[index]);
             });
-          
+
         };
 
         var showBig = function(metric){
@@ -128,8 +129,10 @@ define(['./module'], function(controllers) {
         }
 
         function resizePieChart() {
-            document.getElementById('data-asset-pie').style.width = $('#data-asset-pie').parent().width()+'px';
-            document.getElementById('data-asset-pie').style.height = $('#data-asset-pie').parent().width()+'px';
+          $('#data-asset-pie').css({
+              height: $('#data-asset-pie').parent().width(),
+              width: $('#data-asset-pie').parent().width()
+          });
         }
     }
     ]);

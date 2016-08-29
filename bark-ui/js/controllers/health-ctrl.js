@@ -118,9 +118,9 @@ define(['./module'], function (controllers) {
                         formatter: function(info) {
                             var dqFormat = info.data.dq>100?'':'%';
                             return [
-                                '<span style="font-size:1.8em;">' + formatUtil.encodeHTML(info.data.sysName) + ' &gt; </span>', 
+                                '<span style="font-size:1.8em;">' + formatUtil.encodeHTML(info.data.sysName) + ' &gt; </span>',
                                 '<span style="font-size:1.5em;">' + formatUtil.encodeHTML(info.data.name)+'</span><br>',
-                                '<span style="font-size:1.5em;">dq : '+info.data.dq+dqFormat + '</span>'
+                                '<span style="font-size:1.5em;">dq : ' + info.data.dq.toFixed(2) + dqFormat + '</span>'
                             ].join('');
                         }
                     },
@@ -160,7 +160,7 @@ define(['./module'], function (controllers) {
                     // }
                     // param.event.event.preventDefault();
                     if (param.data.name) {
-                    
+
                         showBig(param.data.name);
                         // return false;
                     }
