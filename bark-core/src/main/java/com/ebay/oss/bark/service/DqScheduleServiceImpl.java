@@ -475,7 +475,7 @@ public class DqScheduleServiceImpl implements DqScheduleService {
 				DqJob job = jobRepo.getById(jobID);
 				if(job==null) {
 					logger.warn("===================no such job: "+job);
-					return; // FIXME should this be continue???
+					continue; // FIXME should this be continue???
 				}
 
 				if(startindi == 1) {
