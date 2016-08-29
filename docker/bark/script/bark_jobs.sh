@@ -23,7 +23,7 @@ while read line
 do
   lv1dir=${line##* }
   jobid=${lv1dir##*/}
-  ts=`date -d "$current" +%s`
+  ts=`date +%Y%m%d%H%M%S`
   echo $ts
   logfile=$LOG_DIR/${jobid}_${ts}.dqjoblog
   rm -rf $logfile
