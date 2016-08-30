@@ -28,23 +28,10 @@ mongod -f /etc/mongod.conf
 #mysql service
 service mysqld start
 
+/bark/mysql_secure.sh 123456 && rm /bark/mysql_secure.sh
+/bark/mysql_init.sh && rm /bark/mysql_init.sh
+
 #hive metastore service
 hive --service metastore &
 
-echo "hive metastore service"
-
-#start script
-nohup ./bark_regular_run.sh &
-
-echo "bark regular run"
-
-
-CMD=${1:-"log"}
-if [[ "$CMD" == "bash" ]];
-then
-	#start tomcat
-	/etc/init.d/tomcat start
-	/bin/bash -c "$*"
-else
-	${TOMCAT_HOME}/bin/catalina.sh run
-fi
+/bin/bash -c "bash"
