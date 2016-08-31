@@ -42,14 +42,6 @@ EXPOSE 8080 27017 6066 2122 9083 3306
 ENV HADOOP_HOME /usr/local/hadoop
 ENV PATH $PATH:$HADOOP_HOME/bin
 
-#prepare env data
-WORKDIR /bark
-RUN ./hadoop-start.sh && ./pre-start.sh && ./hd-before-hive.sh && ./hd-after-hive.sh && ./hd-test-json.sh && ./hadoop-end.sh && rm hadoop-start.sh pre-start.sh hd-before-hive.sh hd-after-hive.sh hd-test-json.sh hadoop-end.sh
-
-#modify spark webui port
-ADD config/spark-conf-mod.sh /bark
-RUN ./spark-conf-mod.sh && rm spark-conf-mod.sh
-
 #install mysql
 ADD config/mysql_* /bark/
 RUN chmod 755 /bark/mysql_*
@@ -58,6 +50,17 @@ RUN yum install -y mysql-server && yum install -y mysql-connector-java && ln -s 
 #configure hive metastore as remote mode
 ADD config/hive-site.xml $HIVE_HOME/conf
 ADD config/hive-site.xml $SPARK_HOME/conf
+
+#input hadoop data
+WORKDIR /bark
+RUN ./hadoop-start.sh && ./pre-start.sh && ./hd-before-hive.sh && ./hd-after-hive.sh && ./hd-test-json.sh && ./hadoop-end.sh
+
+#prepare env data
+RUN ./hadoop-start.sh && ./hive-init.sh && ./hadoop-end.sh && rm hadoop-start.sh pre-start.sh hd-before-hive.sh hd-after-hive.sh hd-test-json.sh hadoop-end.sh hive-init.sh
+
+#modify spark webui port
+ADD config/spark-conf-mod.sh /bark
+RUN ./spark-conf-mod.sh && rm spark-conf-mod.sh
 
 #input start-up.sh
 ADD start-up.sh /bark

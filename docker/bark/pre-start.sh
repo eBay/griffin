@@ -17,15 +17,3 @@ hadoop fs -mkdir /user/bark/failure
 hadoop fs -chmod g+w /user/bark/running
 hadoop fs -chmod g+w /user/bark/history
 hadoop fs -chmod g+w /user/bark/failure
-
-#mysql service
-service mysqld start
-
-/bark/mysql_secure.sh 123456 && rm /bark/mysql_secure.sh
-/bark/mysql_init.sh && rm /bark/mysql_init.sh
-
-#hive metastore service
-hive --service metastore &
-
-#insert hive table
-hive -f hive-input.hql
