@@ -4,7 +4,6 @@ MAINTAINER com.ebay.oss
 #input files
 ADD script/*.sh /bark/
 ADD ./*.sh /bark/
-ADD ./hive-input.hql /bark/
 RUN mkdir /bark/tmp /bark/temp /bark/log
 RUN chmod -R 755 /bark
 
