@@ -20,8 +20,9 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 2. run "mvn install"
 
 ### How to run in docker
-1. Download [docker](https://github.com/eBay/DQSolution/tree/master/docker) folder to your work path.
-2. Enter docker directory and build images.  
+1. Install [docker](https://www.docker.com/).
+2. Download our [docker](https://github.com/eBay/DQSolution/tree/master/docker) folder to your work path.
+3. Enter docker directory and build images.  
     The first step is to build bark-base-env, which prepares the environment for bark.
     ```
     cd <your work path>/docker/bark-base
@@ -33,7 +34,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     docker build --no-cache -t bark-env .
     ```
 
-3. Run docker image bark-env, then the backend is ready.
+4. Run docker image bark-env, then the backend is ready.
     ```
     docker run -it -h sandbox --name bark -m 8G --memory-swap -1 \
     -p 2122:2122 -p 47077:7077 -p 46066:6066 -p 48088:8088 -p 48040:8040 \
@@ -41,11 +42,15 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     ```
     You can also drop the tail "bash" of the command above, then you will get tomcat service log printing in docker only.
 
-4. Now you can visit UI through your browser.
+5. Now you can visit UI through your browser.
     ```
     http://<your local IP address>:48080/
     ```  
-    If you are blocked at the login page, try account "test" with password "test".
+    If you are blocked at the login page, try account "test" with password "test".  
+    And you can also ssh to the docker container using account "bark" with password "bark".
+    ```
+    ssh bark@<your local IP address> -p 2122
+    ```
 
 ### How to deploy and run at local
 1. Install jdk (1.7 or later versions)
