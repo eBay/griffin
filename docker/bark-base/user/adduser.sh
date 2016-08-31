@@ -1,4 +1,5 @@
 #!/bin/bash
+
 ROOT_UID=0
 SUCCESS=0
 E_USEREXISTS=70
