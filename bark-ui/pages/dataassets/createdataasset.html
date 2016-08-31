@@ -74,7 +74,7 @@
                       </label>
 
                       <div class="col-md-10 col-lg-10 col-sm-10 ">
-                        <input type="text" class="form-control" ng-model="form.basic.path" id="path" name="path" placeholder="Please input the HDFS path(example: /user/b_des/yosha/dmg_complete)." required ng-pattern="regex">
+                        <input type="text" class="form-control" ng-model="form.basic.path" id="path" name="path" placeholder="Please input the existing HDFS path(example: /user/hive/warehouse/users_info_src)." required ng-pattern="regex">
                         <span class="error text-small block " ng-if="Form.path.$dirty && Form.path.$error.required">Asset HDFS path is required.</span>
                         <span class="error text-small block" ng-if="Form.path.$error.pattern">Valid path pattern is "^\/\S(?:[0-9a-zA-Z\_\-]+\/?)+"</span>
                       </div>
@@ -169,7 +169,7 @@
                       </div>
                     </div>
                   </div>
-<!-- 
+<!--
                   <div class="col-md-12 col-lg-12 col-sm-12">
                     <div class="form-group">
                       <label class="col-md-2 col-lg-2 col-sm-2 control-label">

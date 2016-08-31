@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.ebay.oss</groupId>
         <artifactId>bark-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
