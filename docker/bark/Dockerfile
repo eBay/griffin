@@ -1,6 +1,7 @@
 FROM bark-base-env:latest
 MAINTAINER com.ebay.oss
 
+
 #input files
 ADD script/*.sh $BARK_HOME/
 ADD ./*.sh $BARK_HOME/

@@ -55,8 +55,8 @@ RUN chmod 755 $BARK_HOME/mysql_*
 RUN yum install -y mysql-server && yum install -y mysql-connector-java && ln -s /usr/share/java/mysql-connector-java.jar $HIVE_HOME/lib/mysql-connector-java.jar
 
 #configure hive metastore as remote mode
-ADD config/hive-site.xml $HIVE_HOME/conf
-ADD config/hive-site.xml $SPARK_HOME/conf
+ADD config/hive-site.xml $HIVE_HOME/conf/
+ADD config/hive-site.xml $SPARK_HOME/conf/
 
 #input hadoop data
 WORKDIR $BARK_HOME

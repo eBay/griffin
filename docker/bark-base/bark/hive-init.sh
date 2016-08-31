@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 sleep 5
 hdfs dfsadmin -safemode leave
 

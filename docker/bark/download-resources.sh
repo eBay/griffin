@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 URI=https://oss.sonatype.org/content/repositories/snapshots/com/ebay/oss
 
 #get xml line

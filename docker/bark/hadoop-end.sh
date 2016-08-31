@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 : ${HADOOP_PREFIX:=/usr/local/hadoop}
 
 $HADOOP_PREFIX/sbin/stop-dfs.sh
