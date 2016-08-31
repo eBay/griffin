@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
-
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import java.io.{FileInputStream, FileOutputStream}
-import scala.collection.mutable.MutableList
 
+import com.ebay.bark.dataLoaderUtils.{DataLoaderFactory, FileLoaderUtil}
+
+import scala.collection.mutable.MutableList
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
@@ -40,7 +41,7 @@ class ValiTest extends FunSuite with Matchers with BeforeAndAfter {
     mapper.registerModule(DefaultScalaModule)
 
     var cnt = 1;
-    val valiTests = List("valiTest1.json", "valiTest2.json")
+    val valiTests = List("valiAvroTest.json")
     for (tf <- valiTests) {
       val reqJson = reqJsonPath + tf
       val valiData = new ValiData()
@@ -48,7 +49,8 @@ class ValiTest extends FunSuite with Matchers with BeforeAndAfter {
       valiData.reqJson = reqJson
       val input = new FileInputStream(reqJson)
       valiData.configure = mapper.readValue(input, classOf[ValidityConfEntity])
-      valiData.dataFrame = FileLoaderUtil.loadDataFile(sqlContext, dataFilePath + valiData.configure.dataSet)
+      val dataLoader = DataLoaderFactory.getDataLoader(sqlContext, DataLoaderFactory.avro, dataFilePath)
+      valiData.dataFrame = dataLoader.getValiDataFrame(valiData.configure)
       valiDatas += valiData
       cnt += 1
     }
