@@ -1,6 +1,13 @@
 FROM sequenceiq/spark:1.6.0
 MAINTAINER com.ebay.oss
 
+#add user
+RUN rpm -e cracklib-dicts --nodeps && yum install -y cracklib-dicts
+ADD user/*.sh /root/
+WORKDIR /root
+RUN ./adduser.sh bark bark && ./sudouser.sh bark && rm *.sh
+ENV BARK_HOME /home/bark
+
 #set java environment variables
 ENV JAVA_HOME /usr/java/jdk1.7.0_51
 ENV PATH $JAVA_HOME/bin:$PATH
@@ -21,15 +28,15 @@ ENV HADOOP_USER_CLASSPATH_FIRST true
 RUN rm /usr/local/hadoop-2.6.0/share/hadoop/yarn/lib/jline-0.9.94.jar
 
 #mkdir
-RUN mkdir /bark
-ADD bark /bark
-RUN chmod -R 755 /bark
+ADD bark $BARK_HOME
+RUN chmod -R 755 $BARK_HOME
 
 #install tomcat 7
 RUN cd /apache && wget https://www.apache.org/dist/tomcat/tomcat-7/v7.0.70/bin/apache-tomcat-7.0.70.tar.gz && tar -xvf apache-tomcat-7.0.70.tar.gz
 ADD config/tomcat /etc/init.d/
 RUN chmod 755 /etc/init.d/tomcat
 ENV TOMCAT_HOME /apache/apache-tomcat-7.0.70
+ENV PATH $TOMCAT_HOME/bin:$PATH
 
 #install mongodb
 ADD config/mongodb-org-3.2.repo /etc/yum.repos.d/
@@ -43,8 +50,8 @@ ENV HADOOP_HOME /usr/local/hadoop
 ENV PATH $PATH:$HADOOP_HOME/bin
 
 #install mysql
-ADD config/mysql_* /bark/
-RUN chmod 755 /bark/mysql_*
+ADD config/mysql_* $BARK_HOME/
+RUN chmod 755 $BARK_HOME/mysql_*
 RUN yum install -y mysql-server && yum install -y mysql-connector-java && ln -s /usr/share/java/mysql-connector-java.jar $HIVE_HOME/lib/mysql-connector-java.jar
 
 #configure hive metastore as remote mode
@@ -52,18 +59,22 @@ ADD config/hive-site.xml $HIVE_HOME/conf
 ADD config/hive-site.xml $SPARK_HOME/conf
 
 #input hadoop data
-WORKDIR /bark
+WORKDIR $BARK_HOME
 RUN ./hadoop-start.sh && ./pre-start.sh && ./hd-before-hive.sh && ./hd-after-hive.sh && ./hd-test-json.sh && ./hadoop-end.sh
 
 #prepare env data
 RUN ./hadoop-start.sh && ./hive-init.sh && ./hadoop-end.sh && rm hadoop-start.sh pre-start.sh hd-before-hive.sh hd-after-hive.sh hd-test-json.sh hadoop-end.sh hive-init.sh
 
 #modify spark webui port
-ADD config/spark-conf-mod.sh /bark
+ADD config/spark-conf-mod.sh $BARK_HOME/
 RUN ./spark-conf-mod.sh && rm spark-conf-mod.sh
 
+#edit profile
+ADD user/env.txt $BARK_HOME/
+RUN cat ./env.txt >> /etc/profile
+
 #input start-up.sh
-ADD start-up.sh /bark
+ADD start-up.sh $BARK_HOME/
 
 #entry point
 ENTRYPOINT ["./start-up.sh"]
