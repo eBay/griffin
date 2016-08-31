@@ -38,7 +38,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     ```
     docker run -it -h sandbox --name bark -m 8G --memory-swap -1 \
     -p 2122:2122 -p 47077:7077 -p 46066:6066 -p 48088:8088 -p 48040:8040 \
-    -p 48042:8042 -p 48080:8080 -p 27017:27017 bark-env bash
+    -p 48042:8042 -p 48080:8080 -p 47017:27017 bark-env bash
     ```
     You can also drop the tail "bash" of the command above, then you will get tomcat service log printing in docker only.
 
