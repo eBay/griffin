@@ -2,7 +2,7 @@
 
 ### Preparatory work
 
-Follow the steps [here](https://github.com/eBay/DQSolution/blob/master/README.md#how-to-run-in-docker#webui-test-case-guide), prepare your docker container of bark, and get your webUI ready.
+Follow the steps [here](https://github.com/eBay/DQSolution/blob/master/README.md#how-to-run-in-docker), prepare your docker container of bark, and get your webUI ready.
 
 ### webUI test case guide
 
