@@ -40,14 +40,33 @@ public class DQMetricsServiceImplTest {
             System.out.println("***** Fail: Insert metadata *****");
             throw e;
         }
+        System.out.println();
     }
 
     @Test
     public void testGetLatestlMetricsbyId() {
+        System.out.println("===== Get latest metrics by id =====");
         DqMetricsValue dv = dqMetricsService.getLatestlMetricsbyId("test100");
         assertNotNull(dv);
         assertEquals("mean", dv.getMetricName());
         assertTrue(dv.getValue() == 2356.4f);
+        System.out.println();
+    }
+
+    @Test
+    public void testUpdateLatestDQList() {
+        System.out.println("===== Update latest dq list =====");
+        dqMetricsService.updateLatestDQList();
+        assertNotNull(DQMetricsServiceImpl.totalSystemLevelMetricsList);
+        System.out.println("update latest dq list succeed");
+        System.out.println();
+    }
+
+    @Test
+    public void testBriefMetrics() {
+        System.out.println("===== Brief metrics =====");
+        List<SystemLevelMetrics> metrics = dqMetricsService.briefMetrics("unknown");
+        assertNotNull(metrics);
     }
 
     //insertMetadata
@@ -97,20 +116,6 @@ public class DQMetricsServiceImplTest {
     }
 
     @Test
-    public void testBriefMetrics() {
-        System.out.println("===== Brief Metrics =====");
-        List<SystemLevelMetrics> slmList1 = dqMetricsService.briefMetrics("Bullseye");
-        for (SystemLevelMetrics slm : slmList1) {
-            System.out.println("--- " + slm.getName() + ": Dq: " + slm.getDq() + " ---");
-            List<AssetLevelMetrics> almList = slm.getMetrics();
-            for (AssetLevelMetrics alm : almList) {
-                System.out.println(alm.getName() + ": " + alm.getMetricType() + " -> " + alm.getDq());
-            }
-            System.out.println();
-        }
-    }
-
-    @Test
     public void testDashBoard() {
         System.out.println("===== Dash Board =====");
         List<SystemLevelMetrics> slmList2 = dqMetricsService.dashboard("IDLS");
@@ -148,14 +153,6 @@ public class DQMetricsServiceImplTest {
         AssetLevelMetrics alm2 = dqMetricsService.metricsForReport("test_accuracy_1");
         assertNotNull(alm2);
         System.out.println(alm2.getName() + " -> " + alm2.getDq());
-        System.out.println();
-    }
-
-    @Test
-    public void testUpdateLatestDQList() {
-        System.out.println("===== updateLatestDQList =====");
-        dqMetricsService.updateLatestDQList();
-        System.out.println("update latest dq list succeed");
         System.out.println();
     }
 
