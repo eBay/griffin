@@ -19,6 +19,8 @@ import com.ebay.oss.bark.domain.DataAsset;
 import com.ebay.oss.bark.vo.DataAssetInput;
 import com.ebay.oss.bark.vo.PlatformMetadata;
 
+import static org.mockito.Mockito.*;
+
 // FIXME: test needs now
 
 
