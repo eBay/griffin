@@ -1,9 +1,0 @@
-columnName,columnType
-userid,long
-name,string
-sex,string
-age,int
-timestamp,long
-event,string
-dt,string
-hour,string

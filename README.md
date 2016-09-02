@@ -42,11 +42,10 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     ```
     You can also drop the tail "bash" of the command above, then you will get tomcat service log printing in docker only.
 
-5. Now you can visit UI through your browser.
+5. Now you can visit UI through your browser, and follow the next steps on web UI [here](https://github.com/eBay/DQSolution/tree/master/bark-doc/dockerUIguide.md#webui-test-case-guide).
     ```
     http://<your local IP address>:48080/
     ```  
-    If you are blocked at the login page, try account "test" with password "test".  
     And you can also ssh to the docker container using account "bark" with password "bark".
     ```
     ssh bark@<your local IP address> -p 2122

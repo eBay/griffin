@@ -1,5 +1,6 @@
 package org.apache.bark.validility
 
+import com.ebay.bark.dataLoaderUtils.DataLoaderFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.bark.util.{DataConverter, DataTypeUtils, HdfsUtils, PartitionUtils}
@@ -43,7 +44,8 @@ object Vali extends Logging {
     HdfsUtils.writeFile(startFile, applicationId)
 
     //get data
-    val sojdf = sqlContext.sql(PartitionUtils.generateSourceSQLClause(configure.dataSet, configure.timePartitions))
+    val dataLoader = DataLoaderFactory.getDataLoader(sqlContext, DataLoaderFactory.hive)
+    val sojdf = dataLoader.getValiDataFrame(configure)
 
     //-- algorithm --
     calcVali(configure, sojdf)

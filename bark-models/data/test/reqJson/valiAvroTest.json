@@ -1,5 +1,5 @@
 {
-	"dataSet": "testFile",
+	"dataSet": "srcFile",
 	"validityReq": [
 		{
 			"colId": 0,
@@ -79,7 +79,5 @@
 				}
 			]
 		}
-	],
-	"timePartitions": [
 	]
 }
