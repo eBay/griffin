@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.ebay.oss.bark.error.BarkDbOperationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +28,38 @@ public class DQMetricsServiceImplTest {
     @Autowired
     private DQMetricsServiceImpl dqMetricsService;
 
-    //insertMetadata
-    private void testInsertMetadata(String id, String metric, float val) {
-        DqMetricsValue dqmv = new DqMetricsValue();
+    @Test
+    public void testInsertMetadata() throws BarkDbOperationException {
+        System.out.println("===== Insert metadata =====");
+        DqMetricsValue dqmv = new DqMetricsValue("mean", new Date().getTime(), 2356.4f);
         dqmv.set_id(12345678L);
-        dqmv.setAssetId(id);
-        dqmv.setMetricName(metric);
-        dqmv.setTimestamp(new Date().getTime());
-        dqmv.setValue(val);
-        dqMetricsService.insertMetadata(dqmv);
+        dqmv.setAssetId("test100");
+        try {
+            dqMetricsService.insertMetadata(dqmv);
+        } catch (BarkDbOperationException e) {
+            System.out.println("***** Fail: Insert metadata *****");
+            throw e;
+        }
     }
+
+    @Test
+    public void testGetLatestlMetricsbyId() {
+        DqMetricsValue dv = dqMetricsService.getLatestlMetricsbyId("test100");
+        assertNotNull(dv);
+        assertEquals("mean", dv.getMetricName());
+        assertTrue(dv.getValue() == 2356.4f);
+    }
+
+    //insertMetadata
+//    private void testInsertMetadata(String id, String metric, float val) {
+//        DqMetricsValue dqmv = new DqMetricsValue();
+//        dqmv.set_id(12345678L);
+//        dqmv.setAssetId(id);
+//        dqmv.setMetricName(metric);
+//        dqmv.setTimestamp(new Date().getTime());
+//        dqmv.setValue(val);
+//        dqMetricsService.insertMetadata(dqmv);
+//    }
 
     //getLatestlMetricsbyId
     private void testGetLatestlMetricsbyId(String id, String metric, float val) {
@@ -46,18 +69,18 @@ public class DQMetricsServiceImplTest {
         assertTrue(dv.getValue() == val);
     }
 
-    @Test
-    public void testDQMetricsService() {
-
-        String id = "test100", metric = "mean";
-        float val = 4835.3f;
-
-        //insertMetadata
-        testInsertMetadata(id, metric, val);
-
-        //getLatestlMetricsbyId
-        testGetLatestlMetricsbyId(id, metric, val);
-    }
+//    @Test
+//    public void testDQMetricsService() {
+//
+//        String id = "test100", metric = "mean";
+//        float val = 4835.3f;
+//
+//        //insertMetadata
+//        testInsertMetadata(id, metric, val);
+//
+//        //getLatestlMetricsbyId
+//        testGetLatestlMetricsbyId(id, metric, val);
+//    }
 
     @Test
     public void testHeatMap() {

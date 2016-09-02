@@ -95,6 +95,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 	protected DataAsset ofEntity(DBObject o) {
 	    return new DataAsset(o);
 	}
+
     @Override
 	public int createDataAsset(DataAssetInput input)
 			throws BarkDbOperationException {
@@ -326,7 +327,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 	@Override
 	public void removeAssetById(Long id) throws BarkDbOperationException {
 		try {
-			removeRelatedModels(id);
+			removeModelsOfAsset(id);
 
 			dataAssetRepo.delete(id);
 		} catch (Exception e) {
@@ -335,12 +336,10 @@ public class DataAssetServiceImpl implements DataAssetService {
 
 	}
 
-	//remove all the models related with the given data asset
-	private int removeRelatedModels(Long dataAssetId) {
+	private int removeModelsOfAsset(Long dataAssetId) {
 		try {
 			DataAsset da = dataAssetRepo.getById(dataAssetId);
 			if (da != null) {
-				//delete all the accuracy models with this given source asset
 				List<DqModel> models = dqModelRepo.getByDataAsset(da);
 				for(DqModel each : models) {
 					dqModelService.deleteModel(each.getModelName());
