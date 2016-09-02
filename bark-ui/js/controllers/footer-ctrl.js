@@ -14,9 +14,12 @@
 */
 define(['./module'], function (controllers) {
     'use strict';
-    controllers.controller('FooterCtrl', ['$scope', '$http', '$config', '$location', '$cookies', '$interval', function ($scope, $http, $config, $location, $cookies, $interval) {
+    controllers.controller('FooterCtrl', ['$scope', '$http', '$config', '$location', '$cookies', '$interval', '$rootScope', function ($scope, $http, $config, $location, $cookies, $interval, $rootScope) {
       console.log('Footer controller');
       $scope.timestamp = new Date();
+      $scope.notifications = [];
+      $scope.previousChange = {};
+      $scope.count = 0;
 
       var start = 0, number = 3;
       retrieveNotifications();
@@ -49,8 +52,23 @@ define(['./module'], function (controllers) {
         $http.get(notificationUrl).success(function(data) {
           // $scope.allNotifications = data.slice(0, 15);
           $scope.notifications = data.slice(0, 3);
+          if($scope.notifications.length >= 1) {
+            var newChange = $scope.notifications[0];
+            if($scope.count>=1){
+              for(var key in newChange){
+                if(newChange[key] != $scope.previousChange[key]) {
+                  $scope.previousChange = newChange;
+                  $rootScope.pageInit();
+                  break;
+                }
+              }
+            } else {
+              $scope.previousChange = newChange;
+            }
+          }
+          $scope.count++;
         });
-      }
+      };
 
     }]);
 });
