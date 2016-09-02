@@ -3539,7 +3539,7 @@
   </property>
   <property>
     <name>hive.execution.engine</name>
-    <value>spark</value>
+    <value>mr</value>
     <description>
       Expects one of [mr, tez, spark].
       Chooses execution engine. Options are: mr (Map reduce, default), tez (hadoop 2 only), spark
