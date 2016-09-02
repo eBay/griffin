@@ -21,6 +21,8 @@ import com.ebay.oss.bark.vo.OverViewStatistics;
 import com.ebay.oss.bark.vo.SampleOut;
 import com.ebay.oss.bark.vo.SystemLevelMetrics;
 
+// FIXME: test needs now
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:context.xml"})
 public class DQMetricsServiceImplTest {

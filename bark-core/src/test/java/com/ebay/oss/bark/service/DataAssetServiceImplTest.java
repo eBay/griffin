@@ -19,6 +19,8 @@ import com.ebay.oss.bark.domain.DataAsset;
 import com.ebay.oss.bark.vo.DataAssetInput;
 import com.ebay.oss.bark.vo.PlatformMetadata;
 
+// FIXME: test needs now
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:context.xml"})
