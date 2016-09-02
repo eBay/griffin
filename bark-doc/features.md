@@ -7,12 +7,12 @@
 - Anomaly detection, support machine learning algorithms
 
 ## 2. DQ Measurement
-### Rule management
-- Rule CRUD, support 6 dimensions: Completeness, Uniqueness, Timeliness, Validity, Accuracy, Consistency
+### Model management
+- Model CRUD, support 6 dimensions: Completeness, Uniqueness, Timeliness, Validity, Accuracy, Consistency
 
-### Rule Engine
+### Model Engine
 - Job Scheduler
-- Rule Execution
+- Model Execution
 
 ## 3. DQ Scorecards
 ### Rule Consumption
@@ -36,3 +36,5 @@
 - Data Asset Registration, support HDFS, HiveTable, RDBMS, etc.
 - Organization management
 - others
+
+## 6. Security
