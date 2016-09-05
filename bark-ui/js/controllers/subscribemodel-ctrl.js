@@ -201,7 +201,8 @@ define(['./module'], function(controllers) {
                 var subscribes = angular.copy(getSubscribes());
                 var sid = ($scope.oldSubscription=="")?null:$scope.oldSubscription._id;
                 var requestData = {
-                    "_id": sid,
+                    "id": sid,
+                    // "id": $scope.ntAccount,
                     "ntaccount": $scope.ntAccount,
                     "subscribes": subscribes
                 };
