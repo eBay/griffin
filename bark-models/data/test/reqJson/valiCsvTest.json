@@ -1,5 +1,5 @@
 {
-	"dataSet": "srcFile1",
+	"dataSet": "srcFileCsv",
 	"validityReq": [
 		{
 			"colId": 0,
@@ -63,7 +63,7 @@
 		},
 		{
 			"colId": 3,
-			"colName": "city",
+			"colName": "desc",
 			"metrics": [
 				{
 					"name": 1
@@ -78,55 +78,6 @@
 					"name": 4
 				}
 			]
-		},
-		{
-			"colId": 4,
-			"colName": "timestamp",
-			"metrics": [
-				{
-					"name": 5
-				},
-				{
-					"name": 6
-				},
-				{
-					"name": 7
-				},
-				{
-					"name": 8
-				},
-				{
-					"name": 1
-				}
-			]
-		},
-		{
-			"colId": 5,
-			"colName": "eventtype",
-			"metrics": [
-				{
-					"name": 1
-				},
-				{
-					"name": 2
-				},
-				{
-					"name": 3
-				},
-				{
-					"name": 4
-				}
-			]
-		}
-	],
-	"timePartitions": [
-		{
-			"colName": "dt",
-			"colValue": "20160706"
-		},
-		{
-			"colName": "hour",
-			"colValue": "08"
 		}
 	]
 }

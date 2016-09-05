@@ -11,6 +11,7 @@
 
 package org.apache.bark.accuracy
 
+import com.ebay.bark.dataLoaderUtils.DataLoaderFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.bark.util.{HdfsUtils, PartitionUtils}
@@ -57,11 +58,9 @@ object Accu extends Logging{
     //for spark monitoring
     HdfsUtils.writeFile(startFile, applicationId)
 
-    //get source data
-    val sojdf = sqlContext.sql(PartitionUtils.generateSourceSQLClause(configure.source, configure.srcPartitions))
-
-    //get target data
-    val bedf = sqlContext.sql(PartitionUtils.generateTargetSQLClause(configure.target, configure.tgtPartitions))
+    //get source data and target data
+    val dataLoader = DataLoaderFactory.getDataLoader(sqlContext, DataLoaderFactory.hive)
+    val (sojdf, bedf) = dataLoader.getAccuDataFrame(configure)
 
     //-- algorithm --
     val ((missCount, srcCount), missedList) = calcAccu(configure, sojdf, bedf)

@@ -11,6 +11,7 @@ FIELDS TERMINATED BY '|'
 STORED AS TEXTFILE;
 
 
+
 CREATE TABLE users_info_target (
   user_id bigint,
   first_name string,
