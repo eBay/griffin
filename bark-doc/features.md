@@ -2,9 +2,9 @@
 
 ## 1. DQ Assessment
 ### Data Profiling
-- Real-time Profiling, end user can select time period to do the profiling
-- Cumulative Profiling, same as what we do in v 0.1.0
-- Anomaly detection, support machine learning algorithms
+- Responsive Profiling, end user can select time period to do the profiling on full data set
+- *Cumulative Profiling, same as what we do in v 0.1.0*
+- *Anomaly detection, support machine learning algorithms*
 
 ## 2. DQ Measurement
 ### Model management
@@ -12,11 +12,11 @@
 
 ### Model Engine
 - Job Scheduler
-- Model Execution
+- Model Execution, support both real-time data and batch data
 
 ## 3. DQ Scorecards
-### Rule Consumption
-- Rule consumer could be different from creator, consumer defines his own threshold and notification email
+### Model Consumption
+- Model consumer could be different from creator, consumer defines his own threshold and notification email
 - Customize dashboard
 
 ### Heatmap
@@ -29,12 +29,12 @@
 - A notification service supports different types of notifications, such as email, information bar on web UI, twitter, etc.
 
 ## 4. Issue Resolution
-- Issue tracking
 - Download sample data
 
 ## 5. Metadata Management
 - Data Asset Registration, support HDFS, HiveTable, RDBMS, etc.
+- Schema Registration
 - Organization management
-- others
+- Otherss
 
 ## 6. Security
