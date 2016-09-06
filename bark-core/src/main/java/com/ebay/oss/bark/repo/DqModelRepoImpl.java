@@ -94,12 +94,11 @@ public class DqModelRepoImpl extends BaseIdRepo<DqModel> implements DqModelRepo 
     public List<DqModel> getByDataAsset(DataAsset da) {
         List<DqModel> result = new ArrayList<DqModel>();
         List<DqModel> allModels = getAll();
-        Iterator<DqModel> itr = allModels.iterator();
-        while (itr.hasNext()) {
-            DqModel me = itr.next();
-            if (me.getAssetId() == da.get_id()) { // concerned directly
-                result.add(me);
+        for (DqModel model : allModels) {
+            if (model.getAssetId() == da.get_id()) {
+                result.add(model);
             }
+            // FIXME how about the other asset of the accuracy model equals this data asset ???
         }
         return result;
     }

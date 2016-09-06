@@ -73,7 +73,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
 
     public static SystemLevelMetricsList totalSystemLevelMetricsList;
 
-    public void insertMetadata(DqMetricsValue metrics) {
+    public void insertMetadata(DqMetricsValue metrics) throws BarkDbOperationException {
 
         List<Pair> queryList = new ArrayList<Pair>();
         queryList.add(new Pair("metricName", metrics.getMetricName()));

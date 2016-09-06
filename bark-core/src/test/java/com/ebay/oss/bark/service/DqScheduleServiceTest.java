@@ -12,13 +12,15 @@ import com.ebay.oss.bark.service.DqScheduleService;
 @ContextConfiguration(locations = {"classpath:context.xml"})
 public class DqScheduleServiceTest {
     @Autowired
-    private DqScheduleService dqJobSchedulingService;
+    private DqScheduleService dqScheduleService;
 
     @Test
     public void testSchedulingJobs(){
 
-        dqJobSchedulingService.schedulingJobs();
-        System.out.println("scheduling jobs success");
+        System.out.println("===== Scheduling jobs begin =====");
+        dqScheduleService.schedulingJobs();
+        System.out.println("===== Scheduling jobs done =====");
+        System.out.println();
 
     }
 }

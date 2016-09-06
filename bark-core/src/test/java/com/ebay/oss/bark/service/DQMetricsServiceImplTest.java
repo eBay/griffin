@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.ebay.oss.bark.error.BarkDbOperationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import com.ebay.oss.bark.vo.OverViewStatistics;
 import com.ebay.oss.bark.vo.SampleOut;
 import com.ebay.oss.bark.vo.SystemLevelMetrics;
 
+// FIXME: test needs now
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:context.xml"})
 public class DQMetricsServiceImplTest {
@@ -27,16 +30,57 @@ public class DQMetricsServiceImplTest {
     @Autowired
     private DQMetricsServiceImpl dqMetricsService;
 
-    //insertMetadata
-    private void testInsertMetadata(String id, String metric, float val) {
-        DqMetricsValue dqmv = new DqMetricsValue();
+    @Test
+    public void testInsertMetadata() throws BarkDbOperationException {
+        System.out.println("===== Insert metadata =====");
+        DqMetricsValue dqmv = new DqMetricsValue("mean", new Date().getTime(), 2356.4f);
         dqmv.set_id(12345678L);
-        dqmv.setAssetId(id);
-        dqmv.setMetricName(metric);
-        dqmv.setTimestamp(new Date().getTime());
-        dqmv.setValue(val);
-        dqMetricsService.insertMetadata(dqmv);
+        dqmv.setAssetId("test100");
+        try {
+            dqMetricsService.insertMetadata(dqmv);
+        } catch (BarkDbOperationException e) {
+            System.out.println("***** Fail: Insert metadata *****");
+            throw e;
+        }
+        System.out.println();
     }
+
+    @Test
+    public void testGetLatestlMetricsbyId() {
+        System.out.println("===== Get latest metrics by id =====");
+        DqMetricsValue dv = dqMetricsService.getLatestlMetricsbyId("test100");
+        assertNotNull(dv);
+        assertEquals("mean", dv.getMetricName());
+        assertTrue(dv.getValue() == 2356.4f);
+        System.out.println();
+    }
+
+    @Test
+    public void testUpdateLatestDQList() {
+        System.out.println("===== Update latest dq list =====");
+        dqMetricsService.updateLatestDQList();
+        assertNotNull(DQMetricsServiceImpl.totalSystemLevelMetricsList);
+        System.out.println("update latest dq list succeed");
+        System.out.println();
+    }
+
+    @Test
+    public void testBriefMetrics() {
+        System.out.println("===== Brief metrics =====");
+        List<SystemLevelMetrics> metrics = dqMetricsService.briefMetrics("unknown");
+        assertNotNull(metrics);
+    }
+
+    //insertMetadata
+//    private void testInsertMetadata(String id, String metric, float val) {
+//        DqMetricsValue dqmv = new DqMetricsValue();
+//        dqmv.set_id(12345678L);
+//        dqmv.setAssetId(id);
+//        dqmv.setMetricName(metric);
+//        dqmv.setTimestamp(new Date().getTime());
+//        dqmv.setValue(val);
+//        dqMetricsService.insertMetadata(dqmv);
+//    }
 
     //getLatestlMetricsbyId
     private void testGetLatestlMetricsbyId(String id, String metric, float val) {
@@ -46,38 +90,24 @@ public class DQMetricsServiceImplTest {
         assertTrue(dv.getValue() == val);
     }
 
-    @Test
-    public void testDQMetricsService() {
-
-        String id = "test100", metric = "mean";
-        float val = 4835.3f;
-
-        //insertMetadata
-        testInsertMetadata(id, metric, val);
-
-        //getLatestlMetricsbyId
-        testGetLatestlMetricsbyId(id, metric, val);
-    }
+//    @Test
+//    public void testDQMetricsService() {
+//
+//        String id = "test100", metric = "mean";
+//        float val = 4835.3f;
+//
+//        //insertMetadata
+//        testInsertMetadata(id, metric, val);
+//
+//        //getLatestlMetricsbyId
+//        testGetLatestlMetricsbyId(id, metric, val);
+//    }
 
     @Test
     public void testHeatMap() {
         System.out.println("===== Heat Map =====");
         List<SystemLevelMetrics> slmList = dqMetricsService.heatMap();
         for (SystemLevelMetrics slm : slmList) {
-            System.out.println("--- " + slm.getName() + ": Dq: " + slm.getDq() + " ---");
-            List<AssetLevelMetrics> almList = slm.getMetrics();
-            for (AssetLevelMetrics alm : almList) {
-                System.out.println(alm.getName() + ": " + alm.getMetricType() + " -> " + alm.getDq());
-            }
-            System.out.println();
-        }
-    }
-
-    @Test
-    public void testBriefMetrics() {
-        System.out.println("===== Brief Metrics =====");
-        List<SystemLevelMetrics> slmList1 = dqMetricsService.briefMetrics("Bullseye");
-        for (SystemLevelMetrics slm : slmList1) {
             System.out.println("--- " + slm.getName() + ": Dq: " + slm.getDq() + " ---");
             List<AssetLevelMetrics> almList = slm.getMetrics();
             for (AssetLevelMetrics alm : almList) {
@@ -125,14 +155,6 @@ public class DQMetricsServiceImplTest {
         AssetLevelMetrics alm2 = dqMetricsService.metricsForReport("test_accuracy_1");
         assertNotNull(alm2);
         System.out.println(alm2.getName() + " -> " + alm2.getDq());
-        System.out.println();
-    }
-
-    @Test
-    public void testUpdateLatestDQList() {
-        System.out.println("===== updateLatestDQList =====");
-        dqMetricsService.updateLatestDQList();
-        System.out.println("update latest dq list succeed");
         System.out.println();
     }
 
