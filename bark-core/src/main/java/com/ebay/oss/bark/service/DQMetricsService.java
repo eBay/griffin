@@ -18,6 +18,7 @@ import java.util.List;
 
 import com.ebay.oss.bark.domain.DqMetricsValue;
 import com.ebay.oss.bark.domain.SampleFilePathLKP;
+import com.ebay.oss.bark.error.BarkDbOperationException;
 import com.ebay.oss.bark.vo.AssetLevelMetrics;
 import com.ebay.oss.bark.vo.OverViewStatistics;
 import com.ebay.oss.bark.vo.SampleOut;
@@ -25,7 +26,7 @@ import com.ebay.oss.bark.vo.SystemLevelMetrics;
 
 public interface DQMetricsService {
 
-	public void insertMetadata(DqMetricsValue dq);
+	public void insertMetadata(DqMetricsValue dq) throws BarkDbOperationException;
 
 	public DqMetricsValue getLatestlMetricsbyId(String assetId);
 

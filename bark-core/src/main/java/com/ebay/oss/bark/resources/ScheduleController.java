@@ -28,12 +28,12 @@ import com.ebay.oss.bark.service.DqScheduleService;
 public class ScheduleController {
 
 	@Autowired
-	private DqScheduleService dqJobSchedulingService;
+	private DqScheduleService dqScheduleService;
 
 	@GET
 	@Path("/")
 	public void schedule() {
-		dqJobSchedulingService.schedulingJobs();
+		dqScheduleService.schedulingJobs();
 	}
 
 }
