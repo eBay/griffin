@@ -349,7 +349,7 @@ fieldset legend{
 .tooltip2 .tooltiptext {
     visibility: hidden;
     width: 250px;
-    background-color: #848484;
+    background-color: #6b6b6b;
     color: #fff;
     text-align: left;
     border-radius: 6px;
@@ -369,4 +369,9 @@ fieldset legend{
 
 .tooltip2:hover .tooltiptext {
     visibility: visible;
+}
+
+.text-highlight {
+  font-weight: bolder;
+  color: #b2c831;
 }
