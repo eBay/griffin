@@ -101,8 +101,9 @@ Measurement types
 
 ## 5. Metadata Management
 - Data Asset Registration, support HDFS, HiveTable, RDBMS, etc.
+- Dataset definition: how to retrieve the datasets for daily/weekly/hourly calculations
 - Schema Registration
 - Organization management
-- Otherss
+- Others
 
 ## 6. Security
