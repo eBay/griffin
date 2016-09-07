@@ -4,13 +4,12 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.ebay.oss.bark.domain.*;
 import com.ebay.oss.bark.repo.DqMetricsRepo;
+import com.ebay.oss.bark.vo.AssetLevelMetricsDetail;
+import com.ebay.oss.bark.vo.BollingerBandsEntity;
 import com.ebay.oss.bark.vo.SystemLevelMetricsList;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +36,14 @@ public class RefMetricsCalcImplTest {
     @Test
     public void test_getReferences() {
         refMetricsCalcImpl.modelRepo = mock(DqModelRepo.class);
-        
+
         List<DqModel> models = new ArrayList<>();
         models.add(newModelWithRef("model1", "ref1"));
         models.add(newModelWithRef("model2", "ref2_0, ref2_1, ref2_2"));
         models.add(newModelWithRef("model2", null));
         models.add(newModelWithRef("model2", ""));
         when(refMetricsCalcImpl.modelRepo.getAll()).thenReturn(models);
-        
+
         Map<String, List<String>> expect = new HashMap<String, List<String>>() {{
             this.put("model1", new ArrayList<String>() {{
                 this.add("ref1");
@@ -52,10 +51,10 @@ public class RefMetricsCalcImplTest {
             this.put("model2", new ArrayList<String>() {{
               this.add("ref2_0");
               this.add("ref2_1");
-              this.add("ref2_2");  
+              this.add("ref2_2");
             }});
         }};
-        
+
         Map<String, List<String>> actual = refMetricsCalcImpl.getReferences();
 
         assertEquals(expect, actual);
@@ -194,6 +193,82 @@ public class RefMetricsCalcImplTest {
 
     @Test
     public void testCalcHistoryRefModel() {
-        ;
+        DqModel srcModel = newModelWithScheduleThreshold("model", ScheduleType.DAILY, 0.1f);
+        DqModel refModel = newModelWithScheduleThreshold("ref", ScheduleType.DAILY, 0.1f);
+
+        long time = new Date().getTime();
+        List<DqMetricsValue> metricsValues = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            metricsValues.add(new DqMetricsValue("model", time + i * 1000 * 3600 * 24, 11.0f - 0.1f * i));
+        }
+
+        SystemLevelMetricsList spySlm = spy(new SystemLevelMetricsList());
+
+        RefMetricsCalcImpl spyRefMetricsCalcImpl = PowerMockito.spy(refMetricsCalcImpl);
+        doReturn("system").when(spyRefMetricsCalcImpl).getSystemType(anyString());
+
+        spyRefMetricsCalcImpl.calcHistoryRefModel(srcModel, refModel, metricsValues, spySlm);
+
+        verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyString(),
+                anyInt(), anyBoolean(), any(AssetLevelMetricsDetail.class));
+    }
+
+    private DqModel newModelWithScheduleThreshold(String name, int schedule, float threshold) {
+        DqModel model = new DqModel();
+        model.setModelName(name);
+        model.setSchedule(schedule);
+        model.setThreshold(threshold);
+        return model;
+    }
+
+    @Test
+    public void testCalcMad() {
+        String modelName = "model";
+        String refName = "ref";
+        DqModel refModel = new DqModel();
+
+        long time = new Date().getTime();
+        List<DqMetricsValue> metricsValues = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            metricsValues.add(new DqMetricsValue("model", time + i * 1000 * 3600 * 24, 11.0f - 0.1f * i));
+        }
+
+        SystemLevelMetricsList spySlm = spy(new SystemLevelMetricsList());
+
+        RefMetricsCalcImpl spyRefMetricsCalcImpl = PowerMockito.spy(refMetricsCalcImpl);
+        doReturn("system").when(spyRefMetricsCalcImpl).getSystemType(anyString());
+
+        spyRefMetricsCalcImpl.calcMad(modelName, refName, refModel, metricsValues, spySlm);
+
+        verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyString(),
+                anyInt(), anyBoolean(), any(AssetLevelMetricsDetail.class));
+    }
+
+    @Test
+    public void testCalcBollingerRefModel() {
+        String modelName = "model";
+        String refName = "ref";
+
+        long time = new Date().getTime();
+        List<DqMetricsValue> metricsValues = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            metricsValues.add(new DqMetricsValue("model", time + i * 1000 * 3600 * 24, 11.0f - 0.1f * i));
+        }
+
+        SystemLevelMetricsList spySlm = spy(new SystemLevelMetricsList());
+
+        RefMetricsCalcImpl spyRefMetricsCalcImpl = PowerMockito.spy(refMetricsCalcImpl);
+        doReturn("system").when(spyRefMetricsCalcImpl).getSystemType(anyString());
+
+//        List<BollingerBandsEntity> bbeList = new ArrayList<>();
+//        for (int i = 0; i < 20; i++) {
+//            bbeList.add(new BollingerBandsEntity(200L, 100L, 150L));
+//        }
+//        doReturn(bbeList).when(spyRefMetricsCalcImpl).bollingerBand(anyListOf(String.class));
+
+        spyRefMetricsCalcImpl.calcBollingerRefModel(modelName, refName, metricsValues, spySlm);
+
+        verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyString(),
+                anyInt(), anyBoolean(), any(AssetLevelMetricsDetail.class));
     }
 }
