@@ -58,7 +58,7 @@ define(['./module'], function (controllers) {
           return false;
         } else{
           var value = keyword.trim().toLowerCase();
-          return str.trim().toLowerCase().includes(value);
+          return str.trim().toLowerCase().indexOf(value) > -1;
         }
       };
 
