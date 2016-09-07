@@ -336,7 +336,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 
 	}
 
-	private int removeModelsOfAsset(Long dataAssetId) {
+	private void removeModelsOfAsset(Long dataAssetId) {
 		try {
 			DataAsset da = dataAssetRepo.getById(dataAssetId);
 			if (da != null) {
@@ -348,8 +348,6 @@ public class DataAssetServiceImpl implements DataAssetService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		return 0;
 	}
 
 }
