@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
-
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import java.io.{FileInputStream, FileOutputStream}
-import scala.collection.mutable.MutableList
 
+import com.ebay.bark.dataLoaderUtils.{DataLoaderFactory, FileLoaderUtil}
+
+import scala.collection.mutable.MutableList
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
@@ -40,7 +41,7 @@ class AccuTest extends FunSuite with Matchers with BeforeAndAfter {
     mapper.registerModule(DefaultScalaModule)
 
     var cnt = 1;
-    val accTests = List("accTest1.json", "accTest2.json", "accTest3.json")
+    val accTests = List("accuAvroTest.json")
     for (tf <- accTests) {
       val reqJson = reqJsonPath + tf
       val accuData = new AccuData()
@@ -48,8 +49,10 @@ class AccuTest extends FunSuite with Matchers with BeforeAndAfter {
       accuData.reqJson = reqJson
       val input = new FileInputStream(reqJson)
       accuData.configure = mapper.readValue(input, classOf[AccuracyConfEntity])
-      accuData.dataFrameSrc = FileLoaderUtil.loadDataFile(sqlContext, dataFilePath + accuData.configure.source)
-      accuData.dataFrameTgt = FileLoaderUtil.loadDataFile(sqlContext, dataFilePath + accuData.configure.target)
+      val dataLoader = DataLoaderFactory.getDataLoader(sqlContext, DataLoaderFactory.avro, dataFilePath)
+      val dfs = dataLoader.getAccuDataFrame(accuData.configure)
+      accuData.dataFrameSrc = dfs._1
+      accuData.dataFrameTgt = dfs._2
       accuDatas += accuData
       cnt += 1
     }

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 URI=https://oss.sonatype.org/content/repositories/snapshots/com/ebay/oss
 
 #get xml line
@@ -49,7 +50,7 @@ CORE_FULL_PATH=$CORE_PATH/$CORE_WAR
 MODEL_JAR_NEW=bark-models.jar
 CORE_WAR_NEW=ROOT.war
 
-MODEL_JAR_NEW_PATH=/bark/$MODEL_JAR_NEW
+MODEL_JAR_NEW_PATH=$BARK_HOME/$MODEL_JAR_NEW
 CORE_WAR_NEW_PATH=$APACHE_HOME/webapps/$CORE_WAR_NEW
 
 wget $MODEL_FULL_PATH

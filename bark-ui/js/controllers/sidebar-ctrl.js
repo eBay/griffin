@@ -18,10 +18,7 @@ define(['./module'], function(controllers) {
 
         var echarts = require('echarts');
 
-        pageInit();
-
-
-        function pageInit() {
+        $rootScope.pageInit = function() {
           var url = $config.uri.statistics;
 
           $http.get(url).success(function(res) {
@@ -33,7 +30,9 @@ define(['./module'], function(controllers) {
           });
 
 
-        }
+        };
+
+        $rootScope.pageInit();
 
         var renderDataAssetPie = function(status) {
             resizePieChart();

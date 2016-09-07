@@ -47,7 +47,18 @@
           <td>{{row.type|strmap:'modeltype'}}</td>
           <td>{{row.description}}</td>
       		<td>{{row.createDate | date:'short':'-0700'}}</td>
-      		<td><label class="label" ng-class="row.status==0?'label-default':row.status==1?'label-info':'label-success'" >{{row.status|strmap:'modelstatus'}}</label></td>
+      		<td>
+            <label class="label tooltip2" ng-class="row.status==0?'label-default':row.status==1?'label-info':'label-success'">{{row.status|strmap:'modelstatus'}}
+              <span class="tooltiptext">
+                <p>There are 3 stages for a model. </p>
+                <ol>
+                  <li>"Initial" stage means the model is created but pending on running sample data; </li>
+                  <li>"Validation" stage means sample data has been finished running; </li>
+                  <li>"Production" stage means the model has been deployed and is running on full data set.</li>
+                </ol>
+              </span>
+            </label>
+          </td>
           <td>{{row.owner}}</td>
           <td>
             <a class="disabled" href="" ng-click="edit(row)" title="edit">

@@ -339,3 +339,34 @@ fieldset legend{
   border-radius: 5px;
   padding: 1px 5px;
 }
+
+.tooltip2 {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip2 .tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: #848484;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 8px 5px;
+    font-size: 14px;
+    font-weight: normal;
+    white-space: normal;
+    word-break: normal;
+    line-height: 1.1;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 5;
+    left: -30px;
+    top: 18px;
+}
+
+.tooltip2:hover .tooltiptext {
+    visibility: visible;
+}
