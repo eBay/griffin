@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
@@ -98,6 +99,8 @@ public class DataAssetServiceImplTest {
         DataAssetInput mockDataAssetInput = mock(DataAssetInput.class);
         when(mockDataAssetInput.getAssetHDFSPath()).thenReturn("path");
 
+        InOrder inOrder = inOrder(mockDataAssetRepo, mockDqModelService);
+
         when(mockDataAssetRepo.getByCondition(anyListOf(Pair.class)))
                 .thenReturn(mock(DBObject.class)).thenReturn(null);
 
@@ -140,8 +143,10 @@ public class DataAssetServiceImplTest {
             e.printStackTrace();
         }
 
-        verify(mockDataAssetRepo, times(2)).save(any(DataAsset.class));
-        verify(mockDqModelService, times(2)).newModel(any(ModelInput.class));
+        inOrder.verify(mockDataAssetRepo).save(any(DataAsset.class));
+        inOrder.verify(mockDqModelService).newModel(any(ModelInput.class));
+        inOrder.verify(mockDataAssetRepo).save(any(DataAsset.class));
+        inOrder.verify(mockDqModelService).newModel(any(ModelInput.class));
     }
 
     @Test
@@ -215,7 +220,6 @@ public class DataAssetServiceImplTest {
             e.printStackTrace();
         }
 
-        verify(mockDataAssetRepo, times(2)).getById(anyLong());
         verify(mockDataAssetRepo, times(2)).delete(anyLong());
     }
 }
