@@ -52,9 +52,9 @@
               <span class="tooltiptext">
                 <p>There are 3 stages for a model. </p>
                 <ol>
-                  <li>"Initial" stage means the model is created but pending on running sample data; </li>
-                  <li>"Validation" stage means sample data has been finished running; </li>
-                  <li>"Production" stage means the model has been deployed and is running on full data set.</li>
+                  <li ng-class="row.status==0?'text-highlight':''">"Initial" stage means the model is created but pending on running sample data; </li>
+                  <li ng-class="row.status==1?'text-highlight':''">"Validation" stage means sample data has been finished running; </li>
+                  <li ng-class="row.status==2?'text-highlight':''">"Production" stage means the model has been deployed and is running on full data set.</li>
                 </ol>
               </span>
             </label>
