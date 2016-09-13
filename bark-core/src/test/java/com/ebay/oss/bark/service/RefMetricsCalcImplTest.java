@@ -260,12 +260,6 @@ public class RefMetricsCalcImplTest {
         RefMetricsCalcImpl spyRefMetricsCalcImpl = PowerMockito.spy(refMetricsCalcImpl);
         doReturn("system").when(spyRefMetricsCalcImpl).getSystemType(anyString());
 
-//        List<BollingerBandsEntity> bbeList = new ArrayList<>();
-//        for (int i = 0; i < 20; i++) {
-//            bbeList.add(new BollingerBandsEntity(200L, 100L, 150L));
-//        }
-//        doReturn(bbeList).when(spyRefMetricsCalcImpl).bollingerBand(anyListOf(String.class));
-
         spyRefMetricsCalcImpl.calcBollingerRefModel(modelName, refName, metricsValues, spySlm);
 
         verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyString(),

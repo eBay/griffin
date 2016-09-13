@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
@@ -87,16 +88,17 @@ public class DQMetricsServiceImplTest {
                 .thenReturn(mock(DBObject.class)).thenReturn(null);
         doNothing().when(mockMetricsRepo).update(any(DqMetricsValue.class), any(DBObject.class));
 
+        InOrder inOrder = inOrder(mockMetricsRepo);
+
         dqMetricsServiceImpl.insertMetadata(mockMetrics);
-        verify(mockMetricsRepo).update(any(DqMetricsValue.class), any(DBObject.class));
 
         when(mockMetricsRepo.getNextId()).thenReturn(1234L);
-        doNothing().when(mockMetrics).set_id(anyLong());
         doNothing().when(mockMetricsRepo).save(mockMetrics);
 
         dqMetricsServiceImpl.insertMetadata(mockMetrics);
 
-        verify(mockMetricsRepo).save(mockMetrics);
+        inOrder.verify(mockMetricsRepo).update(any(DqMetricsValue.class), any(DBObject.class));
+        inOrder.verify(mockMetricsRepo).save(mockMetrics);
     }
 
     @Test
