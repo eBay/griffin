@@ -61,7 +61,7 @@ public class RefMetricsCalcImpl implements RefMetrcsCalc {
 	        modelName_system = new HashMap<String, String>();
 
 	        for(DqModel model : modelRepo.getAll()) {
-	            modelName_system.put(model.getModelName(), SystemType.val(model.getModelType()));
+	            modelName_system.put(model.getModelName(), SystemType.val(model.getSystem()));
 	        }
 	    }
 	    return modelName_system.get(modelName);

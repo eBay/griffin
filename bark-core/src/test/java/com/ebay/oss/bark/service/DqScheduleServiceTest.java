@@ -1,5 +1,6 @@
 package com.ebay.oss.bark.service;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ public class DqScheduleServiceTest {
     @Autowired
     private DqScheduleService dqScheduleService;
 
+    @Ignore
     @Test
     public void testSchedulingJobs(){
 
