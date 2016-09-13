@@ -18,7 +18,7 @@ public class SubscribeServiceImplTest {
 
     private SubscribeServiceImpl svc;
 
-    String testUser = "lliu13", testId = "testSubscribe";
+    String testUser = "user", testId = "id";
 
     @Before
     public void setUp() {
