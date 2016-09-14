@@ -35,7 +35,7 @@ Measurement types
 |   3 | Validity  | Column        | Value conforms to a range          |
 |   4 | Validity  | Column        | Value conforms to RegEx            |
 |  5  | Validity  | Column        | Compare values on incoming data to valid values in a defined domain (reference table, or mathematical rule)            |
-|  6  | Completeness| Dataset     | Record counts matches a defined expectation  |
+|  6  | Completeness| Dataset     | Record counts matches a defined expectation compared with a source table |
 |  7  | Completeness| Column      | Ensure all non-nullable fields are populated |
 |  8  | Completeness| Column/Cross table      | Confirm referential integrity between parent/child tables to identify parentless child("orphan") records and values |
 
