@@ -20,15 +20,15 @@
 	
 	<context:annotation-config />
 	
-	<context:component-scan base-package="com.ebay.oss.bark.common" />
-	<context:component-scan base-package="com.ebay.oss.bark.domain" />
-	<context:component-scan base-package="com.ebay.oss.bark.repo" />
-	<context:component-scan base-package="com.ebay.oss.bark.error" />
-	<context:component-scan base-package="com.ebay.oss.bark.service" />
-	<context:component-scan base-package="com.ebay.oss.bark.ebay" />
-	<context:component-scan base-package="com.ebay.oss.bark.resources" />
+	<context:component-scan base-package="com.ebay.oss.griffin.common" />
+	<context:component-scan base-package="com.ebay.oss.griffin.domain" />
+	<context:component-scan base-package="com.ebay.oss.griffin.repo" />
+	<context:component-scan base-package="com.ebay.oss.griffin.error" />
+	<context:component-scan base-package="com.ebay.oss.griffin.service" />
+	<context:component-scan base-package="com.ebay.oss.griffin.ebay" />
+	<context:component-scan base-package="com.ebay.oss.griffin.resources" />
 	
-	<bean id="modelCreatorChain" class="com.ebay.oss.bark.service.modelcreator.DqModelCreatorChain">
+	<bean id="modelCreatorChain" class="com.ebay.oss.griffin.service.modelcreator.DqModelCreatorChain">
 		<constructor-arg>
 			<list>
     			<ref bean="accuracyModelCreator"/>
@@ -40,10 +40,10 @@
 	</bean>
 	
 	
-	<task:scheduled-tasks scheduler="barkScheduler">
+	<task:scheduled-tasks scheduler="griffinScheduler">
 		<task:scheduled ref="dqmetrics" method="updateLatestDQList" fixed-delay="180000"/>
 		<task:scheduled ref="scheduleService" method="schedulingJobs" fixed-delay="120000"/>
 	</task:scheduled-tasks>
-	<task:scheduler id="barkScheduler" pool-size="5"/>
+	<task:scheduler id="griffinScheduler" pool-size="5"/>
 	
 </beans>
