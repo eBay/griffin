@@ -8,10 +8,10 @@ The following guidelines apply to all contributors.
 
 ### Making Changes
 
-* Fork the `bark/Bark` repository
+* Fork the `eBay/griffin` repository
 * Make your changes and push them to a topic branch in your fork
   * See our commit message guidelines further down in this document
-* Submit a pull request to the `bark/Bark` repository
+* Submit a pull request to the `eBay/griffin` repository
 
 ### General Guidelines
 

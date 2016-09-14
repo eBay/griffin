@@ -1,4 +1,4 @@
-# Bark Roadmap
+# Griffin Roadmap
 
 ## Current feature list
 In the current version, we've implemented the below main DQ features

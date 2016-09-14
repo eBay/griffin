@@ -56,10 +56,10 @@ Here're the typical classes/interfaces for each component
 ## Data Collection&Processing Layer
 ![model_design](img/tdd/model_design.png)
 
-For data ingestion, bark can consume real time data from streaming and also support batch data like sql or structured files.
+For data ingestion, griffin can consume real time data from streaming and also support batch data like sql or structured files.
 
-For data processing, bark provides several model libraries for various data quality dimensions like accuracy, validity, etc.
+For data processing, griffin provides several model libraries for various data quality dimensions like accuracy, validity, etc.
 
-After appending business rules into those models, bark will deploy related jobs in spark cluster.
+After appending business rules into those models, griffin will deploy related jobs in spark cluster.
 
-For more details of the design, please refer to https://github.com/eBay/DQSolution/blob/master/bark-doc/models.md
+For more details of the design, please refer to https://github.com/eBay/DQSolution/blob/master/griffin-doc/models.md
