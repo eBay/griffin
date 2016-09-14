@@ -1,11 +1,11 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "BARK API",
-        "description": "Move your app forward with the BARK API",
+        "title": "Griffin API",
+        "description": "Move your app forward with the Griffin API",
         "version": "1.0.0"
     },
-    "host": "bark4dq.stratus.qa.ebay.com",
+    "host": "localhost:8080",
     "schemes": [
         "http"
     ],
@@ -448,15 +448,15 @@
                 "target": {
                     "type": "string",
                     "enum": ["sitespeed.key"]
-                }, 
+                },
                 "src": {
                     "type": "string",
                     "enum": ["dw_bid.uid"]
-                }, 
+                },
                 "matchMethod": {
                     "type": "string",
                     "enum": ["EXACT"]
-                }, 
+                },
                 "isPk": {
                     "type": "boolean",
                     "enum": [true]
@@ -517,25 +517,25 @@
                         "srcDb": {
                             "type": "string",
                             "enum": ["Apollo"]
-                        }, 
+                        },
                         "srcDataSet": {
                             "type": "string",
                             "enum": ["Bullseye"]
-                        }, 
+                        },
                         "targetDb": {
                             "type": "string",
                             "enum": ["Apollo"]
-                        }, 
+                        },
                         "targetDataSet": {
                             "type": "string",
                             "enum": ["SiteSpeed"]
-                        } 
+                        }
                     }
                 },
                 "mappings": {
                     "type": "array",
                     "items":{
-                        "$ref": "mappingsItem"  
+                        "$ref": "mappingsItem"
                     }
                 }
             }
@@ -594,7 +594,7 @@
                         "srcDb": {
                             "type": "string",
                             "enum": ["Apollo"]
-                        }, 
+                        },
                         "srcDataSet": {
                             "type": "string",
                             "enum": ["Sojourner"]
@@ -665,7 +665,7 @@
                         "srcDb": {
                             "type": "string",
                             "enum": ["Apollo"]
-                        }, 
+                        },
                         "srcDataSet": {
                             "type": "string",
                             "enum": ["Sojourner"]
@@ -719,7 +719,7 @@
                         "email": {
                             "type": "string",
                             "enum": ["w@f"]
-                        }                  
+                        }
                     }
                 },
                 "extra": {
