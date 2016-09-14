@@ -11,15 +11,15 @@
 
 	<parent>
 		<groupId>com.ebay.oss</groupId>
-		<artifactId>bark-parent</artifactId>
+		<artifactId>griffin-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>bark-core</artifactId>
-	<name>bark-core</name>
+	<artifactId>griffin-core</artifactId>
+	<name>griffin-core</name>
 	<packaging>war</packaging>
 
 
@@ -164,21 +164,21 @@
 			<artifactId>aspectjrt</artifactId> <version>1.8.1</version> </dependency> -->
 
 		<!-- <dependency>
-			<groupId>org.apache.bark</groupId>
-			<artifactId>bark-scheduler</artifactId>
-			<version>${bark.version}</version>
+			<groupId>org.apache.griffin</groupId>
+			<artifactId>griffin-scheduler</artifactId>
+			<version>${griffin.version}</version>
 			<scope>compile</scope>
 		</dependency> -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>bark-ui</artifactId>
-			<version>${bark.version}</version>
+			<artifactId>griffin-ui</artifactId>
+			<version>${griffin.version}</version>
 			<classifier>resources</classifier>
 			<type>zip</type>
 			<!-- Make sure this isn't included on any classpath -->
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.apache.bark</groupId> <artifactId>bark-core</artifactId>
+		<!-- <dependency> <groupId>org.apache.griffin</groupId> <artifactId>griffin-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version> <scope>compile</scope> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -258,7 +258,7 @@
 				<configuration>
 					<webResources>
 						<resource>
-							<directory>${project.build.directory}/generated-resources/bark-ui-${bark.version}</directory>
+							<directory>${project.build.directory}/generated-resources/griffin-ui-${griffin.version}</directory>
 						</resource>
 					</webResources>
 					<attachClasses>true</attachClasses>
@@ -278,7 +278,7 @@
 						<phase>generate-resources</phase>
 						<configuration>
 							<outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
-							<includeArtifacIds>bark-ui</includeArtifacIds>
+							<includeArtifacIds>griffin-ui</includeArtifacIds>
 							<includeGroupIds>${project.groupId}</includeGroupIds>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>

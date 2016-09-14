@@ -1,10 +1,10 @@
-## Bark [![Travic-CI](https://api.travis-ci.org/eBay/DQSolution.svg)](https://travis-ci.org/eBay/DQSolution)
+## Griffin [![Travic-CI](https://api.travis-ci.org/eBay/DQSolution.svg)](https://travis-ci.org/eBay/DQSolution)
 
-Bark is a Data Quality solution for distributed data systems at any scale in both streaming or batch data context. It provides a framework process for defining data quality model, executing data quality measurement, automating data profiling and validation, as well as a unified data quality visualization across multiple data systems. You can access our home page [here](https://ebay.github.io/DQSolution/).
+Griffin is a Data Quality solution for distributed data systems at any scale in both streaming or batch data context. It provides a framework process for defining data quality model, executing data quality measurement, automating data profiling and validation, as well as a unified data quality visualization across multiple data systems. You can access our home page [here](https://ebay.github.io/griffin/).
 
 
 ### Contact us
-[Google Groups](mailto://ebay-bark-devs@googlegroups.com)
+[Google Groups](mailto://ebay-griffin-devs@googlegroups.com)
 
 
 ### CI
@@ -23,32 +23,32 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 1. Install [docker](https://www.docker.com/).
 2. Download our [docker](https://github.com/eBay/DQSolution/tree/master/docker) folder to your work path.
 3. Enter docker directory and build images.  
-    The first step is to build bark-base-env, which prepares the environment for bark.
+    The first step is to build griffin-base-env, which prepares the environment for griffin.
     ```
-    cd <your work path>/docker/bark-base
-    docker build -t bark-base-env .
+    cd <your work path>/docker/griffin-base
+    docker build -t griffin-base-env .
     ```
-    The second step is to build bark-env, which contains examples for bark demo.
+    The second step is to build griffin-env, which contains examples for griffin demo.
     ```
-    cd <your work path>/docker/bark
-    docker build --no-cache -t bark-env .
+    cd <your work path>/docker/griffin
+    docker build --no-cache -t griffin-env .
     ```
 
-4. Run docker image bark-env, then the backend is ready.
+4. Run docker image griffin-env, then the backend is ready.
     ```
-    docker run -it -h sandbox --name bark -m 8G --memory-swap -1 \
+    docker run -it -h sandbox --name griffin -m 8G --memory-swap -1 \
     -p 2122:2122 -p 47077:7077 -p 46066:6066 -p 48088:8088 -p 48040:8040 \
-    -p 48042:8042 -p 48080:8080 -p 47017:27017 bark-env bash
+    -p 48042:8042 -p 48080:8080 -p 47017:27017 griffin-env bash
     ```
     You can also drop the tail "bash" of the command above, then you will get tomcat service log printing in docker only.
 
-5. Now you can visit UI through your browser, and follow the next steps on web UI [here](https://github.com/eBay/DQSolution/tree/master/bark-doc/dockerUIguide.md#webui-test-case-guide).
+5. Now you can visit UI through your browser, and follow the next steps on web UI [here](https://github.com/eBay/DQSolution/tree/master/griffin-doc/dockerUIguide.md#webui-test-case-guide).
     ```
     http://<your local IP address>:48080/
     ```  
-    And you can also ssh to the docker container using account "bark" with password "bark".
+    And you can also ssh to the docker container using account "griffin" with password "griffin".
     ```
-    ssh bark@<your local IP address> -p 2122
+    ssh griffin@<your local IP address> -p 2122
     ```
 
 ### How to deploy and run at local
@@ -56,7 +56,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 2. Install Tomcat (7.0 or later versions)
 3. Install MongoDB and import the collections
 	```
-	mongorestore /db:unitdb0 /dir:<dir of bark-doc>/db/unitdb0
+	mongorestore /db:unitdb0 /dir:<dir of griffin-doc>/db/unitdb0
 	```
 
 4. Install [Hadoop](http://mirror.stjschools.org/public/apache/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz) (2.7 or later versions), you can get some help [here](https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html).  
@@ -84,7 +84,7 @@ Then, run the following command in **your local path**
     ```
     schematool -dbType derby -initSchema
     ```
-Now you can put your data into Hive by running "hive" here. You can get sample data [here](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive), then put into hive as following commands
+Now you can put your data into Hive by running "hive" here. You can get sample data [here](https://github.com/eBay/DQSolution/tree/master/griffin-doc/hive), then put into hive as following commands
 
     ```
     CREATE TABLE movie_source (
@@ -116,28 +116,28 @@ Now you can put your data into Hive by running "hive" here. You can get sample d
     ```
 9. You can create your own model, build your jar file, and put it in **your local path**.  
 (If you want to use our default models, please skip this step)
-10. Currently we need to run the jobs automatically by script files, you need to set your own parameters in the script files and run it. You can edit the [demo script files](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive/script/) as following
+10. Currently we need to run the jobs automatically by script files, you need to set your own parameters in the script files and run it. You can edit the [demo script files](https://github.com/eBay/DQSolution/tree/master/griffin-doc/hive/script/) as following
 
-    [env.sh](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive/script/env.sh)
+    [env.sh](https://github.com/eBay/DQSolution/tree/master/griffin-doc/hive/script/env.sh)
     ```
     HDFS_WORKDIR=<your hdfs path>/running
     ```
 
-    [bark_jobs.sh](https://github.com/eBay/DQSolution/tree/master/bark-doc/hive/script/bark_jobs.sh)
+    [griffin_jobs.sh](https://github.com/eBay/DQSolution/tree/master/griffin-doc/hive/script/griffin_jobs.sh)
     ```
-    spark-submit --class com.ebay.bark.Accu33 --master yarn --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
-    spark-submit --class com.ebay.bark.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 bark-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
+    spark-submit --class com.ebay.griffin.Accu33 --master yarn --queue default --executor-memory 512m --num-executors 10 griffin-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
+    spark-submit --class com.ebay.griffin.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 griffin-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
     ```
 
     These commands submit the jobs to spark, if you want to try your own model or modify some parameters, please edit it.
-    If you want to use your own model, change "bark-models-0.0.1-SNAPSHOT.jar" to "your path/your model.jar", and change the class name.  
+    If you want to use your own model, change "griffin-models-0.0.1-SNAPSHOT.jar" to "your path/your model.jar", and change the class name.  
 
-    Put these script files in **your local path**, run bark_regular_run.sh as following
+    Put these script files in **your local path**, run griffin_regular_run.sh as following
     ```
-    nohup ./bark_regular_run.sh &
+    nohup ./griffin_regular_run.sh &
     ```
 
-11. Open [application.properties](https://github.com/eBay/DQSolution/tree/master/bark-core/src/main/resources/application.properties) file, read the comments and specify the properties correctly. Or you can edit it as following
+11. Open [application.properties](https://github.com/eBay/DQSolution/tree/master/griffin-core/src/main/resources/application.properties) file, read the comments and specify the properties correctly. Or you can edit it as following
     ```
     env=prod
     job.local.folder=<your local path>/tmp
@@ -146,18 +146,18 @@ Now you can put your data into Hive by running "hive" here. You can get sample d
     job.hdfs.historyfoldername=history
     ```
     If you set the properties as above, you need to make sure the directory "tmp" exists in your local path
-12. Build the whole project and deploy bark-core/target/ROOT.war to tomcat
+12. Build the whole project and deploy griffin-core/target/ROOT.war to tomcat
     ```
     mvn install -DskipTests
     ```
 13. Then you can review the RESTful APIs through http://localhost:8080/api/v1/application.wadl
 
 ### How to develop
-In dev environment, you can run backend REST service and frontend UI seperately. The majority of the backend code logics are in the [bark-core](https://github.com/eBay/DQSolution/tree/master/bark-core) project. So, to start backend, please import maven project Bark into eclipse, right click ***bark-core->Run As->Run On Server***
+In dev environment, you can run backend REST service and frontend UI seperately. The majority of the backend code logics are in the [griffin-core](https://github.com/eBay/DQSolution/tree/master/griffin-core) project. So, to start backend, please import maven project Griffin into eclipse, right click ***griffin-core->Run As->Run On Server***
 
 To start frontend, please follow up the below steps.
 
-1. Open **bark-ui/js/services/services.js** file
+1. Open **griffin-ui/js/services/services.js** file
 
 2. Specify **BACKEND_SERVER** to your real backend server address, below is an example
 
@@ -166,13 +166,13 @@ To start frontend, please follow up the below steps.
     //var BACKEND_SERVER = 'http://localhost:8080/ROOT'; //dev env
     ```
 
-3. Open a command line, run the below commands in root directory of **bark-ui**
+3. Open a command line, run the below commands in root directory of **griffin-ui**
 
    - npm install
    - bower install
    - npm start
 
-4. Then the UI will be opened in browser automatically, please follow the [User Guide](https://github.com/eBay/DQSolution/tree/master/bark-doc/userguide.md), enjoy your journey!
+4. Then the UI will be opened in browser automatically, please follow the [User Guide](https://github.com/eBay/DQSolution/tree/master/griffin-doc/userguide.md), enjoy your journey!
 
 **Note**: The front-end UI is still under development, you can only access some basic features currently.
 
