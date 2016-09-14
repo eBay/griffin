@@ -19,8 +19,6 @@
 	<aop:aspectj-autoproxy />
 	<mvc:annotation-driven></mvc:annotation-driven>
 	
-	<context:component-scan base-package="com.ebay.app.raptor.bark.common" ></context:component-scan>
-	
 	<mvc:resources mapping="/**" location="/" />
 	
 
