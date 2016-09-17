@@ -1,7 +1,7 @@
-package com.ebay.bark.dataLoaderUtils
+package org.apache.griffin.dataLoaderUtils
 
-import org.apache.bark.accuracy.AccuracyConfEntity
-import org.apache.bark.validility.ValidityConfEntity
+import org.apache.griffin.accuracy.AccuracyConfEntity
+import org.apache.griffin.validility.ValidityConfEntity
 import org.apache.spark.sql.{DataFrame, SQLContext}
 
 import com.databricks.spark.avro._

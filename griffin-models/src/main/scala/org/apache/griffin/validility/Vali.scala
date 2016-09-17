@@ -1,9 +1,9 @@
-package org.apache.bark.validility
+package org.apache.griffin.validility
 
-import com.ebay.bark.dataLoaderUtils.DataLoaderFactory
+import org.apache.griffin.dataLoaderUtils.DataLoaderFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import org.apache.bark.util.{DataConverter, DataTypeUtils, HdfsUtils, PartitionUtils}
+import org.apache.griffin.util.{DataConverter, DataTypeUtils, HdfsUtils, PartitionUtils}
 import org.apache.spark.{Logging, SparkConf, SparkContext}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}

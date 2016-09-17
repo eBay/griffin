@@ -1,10 +1,10 @@
-package com.ebay.bark.dataLoaderUtils
+package org.apache.griffin.dataLoaderUtils
 
 import java.io.File
 
-import org.apache.bark.accuracy.AccuracyConfEntity
-import org.apache.bark.util.{DataTypeUtils, PartitionUtils}
-import org.apache.bark.validility.ValidityConfEntity
+import org.apache.griffin.accuracy.AccuracyConfEntity
+import org.apache.griffin.util.{DataTypeUtils, PartitionUtils}
+import org.apache.griffin.validility.ValidityConfEntity
 import org.apache.spark.sql.types.{StructField, StructType}
 import org.apache.spark.sql.{DataFrame, DataFrameReader, SQLContext}
 

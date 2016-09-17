@@ -1,4 +1,4 @@
-package com.ebay.bark.dataLoaderUtils
+package org.apache.griffin.dataLoaderUtils
 
 object FileLoaderUtil {
   def convertPath(path: String) : String = {

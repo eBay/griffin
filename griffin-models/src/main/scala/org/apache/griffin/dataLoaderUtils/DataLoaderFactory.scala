@@ -1,4 +1,4 @@
-package com.ebay.bark.dataLoaderUtils
+package org.apache.griffin.dataLoaderUtils
 
 import org.apache.spark.sql.SQLContext
 

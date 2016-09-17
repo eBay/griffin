@@ -44,7 +44,7 @@
 		</servlet-class>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>org.apache.bark.resources</param-value>
+			<param-value>org.apache.griffin.resources</param-value>
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>

@@ -1,6 +1,6 @@
-package org.apache.bark.util
+package org.apache.griffin.util
 
-import org.apache.bark.common.PartitionPair
+import org.apache.griffin.common.PartitionPair
 
 object PartitionUtils {
   def generateWhereClause(partition: List[PartitionPair]): String = {

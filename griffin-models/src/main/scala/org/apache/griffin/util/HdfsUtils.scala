@@ -1,4 +1,4 @@
-package org.apache.bark.util
+package org.apache.griffin.util
 
 import java.io.File
 

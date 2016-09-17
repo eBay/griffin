@@ -1,4 +1,4 @@
-package org.apache.bark.accuracy
+package org.apache.griffin.accuracy
 
 /**
   * mapping between source column and target column

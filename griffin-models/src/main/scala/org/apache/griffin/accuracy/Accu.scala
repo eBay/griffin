@@ -9,12 +9,12 @@
   *
   */
 
-package org.apache.bark.accuracy
+package org.apache.griffin.accuracy
 
-import com.ebay.bark.dataLoaderUtils.DataLoaderFactory
+import org.apache.griffin.dataLoaderUtils.DataLoaderFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import org.apache.bark.util.{HdfsUtils, PartitionUtils}
+import org.apache.griffin.util.{HdfsUtils, PartitionUtils}
 import org.apache.spark.rdd.RDD.rddToPairRDDFunctions
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.hive.HiveContext

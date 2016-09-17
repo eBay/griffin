@@ -1,6 +1,6 @@
-package org.apache.bark.accuracy
+package org.apache.griffin.accuracy
 
-import org.apache.bark.common.PartitionPair
+import org.apache.griffin.common.PartitionPair
 
 /**
   * Accurarcy configuration entity

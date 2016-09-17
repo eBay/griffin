@@ -1,4 +1,4 @@
-package org.apache.bark.scheduler;
+package org.apache.griffin.scheduler;
 /**
  * TODO::This is for the next version design, currently scheduler is in bark-core
  * @author lzhixing

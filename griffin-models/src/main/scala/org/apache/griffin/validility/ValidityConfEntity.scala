@@ -1,6 +1,6 @@
-package org.apache.bark.validility
+package org.apache.griffin.validility
 
-import org.apache.bark.common.PartitionPair
+import org.apache.griffin.common.PartitionPair
 
 class ValidityConfEntity {
   var dataSet: String = _

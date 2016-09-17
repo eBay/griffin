@@ -1,4 +1,4 @@
-package org.apache.bark.validility
+package org.apache.griffin.validility
 
 class ValidityReq {
   var colId: Int = _

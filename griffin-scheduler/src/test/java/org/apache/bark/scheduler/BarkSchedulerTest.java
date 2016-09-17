@@ -1,4 +1,4 @@
-package org.apache.bark.scheduler;
+package org.apache.griffin.scheduler;
 
 
 public class BarkSchedulerTest {

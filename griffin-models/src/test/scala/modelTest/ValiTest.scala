@@ -1,6 +1,6 @@
 package modelTest
 
-import org.apache.bark._
+import org.apache.griffin._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.spark.{SparkConf, SparkContext}
@@ -8,7 +8,7 @@ import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import java.io.{FileInputStream, FileOutputStream}
 
-import com.ebay.bark.dataLoaderUtils.{DataLoaderFactory, FileLoaderUtil}
+import org.apache.griffin.dataLoaderUtils.{DataLoaderFactory, FileLoaderUtil}
 
 import scala.collection.mutable.MutableList
 import org.junit.runner.RunWith

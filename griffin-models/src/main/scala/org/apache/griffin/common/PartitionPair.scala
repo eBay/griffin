@@ -1,3 +1,3 @@
-package org.apache.bark.common
+package org.apache.griffin.common
 
 case class PartitionPair(colName: String, colValue: String)
