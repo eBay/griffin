@@ -7,7 +7,7 @@ set +e
 while true
 do
   echo "start"
-  $ROOT_DIR/bark_jobs.sh 2>&1
+  $ROOT_DIR/griffin_jobs.sh 2>&1
   rcode=$?
   echo "end $rcode"
   rm -rf $ROOT_DIR/nohup.out

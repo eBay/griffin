@@ -35,7 +35,7 @@ hive --service metastore &
 echo "hive metastore service"
 
 #start script
-nohup ./bark_regular_run.sh &
+nohup ./griffin_regular_run.sh &
 
 echo "bark regular run"
 

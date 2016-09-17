@@ -11,7 +11,7 @@ getval()
 }
 
 #get model version jar
-MODEL_DIR=bark-models
+MODEL_DIR=griffin-models
 MODEL_MAVEN_XML=maven-metadata.xml
 wget $URI/$MODEL_DIR/$MODEL_MAVEN_XML
 MODEL_ARTIFACT_ID=`getval $MODEL_MAVEN_XML artifactId`
@@ -28,7 +28,7 @@ MODEL_JAR=${MODEL_ARTIFACT_ID}-${MODEL_VALUE}.jar
 
 
 #get core version war
-CORE_DIR=bark-core
+CORE_DIR=griffin-core
 CORE_MAVEN_XML=maven-metadata.xml
 wget $URI/$CORE_DIR/$CORE_MAVEN_XML
 CORE_ARTIFACT_ID=`getval $CORE_MAVEN_XML artifactId`
@@ -47,10 +47,10 @@ CORE_WAR=${CORE_ARTIFACT_ID}-${CORE_VALUE}.war
 MODEL_FULL_PATH=$MODEL_PATH/$MODEL_JAR
 CORE_FULL_PATH=$CORE_PATH/$CORE_WAR
 
-MODEL_JAR_NEW=bark-models.jar
+MODEL_JAR_NEW=griffin-models.jar
 CORE_WAR_NEW=ROOT.war
 
-MODEL_JAR_NEW_PATH=$BARK_HOME/$MODEL_JAR_NEW
+MODEL_JAR_NEW_PATH=$GRIFFIN_HOME/$MODEL_JAR_NEW
 CORE_WAR_NEW_PATH=$APACHE_HOME/webapps/$CORE_WAR_NEW
 
 wget $MODEL_FULL_PATH

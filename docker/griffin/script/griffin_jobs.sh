@@ -6,9 +6,9 @@ if [ -f $ROOT_DIR/env.sh ]; then
   . $ROOT_DIR/env.sh
 fi
 
-BARK_HOME=${BARK_HOME:-$ROOT_DIR}
+GRIFFIN_HOME=${GRIFFIN_HOME:-$ROOT_DIR}
 
-HDFS_WORKDIR=${HDFS_WORKDIR:-/user/bark/running}
+HDFS_WORKDIR=${HDFS_WORKDIR:-/user/griffin/running}
 TEMP_DIR=${TEMP_DIR:-$ROOT_DIR/temp}
 LOG_DIR=${LOG_DIR:-$ROOT_DIR/log}
 
@@ -70,12 +70,12 @@ do
       echo "$rc2 $lv1dir/_type_1.done" >> $logfile
       if [ $rc1 -eq 0 ]
       then
-        echo "spark-submit --class org.apache.bark.accuracy.Accu --master yarn-client --queue default --executor-memory 512m --num-executors 4 $BARK_HOME/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ " >> $logfile
-        spark-submit --class org.apache.bark.accuracy.Accu --master yarn-client --queue default --executor-memory 512m --num-executors 4 $BARK_HOME/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
+        echo "spark-submit --class org.apache.griffin.accuracy.Accu --master yarn-client --queue default --executor-memory 512m --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ " >> $logfile
+        spark-submit --class org.apache.griffin.accuracy.Accu --master yarn-client --queue default --executor-memory 512m --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
       elif [ $rc2 -eq 0 ]
       then
-        echo "spark-submit --class org.apache.bark.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 4 $BARK_HOME/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ " >> $logfile
-        spark-submit --class org.apache.bark.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 4 $BARK_HOME/bark-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
+        echo "spark-submit --class org.apache.griffin.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ " >> $logfile
+        spark-submit --class org.apache.griffin.validility.Vali --master yarn-client --queue default --executor-memory 512m --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
       fi
 
       echo "done" >> $logfile
