@@ -21,7 +21,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import com.ebay.oss.gruffin.error.ErrorMessage;
+import com.ebay.oss.griffin.error.ErrorMessage;
 
 public class BaseObj {
 

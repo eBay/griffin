@@ -29,6 +29,7 @@ import com.ebay.oss.griffin.domain.DqMetricsValue;
 import com.ebay.oss.griffin.domain.DqModel;
 import com.ebay.oss.griffin.domain.SampleFilePathLKP;
 import com.ebay.oss.griffin.domain.SystemType;
+import com.ebay.oss.griffin.error.BarkDbOperationException;
 import com.ebay.oss.griffin.repo.DataAssetRepo;
 import com.ebay.oss.griffin.repo.DqMetricsRepo;
 import com.ebay.oss.griffin.repo.DqModelRepo;
@@ -40,7 +41,6 @@ import com.ebay.oss.griffin.vo.OverViewStatistics;
 import com.ebay.oss.griffin.vo.SampleOut;
 import com.ebay.oss.griffin.vo.SystemLevelMetrics;
 import com.ebay.oss.griffin.vo.SystemLevelMetricsList;
-import com.ebay.oss.gruffin.error.BarkDbOperationException;
 import com.mongodb.DBObject;
 
 @Service("dqmetrics")

@@ -13,6 +13,7 @@ import com.ebay.oss.griffin.domain.DqModel;
 import com.ebay.oss.griffin.domain.ModelType;
 import com.ebay.oss.griffin.domain.ScheduleType;
 import com.ebay.oss.griffin.domain.ValidityType;
+import com.ebay.oss.griffin.error.BarkDbOperationException;
 import com.ebay.oss.griffin.repo.DataAssetRepo;
 import com.ebay.oss.griffin.repo.DqJobRepo;
 import com.ebay.oss.griffin.repo.DqModelRepo;
@@ -20,7 +21,6 @@ import com.ebay.oss.griffin.service.DqModelCreator;
 import com.ebay.oss.griffin.vo.ModelBasicInputNew;
 import com.ebay.oss.griffin.vo.ModelExtraInputNew;
 import com.ebay.oss.griffin.vo.ModelInput;
-import com.ebay.oss.gruffin.error.BarkDbOperationException;
 
 public abstract class BaseModelCreator implements DqModelCreator {
 

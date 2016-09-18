@@ -12,58 +12,27 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
  */
-package com.ebay.oss.gruffin.error;
+package com.ebay.oss.griffin.error;
 
 
 
-public class BarkWebException extends RuntimeException {
+public class BarkDbOperationException extends RuntimeException {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -4108849854769426970L;
+	private static final long serialVersionUID = 2137866000039215687L;
 
-
-	private int status;
-
-	private ErrorMessage err;
-
-	public ErrorMessage getErr() {
-		return err;
-	}
-
-	public void setErr(ErrorMessage err) {
-		this.err = err;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
-	}
 
 	/**
 	 * Constructs a new exception with {@code null} as its detail message.
 	 * The cause is not initialized, and may subsequently be initialized by a
 	 * call to {@link #initCause}.
 	 */
-	public BarkWebException() {
+	public BarkDbOperationException() {
 		super();
 	}
 
-	public BarkWebException(int status, String message) {
-		super(message);
-		this.status = status;
-
-	}
-
-	public BarkWebException(int status, Throwable cause) {
-		super(cause);
-		this.status = status;
-
-	}
 
 
 	/**
@@ -74,7 +43,7 @@ public class BarkWebException extends RuntimeException {
 	 * @param   message   the detail message. The detail message is saved for
 	 *          later retrieval by the {@link #getMessage()} method.
 	 */
-	public BarkWebException(String message) {
+	public BarkDbOperationException(String message) {
 		super(message);
 	}
 
@@ -92,7 +61,7 @@ public class BarkWebException extends RuntimeException {
 	 *         unknown.)
 	 * @since  1.4
 	 */
-	public BarkWebException(String message, Throwable cause) {
+	public BarkDbOperationException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
@@ -110,7 +79,7 @@ public class BarkWebException extends RuntimeException {
 	 *         unknown.)
 	 * @since  1.4
 	 */
-	public BarkWebException(Throwable cause) {
+	public BarkDbOperationException(Throwable cause) {
 		super(cause);
 	}
 
@@ -128,7 +97,7 @@ public class BarkWebException extends RuntimeException {
 	 *                           be writable
 	 * @since 1.7
 	 */
-	protected BarkWebException(String message, Throwable cause,
+	protected BarkDbOperationException(String message, Throwable cause,
 			boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);

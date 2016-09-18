@@ -28,12 +28,12 @@ import com.ebay.oss.griffin.domain.DqModel;
 import com.ebay.oss.griffin.domain.DqSchedule;
 import com.ebay.oss.griffin.domain.ModelStatus;
 import com.ebay.oss.griffin.domain.ModelType;
+import com.ebay.oss.griffin.error.BarkDbOperationException;
 import com.ebay.oss.griffin.repo.DqMetricsRepo;
 import com.ebay.oss.griffin.repo.DqModelRepo;
 import com.ebay.oss.griffin.repo.DqScheduleRepo;
 import com.ebay.oss.griffin.vo.DqModelVo;
 import com.ebay.oss.griffin.vo.ModelInput;
-import com.ebay.oss.gruffin.error.BarkDbOperationException;
 import com.mongodb.DBObject;
 
 @Service
