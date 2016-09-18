@@ -75,11 +75,7 @@
     </developers>
 
     <properties>
-<<<<<<< HEAD
-        <bark.version>0.1.1-SNAPSHOT</bark.version>
-=======
-        <griffin.version>0.1.0-SNAPSHOT</griffin.version>
->>>>>>> 186582c5039cebd053e872be127e7d3a9b8ce66d
+        <griffin.version>0.1.1-SNAPSHOT</griffin.version>
         <!-- General Properties -->
         <java.version>1.7</java.version>
         <scala.version>2.10</scala.version>

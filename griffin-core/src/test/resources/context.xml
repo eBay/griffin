@@ -35,7 +35,7 @@
 	<context:component-scan base-package="com.ebay.oss.bark.resources" />
 	-->
 
-	<bean id="modelCreatorChain" class="com.ebay.oss.bark.service.modelcreator.DqModelCreatorChain">
+	<bean id="modelCreatorChain" class="com.ebay.oss.griffin.service.modelcreator.DqModelCreatorChain">
 		<constructor-arg>
 			<list>
 				<ref bean="accuracyModelCreator"/>
