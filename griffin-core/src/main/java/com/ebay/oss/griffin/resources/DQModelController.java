@@ -35,9 +35,9 @@ import com.ebay.oss.griffin.service.NotificationService;
 import com.ebay.oss.griffin.vo.DqModelVo;
 import com.ebay.oss.griffin.vo.ModelInput;
 import com.ebay.oss.griffin.vo.NotificationRecord;
-import com.ebay.oss.gruffub.error.BarkDbOperationException;
-import com.ebay.oss.gruffub.error.BarkWebException;
-import com.ebay.oss.gruffub.error.ErrorMessage;
+import com.ebay.oss.gruffin.error.BarkDbOperationException;
+import com.ebay.oss.gruffin.error.BarkWebException;
+import com.ebay.oss.gruffin.error.ErrorMessage;
 import com.sun.jersey.api.Responses;
 
 @Component

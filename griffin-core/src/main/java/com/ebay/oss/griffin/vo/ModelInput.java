@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
-import com.ebay.oss.gruffub.error.ErrorMessage;
+import com.ebay.oss.gruffin.error.ErrorMessage;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)

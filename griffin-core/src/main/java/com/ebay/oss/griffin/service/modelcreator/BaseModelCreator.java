@@ -20,7 +20,7 @@ import com.ebay.oss.griffin.service.DqModelCreator;
 import com.ebay.oss.griffin.vo.ModelBasicInputNew;
 import com.ebay.oss.griffin.vo.ModelExtraInputNew;
 import com.ebay.oss.griffin.vo.ModelInput;
-import com.ebay.oss.gruffub.error.BarkDbOperationException;
+import com.ebay.oss.gruffin.error.BarkDbOperationException;
 
 public abstract class BaseModelCreator implements DqModelCreator {
 

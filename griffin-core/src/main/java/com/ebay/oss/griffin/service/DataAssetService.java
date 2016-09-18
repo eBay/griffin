@@ -19,7 +19,7 @@ import java.util.List;
 import com.ebay.oss.griffin.domain.DataAsset;
 import com.ebay.oss.griffin.vo.DataAssetInput;
 import com.ebay.oss.griffin.vo.PlatformMetadata;
-import com.ebay.oss.gruffub.error.BarkDbOperationException;
+import com.ebay.oss.gruffin.error.BarkDbOperationException;
 
 public interface DataAssetService {
     public List<DataAsset> getAllDataAssets();

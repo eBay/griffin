@@ -40,7 +40,7 @@ import com.ebay.oss.griffin.vo.OverViewStatistics;
 import com.ebay.oss.griffin.vo.SampleOut;
 import com.ebay.oss.griffin.vo.SystemLevelMetrics;
 import com.ebay.oss.griffin.vo.SystemLevelMetricsList;
-import com.ebay.oss.gruffub.error.BarkDbOperationException;
+import com.ebay.oss.gruffin.error.BarkDbOperationException;
 import com.mongodb.DBObject;
 
 @Service("dqmetrics")

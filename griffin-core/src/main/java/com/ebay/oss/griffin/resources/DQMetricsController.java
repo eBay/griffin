@@ -49,9 +49,9 @@ import com.ebay.oss.griffin.vo.DqModelVo;
 import com.ebay.oss.griffin.vo.OverViewStatistics;
 import com.ebay.oss.griffin.vo.SampleOut;
 import com.ebay.oss.griffin.vo.SystemLevelMetrics;
-import com.ebay.oss.gruffub.error.BarkDbOperationException;
-import com.ebay.oss.gruffub.error.BarkWebException;
-import com.ebay.oss.gruffub.error.ErrorMessage;
+import com.ebay.oss.gruffin.error.BarkDbOperationException;
+import com.ebay.oss.gruffin.error.BarkWebException;
+import com.ebay.oss.gruffin.error.ErrorMessage;
 
 @Component
 // @Scope("request")

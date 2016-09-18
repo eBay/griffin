@@ -33,7 +33,7 @@ import com.ebay.oss.griffin.repo.DqModelRepo;
 import com.ebay.oss.griffin.repo.DqScheduleRepo;
 import com.ebay.oss.griffin.vo.DqModelVo;
 import com.ebay.oss.griffin.vo.ModelInput;
-import com.ebay.oss.gruffub.error.BarkDbOperationException;
+import com.ebay.oss.gruffin.error.BarkDbOperationException;
 import com.mongodb.DBObject;
 
 @Service
