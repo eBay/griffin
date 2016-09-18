@@ -3,7 +3,7 @@ addons:
   sonarqube: true
 script:
   - mvn clean deploy --settings travis-settings.xml
-  - sonar-scanner -Dsonar.login=$SONAR_TOKEN
+  #- sonar-scanner -Dsonar.login=$SONAR_TOKEN
 jdk:
 - oraclejdk7
 env:
