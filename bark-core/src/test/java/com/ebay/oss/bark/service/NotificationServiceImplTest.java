@@ -35,9 +35,13 @@ public class NotificationServiceImplTest {
 
     @Test
     public void testGetAll() {
-        List<NotificationRecord> records = notificationServiceImpl.getAll();
-        assertNotNull(records);
-        assertEquals(0, records.size());
+        List<NotificationRecord> records = new ArrayList<>();
+
+        Whitebox.setInternalState(NotificationServiceImpl.class, "records", records);
+
+        List<NotificationRecord> result = notificationServiceImpl.getAll();
+        assertNotNull(result);
+        assertEquals(records, result);
     }
 
     @Test
