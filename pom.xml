@@ -17,18 +17,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ebay.oss</groupId>
-    <artifactId>bark-parent</artifactId>
+    <artifactId>griffin-parent</artifactId>
     <version>0.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>eBay Bark Parent</name>
+    <name>eBay Griffin Parent</name>
     <modules>
-    	<module>bark-ui</module>
-        <module>bark-core</module>
-        <module>bark-models</module>
+    	  <module>griffin-ui</module>
+        <module>griffin-core</module>
+        <module>griffin-models</module>
     </modules>
     <inceptionYear>2016</inceptionYear>
     <description>
-        Bark - Data Quality Service
+        Griffin - Data Quality Service
     </description>
     <organization>
         <name>Apache Software Foundation</name>
@@ -75,7 +75,11 @@
     </developers>
 
     <properties>
+<<<<<<< HEAD
         <bark.version>0.1.1-SNAPSHOT</bark.version>
+=======
+        <griffin.version>0.1.0-SNAPSHOT</griffin.version>
+>>>>>>> 186582c5039cebd053e872be127e7d3a9b8ce66d
         <!-- General Properties -->
         <java.version>1.7</java.version>
         <scala.version>2.10</scala.version>
@@ -469,7 +473,7 @@
  -->
 
 
-            <!--Bark REST Service Dependencies -->
+            <!--Griffin REST Service Dependencies -->
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-core</artifactId>
