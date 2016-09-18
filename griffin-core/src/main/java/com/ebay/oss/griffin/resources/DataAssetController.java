@@ -31,13 +31,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ebay.oss.griffin.domain.DataAsset;
+import com.ebay.oss.griffin.error.BarkDbOperationException;
+import com.ebay.oss.griffin.error.BarkWebException;
 import com.ebay.oss.griffin.service.DataAssetService;
 import com.ebay.oss.griffin.service.NotificationService;
 import com.ebay.oss.griffin.vo.DataAssetInput;
 import com.ebay.oss.griffin.vo.NotificationRecord;
 import com.ebay.oss.griffin.vo.PlatformMetadata;
-import com.ebay.oss.gruffin.error.BarkDbOperationException;
-import com.ebay.oss.gruffin.error.BarkWebException;
 import com.sun.jersey.api.Responses;
 
 @Component

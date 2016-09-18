@@ -17,9 +17,9 @@ package com.ebay.oss.griffin.service;
 import java.util.List;
 
 import com.ebay.oss.griffin.domain.DqModel;
+import com.ebay.oss.griffin.error.BarkDbOperationException;
 import com.ebay.oss.griffin.vo.DqModelVo;
 import com.ebay.oss.griffin.vo.ModelInput;
-import com.ebay.oss.gruffin.error.BarkDbOperationException;
 
 public interface DqModelService {
 
