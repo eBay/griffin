@@ -1,7 +1,10 @@
 language: java
 script: mvn clean deploy -DskipTests --settings travis-settings.xml
+  - sonar-scanner -Dsonar.login=lliu13
 jdk:
 - oraclejdk7
+addons:
+  sonarqube: true
 env:
   global:
   - SONATYPE_USERNAME=luzx02
