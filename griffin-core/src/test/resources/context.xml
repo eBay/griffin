@@ -24,17 +24,7 @@
 	<context:annotation-config />
 
 
-	<context:component-scan base-package="com.ebay.oss.bark" />
-	<!--
-	<context:component-scan base-package="com.ebay.oss.bark.common" />
-	<context:component-scan base-package="com.ebay.oss.bark.domain" />
-	<context:component-scan base-package="com.ebay.oss.bark.repo" />
-	<context:component-scan base-package="com.ebay.oss.bark.error" />
- 	<context:component-scan base-package="com.ebay.oss.bark.service" /> 
-	<context:component-scan base-package="com.ebay.oss.bark.ebay" />
-	<context:component-scan base-package="com.ebay.oss.bark.resources" />
-	-->
-
+	<context:component-scan base-package="com.ebay.oss.griffin" />
 	<bean id="modelCreatorChain" class="com.ebay.oss.griffin.service.modelcreator.DqModelCreatorChain">
 		<constructor-arg>
 			<list>
@@ -46,6 +36,4 @@
 		</constructor-arg>
 	</bean>
 
-
-	
 </beans>
