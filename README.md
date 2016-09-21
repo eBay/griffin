@@ -1,4 +1,4 @@
-## Griffin [![Travic-CI](https://api.travis-ci.org/eBay/griffin.svg)](https://travis-ci.org/eBay/griffin)
+## Griffin [![Travic-CI](https://api.travis-ci.org/eBay/griffin.svg)](https://travis-ci.org/eBay/griffin) [![Coverage Status](https://coveralls.io/repos/github/eBay/griffin/badge.svg?branch=dev)](https://coveralls.io/github/eBay/griffin?branch=dev)
 
 Griffin is a Data Quality solution for distributed data systems at any scale in both streaming or batch data context. It provides a framework process for defining data quality model, executing data quality measurement, automating data profiling and validation, as well as a unified data quality visualization across multiple data systems. You can access our home page [here](https://ebay.github.io/griffin/).
 
