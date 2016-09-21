@@ -1,9 +1,8 @@
 language: java
 script:
   - mvn clean deploy --settings travis-settings.xml
-  - sonar-scanner -Dsonar.login=$SONAR_TOKEN
 after_success:
-  - mvn clean test jacoco:report coveralls:report
+  - mvn clean cobertura:cobertura coveralls:report
 jdk:
 - oraclejdk8
 addons:
