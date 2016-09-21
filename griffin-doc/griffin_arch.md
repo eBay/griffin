@@ -4,7 +4,7 @@ Griffin is designed to help you assess the data quality in different dimentions.
 
 ## conceptual model
 
-![domain model](img/arch/domain_model.PNG "Domain Model")
+![domain model](img/arch/domain_model.png "Domain Model")
 
 ### Vocabulary
 
@@ -48,7 +48,7 @@ A *Metric* is to indicate how good/bad a DataSet's quality is, in the certain ty
 
 ## Component
 
-![Component Diagram](img/arch/component.PNG "Component Diagram")
+![Component Diagram](img/arch/component.png "Component Diagram")
 
 
 ### MeasureRepo
