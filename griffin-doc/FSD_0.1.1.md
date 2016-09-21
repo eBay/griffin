@@ -40,6 +40,53 @@ Measurement types
 |  *8  | Completeness| Column      | Ensure all non-nullable fields are populated |
 |  *9  | Completeness| Column/Cross table      | Confirm referential integrity between parent/child tables to identify parentless child("orphan") records and values |
 
+#### Dimension details
+Accuracy
+- Compare with single source of truth - source/target
+
+  1) Select columns to compare
+
+  2) Define the mapping rule, support SQL-like functions:FORMAT(X,D), LOWER(str), LENGTH(str), LTRIM(str), SUBSTRING(str,pos,len), RIGHT(str,len), RTRIM(str), TRIM([{BOTH | LEADING | TRAILING} [remstr] FROM] str), UPPER(str), ABS(X), ACOS(X), ASIN(X), ATAN(X), CEIL(X), COS(X), COT(X), DEGREES(X), EXP(X), FLOOR(X), FORMAT(X,D), LOG(X), LOG(B,X), LOG10(X), MOD(N,M), POW(X,Y), ROUND(X,D), SIGN(X), SIN(X), SQRT(X), TAN(X)
+
+  Refer to http://www.tutorialspoint.com/sql/sql-useful-functions.htm
+
+Validity - Column
+- Value conforms to RegEx
+
+  1) Select one column
+
+  2) Support Java Regular Expression: http://www.tutorialspoint.com/java/java_regular_expressions.htm
+
+- Compare values on incoming data to valid values in a defined domain (reference table, or mathematical rule)
+
+  1) Values in a enumeration such as [country codes](https://countrycode.org/) should be in *["AF", "AL", "DZ", "AS", ...]*
+
+  2) Values in a reference table
+
+      2.1) Select one column
+      2.2) Select the reference column and reference table
+  3) User specifies a SQL-like mathematical rule
+
+
+Completeness
+- Record counts matches a defined expectation
+
+  Applies on dataset level
+  > &gt; min_count
+
+  > &lt; max_count
+
+  > min_count &lt; x &lt; max_count
+
+- Ensure all non-nullable fields are populated
+
+  End user selects the column
+
+- Confirm referential integrity between parent/child tables to identify parentless child("orphan") records and values
+
+  1) Select column (FK)
+
+  2) Select parent table and column (PK)
 
 ### Model Engine
 - Job Scheduler
