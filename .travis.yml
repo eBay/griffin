@@ -1,8 +1,7 @@
 language: java
 script:
   - mvn clean deploy --settings travis-settings.xml
-  #- sonar-scanner -Dsonar.login=$SONAR_TOKEN
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.login=$SONAR_TOKEN
+  - sonar-scanner -Dsonar.login=$SONAR_TOKEN
 jdk:
 - oraclejdk7
 addons:
@@ -11,7 +10,6 @@ env:
   global:
   - SONATYPE_USERNAME=luzx02
   - secure: MCiJ3+fsUoHxs0/y1pqY3e6uyfKCscwEqBZso7JIDxDT08EHuag9TDAJ6sSTGqUsex5pYGVazhd7/93bnJEcb1RObJ0Eg+musECdCjMKhCvhu0matGO6MkefqfvtzbR91Mbs1c7/7qMw7sPErSRnlKgLDjZbBnU1GMEBoEXltYwwqeafz1WUkmUD4PjtGaVqHbbi1+zvP0vPUvmbOz9JG5xz8mIa3RTc/9BSuIwd6hbvnqpmb434I5mDKYFFeB/hODwZrkFZ4bWjzfims5LaK7y9z6OPwbdpcVcqqZ7rSwS1nmwCQ8/bTz1w9cpNcDp714UZL+5JtXcTmbORafBvThlLoKew6OOq2KAwgnLTQstN9kL/5Eu81j0naRkJCnLPUsqCcBHyyAiK5hygQ5iqSCgLdjlA1xjs8XoDwckQQOZe02S2KNDyD4PwkmGsuBQowPrfyJfU6hfzTzPprd2wHpkB01Zq5tLFuozKFdnrUI9VlRIP3YWD/KvGoSLdXpdOa/KwMxkGetr9oJ0PzbfzzSzLhwbOYKTrPASvesAmOamuTGQKGIFHvddMuAYhOVB/C2UEV7Uv0hJbnGY6NuIIdq5SO3vZwdmcDlW1VZHXAHq1rVxizMqsZu0MkYsr1vzKXDZ/Xn5YsaFUAMGglDY6zC540az3cJsfSKsl2J/y6Lo=
-  - SONAR_TOKEN=lliu13
   - secure: b3ef92RAfWALCS96amm1iUXajXG+9ShG1wqArkKv2qqdfe4sRrwvM9idyaIGQOKaG9epxP60s2Ryw7SPd9SyNGXFA9uN+Wf08bfcqbpZA+sadCr436TTcq/25/9vrN7bv9PHFqBvve4Tj3+4iIujCbB2x44PEaQKpwOD8nd2By8OGrYjppeO1U8f7Hi6YTLIej3B5tROWqMaQSs76MSwyXrq6Poy9AemRRes1aeeiPwM0c7Jz43rfxkVJac+1rywZhtTTVNM5iScmAakC4xu5K34NJNda3/JpzkR+6/dlPpXF7W8/CoAso0gOQPLGbd4ixx/4YuUbhk4+EE2uLgotjNMe8lp4yTU0cB62Yn53/+J/r566CStglXraJhp1FUDFTk2b94H8leg8LGxIW4BufPQj2PooP69n1tIJqJdyxcdBagposCRKvwkkue980+RyhjYq6PRm7nCeNnrKr38F6PQwX9wEK8tVpT9dtwhnLKGMjl5gPZSTpT6dkC/9UsjCZWQATwI5HN39be+/JI3b0/tDS8umToNGWQcHTAhBy9IkFDMi4/lZZOKHBqFNBae0sKHTNlxMMW08c7N2IOVIQwxWflFFvMMPn/5w696sTxxJLzS4V7i1//Qz1axprqejVVNXY2VnX/xlnUXesVH50RWOR77hLdVI2PX8A4nlSo=
 branches:
   only:
