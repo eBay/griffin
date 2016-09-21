@@ -63,7 +63,16 @@
           </snapshots>
       </repository>
     </repositories>
-
+    
+  <pluginRepositories>
+    <pluginRepository>
+      <id>sonatype-nexus-snapshot</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+  
     <prerequisites>
         <maven>${maven.version}</maven>
     </prerequisites>
@@ -430,46 +439,25 @@
                     </execution>
                   </executions>
                 </plugin>
-                <plugin>
-                    <!-- CODE COVERAGE -->
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.4.201502262128 </version>
-                    <executions>
-                        <!-- Prepare execution with Surefire -->
-                        <execution>
-                            <id>pre-unit-test</id>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                            <configuration>
-                                <propertyName>surefireArgLine</propertyName>
-                            </configuration>
-                        </execution>
-                        <!-- Generate report after tests are run -->
-                        <execution>
-                            <id>post-unit-test</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <!-- Specify classes to ignore in code coverage -->
-                    <configuration>
-                        <excludes>
-                            <exclude>**/griffin-ui/**</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
-                <!-- CODE COVERAGE PUBLISHER -->
-                <plugin>
-                    <groupId>org.eluder.coveralls</groupId>
-                    <artifactId>coveralls-maven-plugin</artifactId>
-                    <version>3.1.0</version>
-                </plugin>
-
+            		<plugin>
+            		    <groupId>org.codehaus.mojo</groupId>
+            		    <artifactId>cobertura-maven-plugin</artifactId>
+            		    <version>2.7</version>
+            		    <configuration>
+            		        <format>xml</format>
+            		        <maxmem>256m</maxmem>
+            		        <!-- aggregated reports for multi-module projects -->
+            		        <aggregate>true</aggregate>
+            		    </configuration>
+            		</plugin>                
             </plugins>
         </pluginManagement>
+        <plugins>
+        		<plugin>
+        		    <groupId>org.eluder.coveralls</groupId>
+        		    <artifactId>coveralls-maven-plugin</artifactId>
+        		    <version>4.2.0</version>
+        		</plugin>
+        </plugins>        
     </build>
 </project>
