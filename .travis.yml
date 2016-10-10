@@ -6,7 +6,7 @@ install:
   - npm install -g requirejs
 script:
   - r.js -o griffin-ui/build.js
-  - mvn clean deploy --settings travis-settings.xml
+  - mvn clean deploy --quiet --settings travis-settings.xml
 after_success:
   - mvn clean cobertura:cobertura coveralls:report
 jdk:
