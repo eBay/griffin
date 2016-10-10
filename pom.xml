@@ -42,7 +42,7 @@
         </license>
     </licenses>
 
-    <!-- <distributionManagement>
+    <distributionManagement>
       <snapshotRepository>
         <id>ossrh</id>
         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -51,16 +51,6 @@
         <id>ossrh</id>
         <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
       </repository>
-    </distributionManagement> -->
-    <distributionManagement>
-      <repository>
-        <id>raptor.releases</id>
-        <url>http://ebaycentral.qa.ebay.com/content/repositories/releases/</url>
-      </repository>
-      <snapshotRepository>
-        <id>raptor.snapshots</id>
-        <url>http://ebaycentral.qa.ebay.com/content/repositories/snapshots/</url>
-      </snapshotRepository>
     </distributionManagement>
 
     <repositories>

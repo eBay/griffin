@@ -5,7 +5,9 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>${project.basedir}/dist</directory><!--
+			<directory>${project.basedir}/dist/</directory>
+			<outputDirectory>/</outputDirectory>
+<!--
 			<includes>
 
 				<include>apidocs/**</include>

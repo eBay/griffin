@@ -14,7 +14,7 @@
     optimize: 'uglify2',
     uglify2: {
               mangle: false
-          },
+    },
     paths: {
       'domReady': '../bower_components/domReady/domReady',
 	    'angular': '../bower_components/angular/angular',
