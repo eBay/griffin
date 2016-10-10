@@ -10,7 +10,7 @@
     // fileExclusionRegExp: /^(r|build)\.js$/,
     fileExclusionRegExp: /^(.settings|apidocs|node_modules|target|tests|.classpath|.gitignore|.project|bower.json|build.xml|package.json|pom.xml|readme.md|(r|build)\.js)$/,
     optimizeCss: 'standard',
-    removeCombined: false,
+    removeCombined: true,
     optimize: 'uglify2',
     uglify2: {
               mangle: false
