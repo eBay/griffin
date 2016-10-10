@@ -21,7 +21,11 @@ define([
     'routes'
 ], function (require, $, bootstrap, angular) {
     'use strict';
-
+   var hostName = window.location.hostname;
+   if(hostName.toLowerCase() == 'bark.vip.ebay.com'){
+     var newUrl = window.location.href.replace(hostName, 'griffin.vip.ebay.com');
+     window.location.replace(newUrl);
+   }
    require(['domReady!'], function (document) {
 
         $('#mainWindow').height($('#mainContent').height());
