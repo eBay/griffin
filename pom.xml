@@ -42,7 +42,7 @@
         </license>
     </licenses>
 
-    <distributionManagement>
+    <!-- <distributionManagement>
       <snapshotRepository>
         <id>ossrh</id>
         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -51,6 +51,16 @@
         <id>ossrh</id>
         <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
       </repository>
+    </distributionManagement> -->
+    <distributionManagement>
+      <repository>
+        <id>raptor.releases</id>
+        <url>http://ebaycentral.qa.ebay.com/content/repositories/releases/</url>
+      </repository>
+      <snapshotRepository>
+        <id>raptor.snapshots</id>
+        <url>http://ebaycentral.qa.ebay.com/content/repositories/snapshots/</url>
+      </snapshotRepository>
     </distributionManagement>
 
     <repositories>
@@ -63,7 +73,7 @@
           </snapshots>
       </repository>
     </repositories>
-    
+
   <pluginRepositories>
     <pluginRepository>
       <id>sonatype-nexus-snapshot</id>
@@ -72,7 +82,7 @@
       <snapshots><enabled>true</enabled></snapshots>
     </pluginRepository>
   </pluginRepositories>
-  
+
     <prerequisites>
         <maven>${maven.version}</maven>
     </prerequisites>
@@ -449,7 +459,7 @@
             		        <!-- aggregated reports for multi-module projects -->
             		        <aggregate>true</aggregate>
             		    </configuration>
-            		</plugin>                
+            		</plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -458,6 +468,6 @@
         		    <artifactId>coveralls-maven-plugin</artifactId>
         		    <version>4.2.0</version>
         		</plugin>
-        </plugins>        
+        </plugins>
     </build>
 </project>
