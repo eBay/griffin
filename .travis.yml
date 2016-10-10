@@ -1,4 +1,6 @@
 language: java
+before_script:
+  - sudo npm install -g requirejs
 script:
   - mvn clean deploy --settings travis-settings.xml
 after_success:
