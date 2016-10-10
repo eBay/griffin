@@ -1,6 +1,9 @@
 language: java
-before_script:
-  - sudo npm install -g requirejs
+install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
+  - npm install -g requirejs
 script:
   - mvn clean deploy --settings travis-settings.xml
 after_success:
