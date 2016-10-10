@@ -19,6 +19,9 @@
 'use strict';
 
 require.config({
+	waitSeconds: 120,
+	// appDir: '../',
+  // baseUrl: './js',
 	paths: {
 	    'domReady': '../bower_components/domReady/domReady',
 	    'angular': '../bower_components/angular/angular',
@@ -33,8 +36,8 @@ require.config({
 	    'bootstrap': '../bower_components/bootstrap/dist/js/bootstrap',
 	    'spin': '../bower_components/spin.js/spin',
 	    'angularSpinner': '../bower_components/angular-spinner/angular-spinner',
-		'echarts': '../bower_components/echarts/dist/echarts',
-		'echarts-dark': '../bower_components/echarts/theme/dark'
+			'echarts': '../bower_components/echarts/dist/echarts',
+			'echarts-dark': '../bower_components/echarts/theme/dark'
 	},
 	shim: {
 		'angular': {
@@ -61,7 +64,7 @@ require.config({
 			deps: ['angular'],
 			exports: 'ngCookies'
 		},
-	
+
 	    'jquery': {
 				exports: 'jquery'
 			},
