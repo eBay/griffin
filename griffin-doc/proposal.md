@@ -104,10 +104,12 @@ eBay invested in Griffin as a company-wide data quality service platform and som
 Griffin has a strong relationship and dependency with Apache Hadoop, Apache HBase, Apache Spark, Apache Kafka and Apache Storm, Apache Hive. In addition, since there is a growing need for data quality solution for open source platform (e.g. Hadoop, Kafka, Spark etc), being part of Apache’s Incubation community, could help with a closer collaboration among these four projects and as well as others.
 
 ##Documentation
-Information about Griffin can be found at https://github.com/eBay/DQSolution.  
+Information about Griffin can be found at https://github.com/eBay/griffin.  
 
 ##Initial Source
-Griffin has been under development since early 2016 by a team of engineers at eBay Inc. It is currently hosted on Github.com under an Apache license 2.0 at https://github.com/eBay/DQSolution. Once in incubation we will be moving the code base to apache git library.  
+Griffin has been under development since early 2016 by a team of engineers at eBay Inc. It is currently hosted on Github.com under an Apache license 2.0 at https://github.com/eBay/griffin. 
+
+Once in incubation we will be moving the code base to Apache git repository.  
 
 ##External Dependencies
 Griffin has the following external dependencies.
