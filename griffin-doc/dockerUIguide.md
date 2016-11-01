@@ -57,3 +57,7 @@ Follow the steps [here](https://github.com/eBay/DQSolution/blob/master/README.md
 4.  Now you've created two data assets and three DQ models, the models are calculated automatically at background in the docker container.  
     Wait for about 20 minutes, results would be published to web UI. Then you can see the dashboards of your new models in "My Dashboard" page.  
     View the accuracy model, there will be a "Deploy" button when the result comes out, click "Deploy" button to enable the periodically calculation of it, then you can get your dashboard growing by the period as you set.
+
+### User data case guide
+
+You can follow the steps [here](https://github.com/eBay/griffin/blob/master/griffin-doc/userDataCaseGuide.md) to use your own data for test.

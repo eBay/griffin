@@ -1,4 +1,4 @@
-## User Data Insert Guide
+## User Data Case Guide
 
 Assuming that you've ran our docker example, here we will show you how to insert your own data and use griffin to calculate its data quality.  
 As an example, our environment here is the docker container, which is built following [the docker guide](https://github.com/eBay/griffin/blob/master/README.md#how-to-run-in-docker), you can ssh into it and follow our steps. 
