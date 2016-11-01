@@ -9,7 +9,7 @@ RUN ./adduser.sh griffin griffin && ./sudouser.sh griffin && rm *.sh
 ENV GRIFFIN_HOME /home/griffin
 
 #set java environment variables
-ENV JAVA_HOME /usr/java/jdk1.7.0_51
+ENV JAVA_HOME /usr/java/latest
 ENV PATH $JAVA_HOME/bin:$PATH
 
 #install wget
@@ -19,8 +19,8 @@ RUN yum install -y wget
 RUN mkdir /apache
 
 #install hive 1.2.1 and set environment variables
-RUN cd /apache && wget https://www.apache.org/dist/hive/hive-1.2.1/apache-hive-1.2.1-bin.tar.gz && tar -xvf apache-hive-1.2.1-bin.tar.gz
-ENV HIVE_HOME /apache/apache-hive-1.2.1-bin
+RUN cd /apache && wget https://www.apache.org/dist/hive/hive-1.2.1/apache-hive-1.2.1-bin.tar.gz && tar -xvf apache-hive-1.2.1-bin.tar.gz && ln -s apache-hive-1.2.1-bin hive
+ENV HIVE_HOME /apache/hive
 ENV PATH $HIVE_HOME/bin:$PATH
 
 #running HiveServer2 and Beeline
@@ -32,10 +32,10 @@ ADD griffin $GRIFFIN_HOME
 RUN chmod -R 755 $GRIFFIN_HOME
 
 #install tomcat 7
-RUN cd /apache && wget https://www.apache.org/dist/tomcat/tomcat-7/v7.0.70/bin/apache-tomcat-7.0.70.tar.gz && tar -xvf apache-tomcat-7.0.70.tar.gz
+RUN cd /apache && wget https://www.apache.org/dist/tomcat/tomcat-7/v7.0.72/bin/apache-tomcat-7.0.72.tar.gz && tar -xvf apache-tomcat-7.0.72.tar.gz && ln -s apache-tomcat-7.0.72 tomcat
 ADD config/tomcat /etc/init.d/
 RUN chmod 755 /etc/init.d/tomcat
-ENV TOMCAT_HOME /apache/apache-tomcat-7.0.70
+ENV TOMCAT_HOME /apache/tomcat
 ENV PATH $TOMCAT_HOME/bin:$PATH
 
 #install mongodb

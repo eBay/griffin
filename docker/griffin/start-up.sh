@@ -2,7 +2,7 @@
 
 
 : ${HADOOP_PREFIX:=/usr/local/hadoop}
-: ${TOMCAT_HOME:=/apache/apache-tomcat-7.0.70}
+: ${TOMCAT_HOME:=/apache/tomcat}
 
 $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 

@@ -3,14 +3,14 @@
 # description: Tomcat Start Stop Restart
 # processname: tomcat
 # chkconfig: 234 20 80
-JAVA_HOME=/usr/java/jdk1.7.0_51
+JAVA_HOME=/usr/java/latest
 export JAVA_HOME
 PATH=$JAVA_HOME/bin:$PATH
 export PATH
 JAVA_OPTS="-Dfile.encoding=UTF-8 -Xms128m -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=512m"
 export JAVA_OPTS
 echo $JAVA_OPTS
-CATALINA_HOME=/apache/apache-tomcat-7.0.70
+CATALINA_HOME=/apache/tomcat
 RETVAL=$?
 case "$1" in
 start)

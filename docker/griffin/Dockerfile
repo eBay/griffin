@@ -13,7 +13,7 @@ RUN mkdir /db
 ADD db /db
 
 #remove tomcat webapps
-ENV APACHE_HOME /apache/apache-tomcat-7.0.70
+ENV APACHE_HOME /apache/tomcat
 RUN rm -rf $APACHE_HOME/webapps/*
 
 #prepare data

@@ -42,7 +42,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     ```
     You can also drop the tail "bash" of the command above, then you will get tomcat service log printing in docker only.
 
-5. Now you can visit UI through your browser, and follow the next steps on web UI [here](https://github.com/eBay/griffin/tree/master/griffin-doc/dockerUIguide.md#webui-test-case-guide).
+5. Now you can visit UI through your browser, and follow the next steps on web UI [here](https://github.com/eBay/griffin/tree/master/griffin-doc/dockerUIguide.md#webui-test-case-guide). You can login with account "test" and password "test" if required.
     ```
     http://<your local IP address>:48080/
     ```  
