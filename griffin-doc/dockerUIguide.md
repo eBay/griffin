@@ -50,7 +50,7 @@ Follow the steps [here](https://github.com/eBay/DQSolution/blob/master/README.md
     1)  Choose Source: find "users_info_src" in the left tree, select some or all attributes in the right block, click "Next".  
     2)  Choose Target: find "users_info_target" in the left tree, select the matching attributes with previous ones in the right block, click "Next".  
     3)  Mapping Source and Target: choose the first row "user_id" as "PK" which means "Primary Key", and select "Source Fields" of each row, to match the same item in source table, e.g. user_id maps to user_id, first_name maps to first_name.   
-        Finish all the mapping, click "Next".
+        Finish all the mapping, click "Next".  
     4)  Fill out the required table freely, "Schedule Type" is the calculation period.  
         Submit and save, you can see your new DQ model created in the models list.  
 
