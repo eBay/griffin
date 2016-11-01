@@ -61,6 +61,7 @@ RUN yum install -y mysql-server && yum install -y mysql-connector-java && ln -s 
 #configure hive metastore as remote mode
 ADD config/hive-site.xml $HIVE_HOME/conf/
 ADD config/hive-site.xml $SPARK_HOME/conf/
+RUN chmod 664 $HIVE_HOME/conf/hive-site.xml $SPARK_HOME/conf/hive-site.xml
 
 #prepare env data
 RUN ./hadoop-start.sh && ./hive-init.sh && ./hadoop-end.sh && rm hadoop-start.sh pre-start.sh hd-before-hive.sh hd-after-hive.sh hd-test-json.sh hadoop-end.sh hive-init.sh
