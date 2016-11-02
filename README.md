@@ -87,46 +87,54 @@ Then, run the following command in **your local path**
 Now you can put your data into Hive by running "hive" here. You can get sample data [here](https://github.com/eBay/griffin/tree/master/griffin-doc/hive), then put into hive as following commands
 
     ```
-    CREATE TABLE movie_source (
-      movieid STRING,
-      title STRING,
-      genres STRING)
+    CREATE TABLE users_info_src (
+      user_id bigint,
+      first_name string,
+      last_name string,
+      address string,
+      email string,
+      phone string,
+      post_code string)
     ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY '\;'
+    FIELDS TERMINATED BY '|'
     STORED AS TEXTFILE;
 
-    LOAD DATA LOCAL INPATH '<your data path>/MovieLensSample_Source.dat' OVERWRITE INTO TABLE movie_source;
+    LOAD DATA LOCAL INPATH '<your data path>/users_info_src.dat' OVERWRITE INTO TABLE users_info_src;
 
-    CREATE TABLE movie_target (
-      movieid STRING,
-      title STRING,
-      genres STRING)
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY '\;'
-    STORED AS TEXTFILE;
+    CREATE TABLE users_info_target (
+          user_id bigint,
+          first_name string,
+          last_name string,
+          address string,
+          email string,
+          phone string,
+          post_code string)
+        ROW FORMAT DELIMITED
+        FIELDS TERMINATED BY '|'
+        STORED AS TEXTFILE;
 
-    LOAD DATA LOCAL INPATH '<your data path>/MovieLensSample_Target.dat' OVERWRITE INTO TABLE movie_target;
+    LOAD DATA LOCAL INPATH '<your data path>/users_info_target.dat' OVERWRITE INTO TABLE users_info_target;
     ```
 
     If you use hive command mode to input data, remember to create _SUCCESS file in hdfs table path as following
 
     ```
-    hadoop fs -touchz /user/hive/warehouse/movie_source/_SUCCESS
-    hadoop fs -touchz /user/hive/warehouse/movie_target/_SUCCESS
+    hadoop fs -touchz /user/hive/warehouse/users_info_src/_SUCCESS
+    hadoop fs -touchz /user/hive/warehouse/users_info_target/_SUCCESS
     ```
 9. You can create your own model, build your jar file, and put it in **your local path**.  
 (If you want to use our default models, please skip this step)
 10. Currently we need to run the jobs automatically by script files, you need to set your own parameters in the script files and run it. You can edit the [demo script files](https://github.com/eBay/griffin/tree/master/griffin-doc/hive/script/) as following
 
-    [env.sh](https://github.com/eBay/griffin/tree/master/griffin-doc/hive/script/env.sh)
+    [env.sh](https://github.com/eBay/griffin/blob/master/docker/griffin/script/env.sh)
     ```
     HDFS_WORKDIR=<your hdfs path>/running
     ```
 
-    [griffin_jobs.sh](https://github.com/eBay/griffin/tree/master/griffin-doc/hive/script/griffin_jobs.sh)
+    [griffin_jobs.sh](https://github.com/eBay/griffin/blob/master/docker/griffin/script/griffin_jobs.sh)
     ```
-    spark-submit --class com.ebay.griffin.Accu33 --master yarn --queue default --executor-memory 512m --num-executors 10 griffin-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
-    spark-submit --class com.ebay.griffin.Vali3 --master yarn --queue default --executor-memory 512m --num-executors 10 griffin-models-0.0.1-SNAPSHOT.jar  $lv1dir/cmd.txt $lv1dir/
+    spark-submit --class org.apache.griffin.accuracy.Accu --master yarn-client --queue default --executor-memory 1g --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
+    spark-submit --class org.apache.griffin.validility.Vali --master yarn-client --queue default --executor-memory 1g --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
     ```
 
     These commands submit the jobs to spark, if you want to try your own model or modify some parameters, please edit it.
