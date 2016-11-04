@@ -24,7 +24,7 @@ define(['./module'], function (controllers) {
 
         $scope.formatTypeOptions = ['yyyyMMdd', 'yyyy-MM-dd','HH'];
 
-        $scope.regex = '^\\/(?:[0-9a-zA-Z\\_\\-\\.]+\\/?)+';
+        $scope.regex = new RegExp('^\\/(?:[0-9a-zA-Z\\_\\-\\.]+\\/?)+');
 
         // $scope.regex = new RegExp('^\\/(?:[0-9a-zA-Z\\_\\-\\.]+\\/?)+');
 
