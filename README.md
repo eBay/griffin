@@ -155,13 +155,15 @@ Make sure you have the permission to use command "hive".
 12. Build the whole project and deploy griffin-core/target/ROOT.war to tomcat  
     ```
     mvn install -DskipTests
-    ```
+    ```  
+    
     Find the griffin-models-0.1.0-SNAPSHOT.jar in path griffin-models/target, rename it to griffin-modes.jar (or <your model>.jar), and put in **your local path**.  
     Till now, please make sure that, in **your local path**, there exists griffin-modes.jar, env.sh, griffin_jobs.sh and griffin_regular_run.sh.  
     Run griffin_regular_run.sh as following.  
     ```
     nohup ./griffin_regular_run.sh &
-    ```
+    ```  
+    
     Deploy griffin-core/target/ROOT.war to tomcat, start tomcat server, then you can follow the web UI steps [here](https://github.com/eBay/griffin/blob/master/griffin-doc/dockerUIguide.md#webui-test-case-guide).  
 13. You can also review the RESTful APIs through http://localhost:8080/api/v1/application.wadl
 
