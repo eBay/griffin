@@ -152,7 +152,7 @@ Make sure you have the permission to use command "hive".
     job.hdfs.historyfoldername=history
     ```
     If you set the properties as above, you need to make sure the directory "tmp" exists in your local path  
-12. Build the whole project and deploy griffin-core/target/ROOT.war to tomcat  
+12. Build the whole project and deploy.    
     ```
     mvn install -DskipTests
     ```  
