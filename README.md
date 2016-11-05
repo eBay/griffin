@@ -139,7 +139,7 @@ Make sure you have the permission to use command "hive".
     ```
 
     These commands submit the jobs to spark, if you want to try your own model or modify some parameters, please edit it.  
-    If you want to use your own model, change "$GRIFFIN_HOME/griffin-models.jar" to "<your path>/<your model>.jar", and change the class name.  
+    If you want to use your own model, change "$GRIFFIN_HOME/griffin-models.jar" to "your path/your model.jar", and change the class name.  
 
     Put these script files in **your local path**.  
 
@@ -157,7 +157,7 @@ Make sure you have the permission to use command "hive".
     mvn install -DskipTests
     ```  
     
-    Find the griffin-models-0.1.0-SNAPSHOT.jar in path griffin-models/target, rename it to griffin-modes.jar (or <your model>.jar), and put in **your local path**.  
+    Find the griffin-models-0.1.0-SNAPSHOT.jar in path griffin-models/target, rename it to griffin-modes.jar (or your model.jar), and put in **your local path**.  
     Till now, please make sure that, in **your local path**, there exists griffin-modes.jar, env.sh, griffin_jobs.sh and griffin_regular_run.sh.  
     Run griffin_regular_run.sh as following.  
     ```
