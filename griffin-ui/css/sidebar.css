@@ -161,6 +161,13 @@ a>.side-name:hover{
     border-radius: 50%;
     box-shadow: #000 0 -1px 7px 1px, inset #460 0 -1px 9px, #7D0 0 2px 12px;
 }
+
+.sb-text{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	display:inline-block;
+}
 /* led end   */
 
 @media (max-width: 1200px) {

@@ -55,16 +55,17 @@
             <div class="panel-group" ng-repeat="items in outerItems.metrics" style="margin-bottom:0px;background:transparent;">
               <div class="panel panel-default" style="position:relative;background:transparent;">
                 <div class="panel-heading" style="background:transparent;">
-                  <h4 class="panel-title side-metrics">
+                    <h4 class="panel-title side-metrics">
                       <a data-toggle="collapse" href={{"#"+outerItems.name+$index}} ng-init="items.tag=true" ng-click="items.tag=!items.tag;draw(items, $parent.$index, $index);" >
                         <i class="faChevron" ng-class="items.tag ? 'fa fa-caret-right':'fa fa-caret-down'" style="width:10px"></i>
 
                         <i class="fa fa-line-chart faArrows"></i>
                         <span class="side-date">{{items.timestamp | date:'MM/dd HH:mm':'-0700'}}</span>
                         &nbsp;&nbsp;
-                        <span class="side-name" title="{{items.name}}">{{items.name |strShorten}}</span>
-                        <span ng-if="items.dq <= 100" class="pull-right" ng-class="items.dqfail?'side-percent-red':'side-percent'">{{items.dq | number:2}}%</span>
-                        <span ng-if="items.dq > 100" class="pull-right" ng-class="items.dqfail?'side-percent-red':''">{{items.dq/1000 | number:0}}K</span>
+                        <!-- <span class="side-name" title="{{items.name}}">{{items.name |strShorten}}</span> -->
+                        <span class="side-name sb-text" title="{{items.name}}">{{items.name}}</span>
+                        <span ng-if="items.dq <= 100" class="pull-right sb-right" ng-class="items.dqfail?'side-percent-red':'side-percent'">{{items.dq | number:2}}%</span>
+                        <span ng-if="items.dq > 100" class="pull-right sb-right" ng-class="items.dqfail?'side-percent-red':''">{{items.dq/1000 | number:0}}K</span>
                       </a>
                     </h4>
                   </div>
