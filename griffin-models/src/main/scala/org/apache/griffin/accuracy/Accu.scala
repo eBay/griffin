@@ -15,20 +15,25 @@ import org.apache.griffin.dataLoaderUtils.DataLoaderFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.griffin.util.{HdfsUtils, PartitionUtils}
+import org.apache.spark.rdd.RDD
 import org.apache.spark.rdd.RDD.rddToPairRDDFunctions
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.sql.hive.HiveContext
-import org.apache.spark.{Logging, SparkConf, SparkContext}
+import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable.{MutableList, HashSet => MutableHashSet, Map => MutableMap}
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-object Accu extends Logging{
+object Accu {
+
+  val log = LoggerFactory.getLogger(getClass)
 
   def main(args: Array[String]) {
     if (args.length < 2) {
-      logError("Usage: class <input-conf-file> <outputPath>")
-      logError("For input-conf-file, please use accu_config.json as an template to reflect test dataset accordingly.")
+      log.error("Usage: class <input-conf-file> <outputPath>")
+      log.error("For input-conf-file, please use accu_config.json as an template to reflect test dataset accordingly.")
       sys.exit(-1)
     }
     val input = HdfsUtils.openFile(args(0))
@@ -48,9 +53,17 @@ object Accu extends Logging{
     //read the config info of comparison
     val configure = mapper.readValue(input, classOf[AccuracyConfEntity])
 
-    val conf = new SparkConf().setAppName("Accu")
-    val sc = new SparkContext(conf)
-    val sqlContext = new HiveContext(sc)
+    //    val conf = new SparkConf().setAppName("Accu")
+    //    val sc = new SparkContext(conf)
+    //    val sqlContext = new HiveContext(sc)
+
+    val spark = SparkSession
+      .builder()
+      .appName("Accu")
+      .enableHiveSupport()
+      .getOrCreate()
+    val sc = spark.sparkContext
+    val sqlContext = spark.sqlContext
 
     //add spark applicationId for debugging
     val applicationId = sc.applicationId
@@ -123,7 +136,7 @@ object Accu extends Logging{
     //--1. convert data into same format (key, value)--
 
     //convert source data rows into (key, ("__source__", valMap)), key is the key column value tuple, valMap is the value map of row
-    val sojkvs = sojdf.map { row =>
+    val sojkvs = sojdf.rdd.map { row =>
       val kk = sojKeyIndexList map { t => row.get(t._1).asInstanceOf[Object] }
 
       val kkk = toTuple(kk)
@@ -135,7 +148,7 @@ object Accu extends Logging{
     }
 
     //convert source data rows into (key, ("__target__", valMap)), key is the key column value tuple, valMap is the value map of row
-    val bekvs = bedf.map { row =>
+    val bekvs = bedf.rdd.map { row =>
       val kk = beKeyIndexList map { t => row.get(t._1).asInstanceOf[Object] }
 
       val kkk = toTuple(kk)
@@ -187,7 +200,7 @@ object Accu extends Logging{
     val missed = allkvs.aggregate(((0L, 0L), List[String]()))(seqMissed, combMissed)
 
     //output: need to change
-    logInfo("source count: " + missed._1._2 + " missed count : " + missed._1._1)
+    log.info("source count: " + missed._1._2 + " missed count : " + missed._1._1)
 
     missed
   }

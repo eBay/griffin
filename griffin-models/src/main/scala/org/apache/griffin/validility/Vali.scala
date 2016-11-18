@@ -3,19 +3,23 @@ package org.apache.griffin.validility
 import org.apache.griffin.dataLoaderUtils.DataLoaderFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import org.apache.griffin.accuracy.Accu._
 import org.apache.griffin.util.{DataConverter, DataTypeUtils, HdfsUtils, PartitionUtils}
-import org.apache.spark.{Logging, SparkConf, SparkContext}
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.hive.HiveContext
+import org.slf4j.LoggerFactory
 
-object Vali extends Logging {
+object Vali {
+
+  val log = LoggerFactory.getLogger(getClass)
 
   def main(args: Array[String]): Unit ={
     if (args.length < 2) {
-      logError("Usage: class <input-conf-file> <outputPath>")
-      logError("For input-conf-file, please use vali_config.json as an template to reflect test dataset accordingly.")
+      log.error("Usage: class <input-conf-file> <outputPath>")
+      log.error("For input-conf-file, please use vali_config.json as an template to reflect test dataset accordingly.")
       sys.exit(-1)
     }
     val input = HdfsUtils.openFile(args(0))
@@ -33,9 +37,17 @@ object Vali extends Logging {
     //read the config info of comparison
     val configure = mapper.readValue(input, classOf[ValidityConfEntity])
 
-    val conf = new SparkConf().setAppName("Vali")
-    val sc: SparkContext = new SparkContext(conf)
-    val sqlContext = new HiveContext(sc)
+    //    val conf = new SparkConf().setAppName("Vali")
+    //    val sc: SparkContext = new SparkContext(conf)
+    //    val sqlContext = new HiveContext(sc)
+
+    val spark = SparkSession
+      .builder()
+      .appName("Accu")
+      .enableHiveSupport()
+      .getOrCreate()
+    val sc = spark.sparkContext
+    val sqlContext = spark.sqlContext
 
     //add spark applicationId for debugging
     val applicationId = sc.applicationId
@@ -88,7 +100,7 @@ object Vali extends Logging {
       val dt = sojdf.schema(col).dataType
       val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
 
-      val mp = df.map { v =>
+      val mp = df.rdd.map { v =>
         if (v.isNullAt(col)) (0.0, 0L)
         else (DataConverter.getDouble(getFunc(v, col)), 1L)
       }.reduceByKey(_+_)
@@ -125,8 +137,8 @@ object Vali extends Logging {
           case MetricsType.Minimum => smry.min(i)
           case MetricsType.Mean => smry.mean(i)
           case MetricsType.Median => funcMedian(df, col)
-//          case MetricsType.Variance => smry.variance(i)
-//          case MetricsType.NumNonZeros => smry.numNonzeros(i)
+          //          case MetricsType.Variance => smry.variance(i)
+          //          case MetricsType.NumNonZeros => smry.numNonzeros(i)
           case _ => None
         }
       }
@@ -136,7 +148,7 @@ object Vali extends Logging {
       val idxType = numIdxZip.map(i => (i._2, i._1, sojdf.schema(i._1).dataType))
 
       //calc metrics of all numeric cols once
-      val numcolVals = sojdf.map { row =>
+      val numcolVals = sojdf.rdd.map { row =>
         val vals = idxType.foldLeft((List[Int](), List[Double]())) { (arr, i) =>
           if (row.isNullAt(i._2)) arr
           else {
@@ -162,7 +174,7 @@ object Vali extends Logging {
     }
     //null count function
     def funcNullCount(df: DataFrame, col: Int): Long = {
-      val nullRow = df.map(row => if (row.isNullAt(col)) 1L else 0)
+      val nullRow = df.rdd.map(row => if (row.isNullAt(col)) 1L else 0)
       nullRow.fold(0)((a,b)=>a+b)
     }
     //unique count function
@@ -170,7 +182,7 @@ object Vali extends Logging {
       val dt = sojdf.schema(col).dataType
       val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
 
-      val mp = df.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
+      val mp = df.rdd.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
       val rs = mp.reduceByKey(_+_)
       rs.count()
     }
@@ -179,7 +191,7 @@ object Vali extends Logging {
       val dt = sojdf.schema(col).dataType
       val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
 
-      val mp = df.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
+      val mp = df.rdd.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
       val rs = mp.reduceByKey(_+_)
       rs.aggregate(0)((s, v) => if (v._2 == 1) s else s + 1, (s1, s2) => s1 + s2)
     }
@@ -205,7 +217,7 @@ object Vali extends Logging {
     configure.validityReq = rsltCols
 
     //output: need to change
-    logInfo("== result ==\n" + rsltCols)
+    log.info("== result ==\n" + rsltCols)
   }
 
 }
