@@ -43,7 +43,7 @@ object Vali {
 
     val spark = SparkSession
       .builder()
-      .appName("Accu")
+      .appName("Vali")
       .enableHiveSupport()
       .getOrCreate()
     val sc = spark.sparkContext

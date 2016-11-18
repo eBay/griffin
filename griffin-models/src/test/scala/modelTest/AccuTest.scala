@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
-import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spark.sql.{DataFrame, SQLContext, SparkSession}
 import java.io.{FileInputStream, FileOutputStream}
 
 import org.apache.griffin.dataLoaderUtils.{DataLoaderFactory, FileLoaderUtil}
@@ -34,9 +34,14 @@ class AccuTest extends FunSuite with Matchers with BeforeAndAfter {
   var sc: SparkContext = _
 
   before {
-    val conf = new SparkConf().setMaster("local[*]").setAppName("AccTest")
-    sc = new SparkContext(conf)
-    val sqlContext = new SQLContext(sc)
+    val spark = SparkSession
+      .builder()
+      .master("local[*]")
+      .appName("AccTest")
+      .getOrCreate()
+    sc = spark.sparkContext
+    val sqlContext = spark.sqlContext
+
     val mapper = new ObjectMapper()
     mapper.registerModule(DefaultScalaModule)
 
