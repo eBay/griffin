@@ -85,7 +85,7 @@ object Vali extends Logging {
 
     //median number function
     def funcMedian(df: DataFrame, col: Int): Double = {
-      val dt = sojdf.schema(col).dataType
+      val dt = df.schema(col).dataType
       val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
 
       val mp = df.map { v =>
@@ -167,7 +167,7 @@ object Vali extends Logging {
     }
     //unique count function
     def funcUniqueCount(df: DataFrame, col: Int): Long = {
-      val dt = sojdf.schema(col).dataType
+      val dt = df.schema(col).dataType
       val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
 
       val mp = df.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
@@ -176,7 +176,7 @@ object Vali extends Logging {
     }
     //duplicate count function
     def funcDuplicateCount(df: DataFrame, col: Int): Long = {
-      val dt = sojdf.schema(col).dataType
+      val dt = df.schema(col).dataType
       val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
 
       val mp = df.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
