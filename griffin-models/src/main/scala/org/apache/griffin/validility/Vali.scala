@@ -97,7 +97,7 @@ object Vali {
 
     //median number function
     def funcMedian(df: DataFrame, col: Int): Double = {
-      val dt = sojdf.schema(col).dataType
+      val dt = df.schema(col).dataType
       val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
 
       val mp = df.rdd.map { v =>
@@ -179,7 +179,7 @@ object Vali {
     }
     //unique count function
     def funcUniqueCount(df: DataFrame, col: Int): Long = {
-      val dt = sojdf.schema(col).dataType
+      val dt = df.schema(col).dataType
       val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
 
       val mp = df.rdd.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
@@ -188,7 +188,7 @@ object Vali {
     }
     //duplicate count function
     def funcDuplicateCount(df: DataFrame, col: Int): Long = {
-      val dt = sojdf.schema(col).dataType
+      val dt = df.schema(col).dataType
       val getFunc = DataTypeUtils.dataType2RowGetFunc(dt)
 
       val mp = df.rdd.map(v=>(DataConverter.getString(getFunc(v, col))->1L))
