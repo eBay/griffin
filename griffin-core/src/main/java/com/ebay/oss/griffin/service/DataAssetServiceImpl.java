@@ -172,7 +172,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 			logger.debug("log: new record inserted" + seq);
 			dataAssetRepo.save(da);
 
-			//create new total count dqmodel
+			//create new total count dqmodel, and put it into schedule
 			{
 				ModelInput tempCountModel = new ModelInput();
 				ModelBasicInputNew basic = new ModelBasicInputNew();
@@ -193,7 +193,9 @@ public class DataAssetServiceImpl implements DataAssetService {
 				extra.setSrcDb(input.getPlatform());
 				tempCountModel.setBasic(basic);
 				tempCountModel.setExtra(extra);
-				dqModelService.newModel(tempCountModel);
+				DqModel totalCountModel = dqModelService.newModel(tempCountModel);
+				// enable schedule for total count model without verify
+				dqModelService.enableSchedule4Model(totalCountModel);
 			}
 
 			return 0;
