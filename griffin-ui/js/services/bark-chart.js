@@ -420,8 +420,9 @@ define(['./module'], function (services) {
   }
 
   function formatTimeStamp(timestamp) {
-      var TzOffset = new Date(timestamp).getTimezoneOffset()/60-7;
-      return timestamp+TzOffset*60*60*1000;
+      // var TzOffset = new Date(timestamp).getTimezoneOffset()/60-7;
+      // return timestamp+TzOffset*60*60*1000;
+      return timestamp;
   }
 
   function getSeriesCount(metric) {
