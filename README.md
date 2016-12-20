@@ -1,6 +1,6 @@
 ## Griffin [![Travic-CI](https://api.travis-ci.org/eBay/griffin.svg)](https://travis-ci.org/eBay/griffin)
 
-Griffin is a Data Quality solution for distributed data systems at any scale in both streaming or batch data context. It provides a framework process for defining data quality model, executing data quality measurement, automating data profiling and validation, as well as a unified data quality visualization across multiple data systems. You can access our home page [here](https://ebay.github.io/griffin/).
+Griffin is a Data Quality solution for distributed data systems at any scale in both streaming and batch data context. It provides a framework process for defining data quality model, executing data quality measurement, automating data profiling and validation, as well as an unified data quality visualization across multiple data systems. You can access our home page [here](https://ebay.github.io/griffin/).
 
 
 ### Contact us
@@ -45,7 +45,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 5. Now you can visit UI through your browser, and follow the next steps on web UI [here](https://github.com/eBay/griffin/tree/master/griffin-doc/dockerUIguide.md#webui-test-case-guide). You can login with account "test" and password "test" if required.
     ```
     http://<your local IP address>:48080/
-    ```  
+    ```
     And you can also ssh to the docker container using account "griffin" with password "griffin".
     ```
     ssh griffin@<your local IP address> -p 2122
@@ -55,9 +55,9 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 1. Install jdk (1.7 or later versions)
 2. Install Tomcat (7.0 or later versions)
 3. Install MongoDB and import the collections
-	```
-	mongorestore /db:unitdb0 /dir:<dir of griffin-doc>/db/unitdb0
-	```
+   ```
+   mongorestore /db:unitdb0 /dir:<dir of griffin-doc>/db/unitdb0
+   ```
 
 4. Install [Hadoop](http://apache.claz.org/hadoop/common/hadoop-2.6.0/hadoop-2.6.0.tar.gz) (2.6.0 or later), you can get some help [here](https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html).  
     Make sure you have the permission to use command "hadoop".   
@@ -70,7 +70,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 5. Install [Spark](http://spark.apache.org/downloads.html) (version 1.6.x, griffin does not support 2.0.x at current), if you want to install Pseudo Distributed/Single Node Cluster, you can get some help [here](http://why-not-learn-something.blogspot.com/2015/06/spark-installation-pseudo.html).  
     Make sure you have the permission to use command "spark-shell".
 6. Install [Hive](http://apache.claz.org/hive/hive-1.2.1/apache-hive-1.2.1-bin.tar.gz) (version 1.2.1 or later), you can get some help [here](https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHive).  
-Make sure you have the permission to use command "hive".
+   Make sure you have the permission to use command "hive".
 7. Create a working directory, and it will be **your local path** now.
 8. In your local path, put your data into Hive.  
     First, you need to create some directories in hdfs.  
@@ -125,46 +125,46 @@ Make sure you have the permission to use command "hive".
 9. You can create your own model by modifying code.  
    (If you want to use our default models, please skip this step)  
 10. Currently we need to run the jobs automatically by script files, you need to set your own parameters in the script files and run it.  
-    You can edit the [demo script files](https://github.com/eBay/griffin/tree/master/griffin-doc/hive/script/) as following.
+   You can edit the [demo script files](https://github.com/eBay/griffin/tree/master/griffin-doc/hive/script/) as following.
 
-    [env.sh](https://github.com/eBay/griffin/blob/master/docker/griffin/script/env.sh)  
-    ```
-    HDFS_WORKDIR=<your hdfs path>/running
-    ```
+   [env.sh](https://github.com/eBay/griffin/blob/master/docker/griffin/script/env.sh)  
+   ```
+   HDFS_WORKDIR=<your hdfs path>/running
+   ```
 
-    [griffin_jobs.sh](https://github.com/eBay/griffin/blob/master/docker/griffin/script/griffin_jobs.sh)  
-    ```
-    spark-submit --class org.apache.griffin.accuracy.Accu --master yarn-client --queue default --executor-memory 1g --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
-    spark-submit --class org.apache.griffin.validility.Vali --master yarn-client --queue default --executor-memory 1g --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
-    ```
+   [griffin_jobs.sh](https://github.com/eBay/griffin/blob/master/docker/griffin/script/griffin_jobs.sh)  
+   ```
+   spark-submit --class org.apache.griffin.accuracy.Accu --master yarn-client --queue default --executor-memory 1g --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
+   spark-submit --class org.apache.griffin.validility.Vali --master yarn-client --queue default --executor-memory 1g --num-executors 4 $GRIFFIN_HOME/griffin-models.jar  $lv1dir/cmd.txt $lv1dir/ >> $logfile 2>&1
+   ```
 
-    These commands submit the jobs to spark, if you want to try your own model or modify some parameters, please edit it.  
-    If you want to use your own model, change "$GRIFFIN_HOME/griffin-models.jar" to "your path/your model.jar", and change the class name.  
+   These commands submit the jobs to spark, if you want to try your own model or modify some parameters, please edit it.  
+   If you want to use your own model, change "$GRIFFIN_HOME/griffin-models.jar" to "your path/your model.jar", and change the class name.  
 
-    Put these script files in **your local path**.  
+   Put these script files in **your local path**.  
 
 11. Open [application.properties](https://github.com/eBay/griffin/tree/master/griffin-core/src/main/resources/application.properties) file, read the comments and specify the properties correctly. Or you can edit it as following.  
-    ```
-    env=prod
-    job.local.folder=<your local path>/tmp
-    job.hdfs.folder=<your hdfs path>
-    job.hdfs.runningfoldername=running
-    job.hdfs.historyfoldername=history
-    ```
-    If you set the properties as above, you need to make sure the directory "tmp" exists in your local path  
+   ```
+   env=prod
+   job.local.folder=<your local path>/tmp
+   job.hdfs.folder=<your hdfs path>
+   job.hdfs.runningfoldername=running
+   job.hdfs.historyfoldername=history
+   ```
+   If you set the properties as above, you need to make sure the directory "tmp" exists in your local path  
 12. Build the whole project and deploy.    
-    ```
-    mvn install -DskipTests
-    ```  
-    
-    Find the griffin-models-0.1.0-SNAPSHOT.jar in path griffin-models/target, rename it to griffin-models.jar (or your model.jar), and put in **your local path**.  
-    Till now, please make sure that, in **your local path**, there exists griffin-modes.jar, env.sh, griffin_jobs.sh and griffin_regular_run.sh.  
-    Run griffin_regular_run.sh as following.  
-    ```
-    nohup ./griffin_regular_run.sh &
-    ```  
-    
-    Deploy griffin-core/target/ROOT.war to tomcat, start tomcat server, then you can follow the web UI steps [here](https://github.com/eBay/griffin/blob/master/griffin-doc/dockerUIguide.md#webui-test-case-guide).  
+   ```
+   mvn install -DskipTests
+   ```
+
+   Find the griffin-models-0.1.0-SNAPSHOT.jar in path griffin-models/target, rename it to griffin-models.jar (or your model.jar), and put in **your local path**.  
+   Till now, please make sure that, in **your local path**, there exists griffin-modes.jar, env.sh, griffin_jobs.sh and griffin_regular_run.sh.  
+   Run griffin_regular_run.sh as following.  
+   ```
+   nohup ./griffin_regular_run.sh &
+   ```
+
+   Deploy griffin-core/target/ROOT.war to tomcat, start tomcat server, then you can follow the web UI steps [here](https://github.com/eBay/griffin/blob/master/griffin-doc/dockerUIguide.md#webui-test-case-guide).  
 13. You can also review the RESTful APIs through http://localhost:8080/api/v1/application.wadl
 
 ### How to develop
