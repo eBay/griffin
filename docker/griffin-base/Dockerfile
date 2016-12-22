@@ -32,7 +32,7 @@ ADD griffin $GRIFFIN_HOME
 RUN chmod -R 755 $GRIFFIN_HOME
 
 #install tomcat 7
-RUN cd /apache && wget https://www.apache.org/dist/tomcat/tomcat-7/v7.0.72/bin/apache-tomcat-7.0.72.tar.gz && tar -xvf apache-tomcat-7.0.72.tar.gz && ln -s apache-tomcat-7.0.72 tomcat
+RUN cd /apache && wget https://www.apache.org/dist/tomcat/tomcat-7/v7.0.73/bin/apache-tomcat-7.0.73.tar.gz && tar -xvf apache-tomcat-7.0.73.tar.gz && ln -s apache-tomcat-7.0.73 tomcat
 ADD config/tomcat /etc/init.d/
 RUN chmod 755 /etc/init.d/tomcat
 ENV TOMCAT_HOME /apache/tomcat
