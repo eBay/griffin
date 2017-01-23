@@ -21,20 +21,14 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
 
 ### How to run in docker
 1. Install [docker](https://www.docker.com/).
-2. Download our [docker](https://github.com/eBay/griffin/tree/master/docker) folder to your work path.
-3. Enter docker directory and build images.  
-    The first step is to build griffin-base-env, which prepares the environment for griffin.
+2. Pull our built docker image, and tag it griffin-env.  
     ```
-    cd <your work path>/docker/griffin-base
-    docker build -t griffin-base-env .
+    docker pull bhlx3lyx7/griffin-env
+    ```  
     ```
-    The second step is to build griffin-env, which contains examples for griffin demo.
+    docker tag bhlx3lyx7/griffin-env griffin-env
     ```
-    cd <your work path>/docker/griffin
-    docker build --no-cache -t griffin-env .
-    ```
-
-4. Run docker image griffin-env, then the backend is ready.
+3. Run docker image griffin-env, then the backend is ready.
     ```
     docker run -it -h sandbox --name griffin -m 8G --memory-swap -1 \
     -p 2122:2122 -p 47077:7077 -p 46066:6066 -p 48088:8088 -p 48040:8040 \
@@ -42,7 +36,7 @@ Release: https://oss.sonatype.org/service/local/staging/deploy/maven2
     ```
     You can also drop the tail "bash" of the command above, then you will get tomcat service log printing in docker only.
 
-5. Now you can visit UI through your browser, and follow the next steps on web UI [here](https://github.com/eBay/griffin/tree/master/griffin-doc/dockerUIguide.md#webui-test-case-guide). You can login with account "test" and password "test" if required.
+4. Now you can visit UI through your browser, and follow the next steps on web UI [here](https://github.com/eBay/griffin/tree/master/griffin-doc/dockerUIguide.md#webui-test-case-guide). You can login with account "test" and password "test" if required.
     ```
     http://<your local IP address>:48080/
     ```
