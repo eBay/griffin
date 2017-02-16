@@ -45,7 +45,7 @@
 	        <td>{{row.assetHDFSPath || 'N/A'}}</td>
 	        <!-- <td>{{row.platform || 'N/A'}}</td> -->
 	    		<td>{{row.system || 'N/A'}}</td>
-	    		<td>{{(row.timestamp | date: 'short':'-0700') || 'N/A' }}</td>
+	    		<td>{{(row.timestamp | date: 'short') || 'N/A' }}</td>
 	    		<td>{{row.owner || 'N/A'}}</td>
 		        <td>
 		          <a ng-class="(!adminAccess && ntAccount!=row.owner)?'disabled':''" href="#/dataassets/{{row._id}}" alt="edit" title="edit">
