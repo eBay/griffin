@@ -16,20 +16,17 @@
 package com.ebay.oss.griffin.repo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import com.mongodb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ebay.oss.griffin.common.Pair;
 import com.google.gson.Gson;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;
 
 public abstract class BaseRepo<T> implements BarkRepo<T> {
@@ -50,8 +47,29 @@ public abstract class BaseRepo<T> implements BarkRepo<T> {
             int mongoPort = Integer.parseInt(env
                             .getProperty("spring.data.mongodb.port"));
 
-            DB db = new MongoClient(mongoServer, mongoPort).getDB("unitdb0");
-            
+            // add for username and pwd
+            ServerAddress serverAddress = new ServerAddress(mongoServer, mongoPort);
+
+            String userName = env.getProperty("spring.data.mongodb.userName");
+            String database = env.getProperty("spring.data.mongodb.database");
+            String password = env.getProperty("spring.data.mongodb.password");
+
+            MongoClient client = null;
+            if (userName != null && database != null && password != null) {
+                MongoCredential credential = MongoCredential.createMongoCRCredential(userName, database, password.toCharArray());
+                List<MongoCredential> credentialList = new ArrayList<MongoCredential>();
+                credentialList.add(credential);
+
+                client = new MongoClient(serverAddress, credentialList);
+            } else {
+                client = new MongoClient(serverAddress);
+            }
+
+            if (client == null) throw new NullPointerException();
+
+//            DB db = client.getDB("unitdb0");
+            DB db = client.getDB((database != null) ? database : "unitdb0");
+
             dbCollection = db.getCollection(collectionName);
             
         } catch (IOException e) {
