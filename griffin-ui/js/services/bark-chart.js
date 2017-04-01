@@ -12,6 +12,8 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
+var LATEST_TIME_PERIOD = 24*3600*1000; //24 hours
+
 define(['./module'], function (services) {
   services.factory('$barkChart', function(){
 
@@ -153,8 +155,20 @@ define(['./module'], function (services) {
                       '<br /> Value : ' + params[2].data[1] +
                       '<br /> Bands : ' + params[0].data[1] + '--' + params[1].data[1];
         }else if(metricType == 'Count' || metricType == ''){
-          result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
-                      '<br /> Value : ' + params[0].data[1];
+          // if(params[0].data){
+          //   result = new Date(getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
+          //               '<br /> Value : ' + params[0].data[1];
+          // }else{
+          //   result = new Date(getUTCTimeStamp(params[1].data[0])).toUTCString().replace('GMT', '')+
+          //               '<br /> Value : ' + params[1].data[1];
+          // }
+          if(params[0].data){
+            result = new Date(getUTCTimeStamp(params[0].data[0])) +
+                        '<br /> Value : ' + params[0].data[1];
+          }else{
+            result = new Date(getUTCTimeStamp(params[1].data[0]))+
+                        '<br /> Value : ' + params[1].data[1];
+          }
         }
     }
 
@@ -211,6 +225,7 @@ define(['./module'], function (services) {
 
   function getSeries(metric) {
     var series = {};
+
     if(metric.metricType == 'Bollinger'){
       series = getSeriesBollinger(metric);
     }else if(metric.metricType == 'Trend'){
@@ -220,11 +235,35 @@ define(['./module'], function (services) {
     }else if(metric.metricType == 'Count' || metric.metricType == ''){
       series = getSeriesCount(metric);
     }
+
+    return series;
+  }
+
+  function getSeriesCrawler(metric) {
+    var series = {};
+    /** Comment for Crawler **/
+    // if(metric.metricType == 'Bollinger'){
+    //   series = getSeriesBollinger(metric);
+    // }else if(metric.metricType == 'Trend'){
+    //   series = getSeriesTrend(metric);
+    // }else if(metric.metricType == 'MAD'){
+    //   series = getSeriesMAD(metric);
+    // }else if(metric.metricType == 'Count' || metric.metricType == ''){
+    //   series = getSeriesCount(metric);
+    // }
+    /** Comment for Crawler **/
+    /**Add for Crawler **/
+    series = getSeriesCrawlerBig(metric);
+
+    /**Add for Crawler **/
     return series;
   }
 
   function getOptionBig(metric) {
     var data = getMetricData(metric);
+    var percentage = (LATEST_TIME_PERIOD * 2) * 100 / (data[data.length -1][0] - data[0][0]);
+    var startPerc = (percentage>100)?0:(100-percentage);
+
     var option = {
       title: {
         text:  metric.name,
@@ -242,11 +281,11 @@ define(['./module'], function (services) {
       },
       dataZoom: [{
         type: 'inside',
-        start: 75,
+        start: startPerc,
         throttle: 50
       },{
         show: true,
-        start: 75
+        start: startPerc
       }],
       tooltip : {
           trigger: 'axis',
@@ -270,12 +309,16 @@ define(['./module'], function (services) {
       },
       animation: true
     };
-    option.series = getSeries(metric);
-    if (metric.metricType == 'MAD') {
-        option.series = getMADBigSeries(option.series);
-    } else if (metric.metricType == 'Bollinger') {
-        option.series = getBollingerBigSeries(option.series);
-    }
+      /** Comment for Crawler use-case **/
+//    option.series = getSeries(metric);
+
+    // if (metric.metricType == 'MAD') {
+    //     option.series = getMADBigSeries(option.series);
+    // } else if (metric.metricType == 'Bollinger') {
+    //     option.series = getBollingerBigSeries(option.series);
+    // }
+    /** Comment for Crawler use-case finish**/
+    option.series = getSeriesCrawler(metric);
     return option;
   }
 
@@ -484,6 +527,62 @@ define(['./module'], function (services) {
       });
       return series;
   }
+
+  /**Add for Crawler**/
+  function getSeriesCrawlerBig(metric) {
+    var series = [];
+    var data = getMetricData(metric);
+
+
+    var seperateValue = data[data.length - 1][0] - LATEST_TIME_PERIOD;
+    var data1 = [];
+    var data2 = [];
+    for(var i = 0; i < data.length; i++){
+      if(data[i][0] < seperateValue){
+        //data1.push(data[i]);
+      }else{
+        data2.push(data[i]);
+      }
+    }
+
+    data1 = data;
+
+
+    //var dataComparision = getSeriesTrendComparision(metric);
+    series.push({
+          type: 'line',
+          smooth:true,
+          data: data1,
+          lineStyle: {
+            normal: {
+                color: '#d48265'
+            }
+          },
+          itemStyle: {
+              normal: {
+                  color: '#d48265'
+              }
+          }
+      });
+      series.push({
+          type: 'line',
+          smooth:true,
+          data: data2,
+          lineStyle: {
+            normal: {
+                color: '#0000ff',
+                type: 'dashed'
+            }
+          },
+          itemStyle: {
+              normal: {
+                  color: '#f15c80'
+              }
+          }
+      });
+      return series;
+  }
+  /**Add for Crawler**/
 
   function getSeriesBollinger(metric) {
     var series = [];
