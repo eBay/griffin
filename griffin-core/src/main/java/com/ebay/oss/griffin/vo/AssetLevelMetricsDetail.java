@@ -22,7 +22,7 @@ public class AssetLevelMetricsDetail implements Comparable<AssetLevelMetricsDeta
 	private BollingerBandsEntity bolling;
 	private MADEntity MAD;
 	private float comparisionValue;
-	private int count = -1;
+	private int count = -1; //total row count of each dq checking
 
 	public AssetLevelMetricsDetail() { }
 
