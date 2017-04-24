@@ -98,6 +98,7 @@ public class SystemLevelMetricsList {
                                                             tempAssetLevelMetrics.getDq(),
                                                             tempAssetLevelMetrics.getTimestamp(),
                                                             tempAssetLevelMetrics.getDqfail());
+                            tempAssetLevelMetrics1.setCount(tempAssetLevelMetrics.getCount());
                             List<AssetLevelMetricsDetail> otherdetails =
                                             tempAssetLevelMetrics.getDetails();
                             List<AssetLevelMetricsDetail> tempdetails =
@@ -157,7 +158,9 @@ public class SystemLevelMetricsList {
             {
                 if (tempAssetLevelMetrics.getName().equals(name))
                 {
-                    return new AssetLevelMetrics(tempAssetLevelMetrics, count);
+                	AssetLevelMetrics result = new AssetLevelMetrics(tempAssetLevelMetrics, count);
+                	result.setCount(tempAssetLevelMetrics.getCount());
+                    return result;
                 }
             }
         }
