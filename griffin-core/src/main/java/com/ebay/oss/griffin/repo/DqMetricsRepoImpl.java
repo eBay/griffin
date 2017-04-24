@@ -60,10 +60,12 @@ public class DqMetricsRepoImpl extends BaseIdRepo<DqMetricsValue> implements DqM
 		if (latestObject == null) {
 			return null;
 		}
-		return new DqMetricsValue(
-		                latestObject.get("metricName").toString(),
-		                Long.parseLong(latestObject.get("timestamp").toString()),
-		                Float.parseFloat(latestObject.get("value").toString()));
+		DqMetricsValue result = new DqMetricsValue(
+                latestObject.get("metricName").toString(),
+                Long.parseLong(latestObject.get("timestamp").toString()),
+                Float.parseFloat(latestObject.get("value").toString()));
+		result.setCount(Integer.parseInt(latestObject.get("value").toString()));
+		return result;
 	}
 
 	@Override

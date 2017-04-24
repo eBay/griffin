@@ -209,7 +209,7 @@ public class RefMetricsCalcImplTest {
 
         spyRefMetricsCalcImpl.calcHistoryRefModel(srcModel, refModel, metricsValues, spySlm);
 
-        verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyString(),
+        verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyInt(), anyString(),
                 anyInt(), anyBoolean(), any(AssetLevelMetricsDetail.class));
     }
 
@@ -240,7 +240,7 @@ public class RefMetricsCalcImplTest {
 
         spyRefMetricsCalcImpl.calcMad(modelName, refName, refModel, metricsValues, spySlm);
 
-        verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyString(),
+        verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyInt(), anyString(),
                 anyInt(), anyBoolean(), any(AssetLevelMetricsDetail.class));
     }
 
@@ -262,7 +262,7 @@ public class RefMetricsCalcImplTest {
 
         spyRefMetricsCalcImpl.calcBollingerRefModel(modelName, refName, metricsValues, spySlm);
 
-        verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyString(),
+        verify(spySlm, atLeastOnce()).upsertNewAssetExecute(anyString(), anyString(), anyLong(), anyFloat(), anyInt(), anyString(),
                 anyInt(), anyBoolean(), any(AssetLevelMetricsDetail.class));
     }
 }

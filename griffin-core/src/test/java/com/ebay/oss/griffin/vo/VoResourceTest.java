@@ -551,17 +551,17 @@ public class VoResourceTest {
 
         AssetLevelMetricsDetail detail = new AssetLevelMetricsDetail(12346L, 20.1f, 20.0f);
         detail.setBolling(new BollingerBandsEntity(300L, 100L, 200L));
-        ml.upsertNewAssetExecute("almName", MetricType.Bollinger.toString(), 12346L, 18.6f, "system", 0, true, detail);
-        ml.upsertNewAssetExecute("almName", MetricType.Trend.toString(), 12346L, 18.6f, "system", 0, true, detail);
-        ml.upsertNewAssetExecute("almName", MetricType.MAD.toString(), 12346L, 18.6f, "system", 0, true, detail);
-        ml.upsertNewAssetExecute("almName", "", 12346L, 18.6f, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName", MetricType.Bollinger.toString(), 12346L, 18.6f, -1, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName", MetricType.Trend.toString(), 12346L, 18.6f, -1, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName", MetricType.MAD.toString(), 12346L, 18.6f, -1, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName", "", 12346L, 18.6f, -1, "system", 0, true, detail);
         assertEquals(1, ml.getLatestDQList().size());
-        ml.upsertNewAssetExecute("almName2", MetricType.Bollinger.toString(), 12346L, 18.6f, "system", 0, true, detail);
-        ml.upsertNewAssetExecute("almName3", MetricType.Trend.toString(), 12346L, 18.6f, "system", 0, true, detail);
-        ml.upsertNewAssetExecute("almName4", MetricType.MAD.toString(), 12346L, 18.6f, "system", 0, true, detail);
-        ml.upsertNewAssetExecute("almName5", "", 12346L, 18.6f, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName2", MetricType.Bollinger.toString(), 12346L, 18.6f, -1, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName3", MetricType.Trend.toString(), 12346L, 18.6f, -1, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName4", MetricType.MAD.toString(), 12346L, 18.6f, -1, "system", 0, true, detail);
+        ml.upsertNewAssetExecute("almName5", "", 12346L, 18.6f, -1, "system", 0, true, detail);
         assertEquals(1, ml.getLatestDQList().size());
-        ml.upsertNewAssetExecute("almName2", "metricType2", 12346L, 18.6f, "system2", 0, true, detail);
+        ml.upsertNewAssetExecute("almName2", "metricType2", 12346L, 18.6f, -1, "system2", 0, true, detail);
         assertEquals(2, ml.getLatestDQList().size());
     }
 

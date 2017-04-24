@@ -163,7 +163,8 @@ public class RefMetricsCalcImpl implements RefMetrcsCalc {
                             referencerName,
                             MetricType.Trend.toString(),
                             tempDQMetricsValue.getTimestamp(),
-                            tempDQMetricsValue.getValue()
+                            tempDQMetricsValue.getValue(),
+                            tempDQMetricsValue.getCount()
                             , getSystemType(tempDQMetricsValue.getMetricName())
                             , dqfail,
                             true, new AssetLevelMetricsDetail(lastValue));
@@ -203,6 +204,7 @@ public class RefMetricsCalcImpl implements RefMetrcsCalc {
                                                 MetricType.MAD.toString(),
                                                 tempDQMetricsValue.getTimestamp(),
                                                 tempDQMetricsValue.getValue(),
+                                                tempDQMetricsValue.getCount(),
                                                 getSystemType(tempDQMetricsValue.getMetricName()),
                                                 dqfail,
                                                 true,
@@ -246,6 +248,7 @@ public class RefMetricsCalcImpl implements RefMetrcsCalc {
                                 MetricType.Bollinger.toString(),
                                 tempDQMetricsValue.getTimestamp(),
                                 tempDQMetricsValue.getValue(),
+                                tempDQMetricsValue.getCount(),
                                 getSystemType(tempDQMetricsValue.getMetricName()),
                                 dqfail,
                                 true,
