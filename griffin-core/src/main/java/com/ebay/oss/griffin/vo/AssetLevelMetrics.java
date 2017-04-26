@@ -21,6 +21,7 @@ import java.util.List;
 public class AssetLevelMetrics {
 	private String name;
 	private float dq;
+	private int count = -1;
 	private int dqfail;
 	private long timestamp;
 	private String metricType;
@@ -125,6 +126,15 @@ public class AssetLevelMetrics {
 		this.assetName = asseetName;
 	}
 
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	
 
 
 

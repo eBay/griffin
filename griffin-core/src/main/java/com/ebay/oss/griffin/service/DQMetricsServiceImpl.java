@@ -132,7 +132,7 @@ public class DQMetricsServiceImpl implements DQMetricsService {
                 // 1);
                 totalSystemLevelMetricsList.upsertNewAssetExecute(
                         temp.getMetricName(), "", temp.getTimestamp(),
-                        temp.getValue(), modelSystem.get(temp.getMetricName()),
+                        temp.getValue(), temp.getCount(), modelSystem.get(temp.getMetricName()),
                         0, true, null);
             }
 

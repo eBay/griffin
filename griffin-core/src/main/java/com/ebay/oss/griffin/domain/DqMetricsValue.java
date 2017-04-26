@@ -46,6 +46,9 @@ public class DqMetricsValue extends BaseObj implements Comparable<DqMetricsValue
 
 	@Min(0)
 	private float value;
+	
+	@Min(-1)
+	private int count = -1;
 
 	public DqMetricsValue() { }
 
@@ -93,6 +96,14 @@ public class DqMetricsValue extends BaseObj implements Comparable<DqMetricsValue
 
 	public void setValue(float value) {
 		this.value = value;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	@Override

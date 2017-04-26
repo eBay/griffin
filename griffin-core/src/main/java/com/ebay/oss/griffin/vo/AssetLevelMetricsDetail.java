@@ -22,6 +22,7 @@ public class AssetLevelMetricsDetail implements Comparable<AssetLevelMetricsDeta
 	private BollingerBandsEntity bolling;
 	private MADEntity MAD;
 	private float comparisionValue;
+	private int count = -1; //total row count of each dq checking
 
 	public AssetLevelMetricsDetail() { }
 
@@ -113,6 +114,14 @@ public class AssetLevelMetricsDetail implements Comparable<AssetLevelMetricsDeta
 
 	public void setMAD(MADEntity mAD) {
 		MAD = mAD;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	@Override
