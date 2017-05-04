@@ -254,7 +254,7 @@ define(['./module'], function(services) {
 
         //get from metric, like metric.sla_threshold
 
-        return 98.24;
+        return 95;
     }
 
     function getSeriesCrawler(metric) {
