@@ -12,9 +12,9 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-define(['./module'], function (controllers) {
+define(['./module'], function(controllers) {
     'use strict';
-    controllers.controller('EditDataAssetCtrl', ['$scope', '$http', '$config', '$location', 'toaster', '$timeout', '$route', '$routeParams', '$filter', function ($scope, $http, $config, $location, toaster, $timeout, $route, $routeParams, $filter) {
+    controllers.controller('EditDataAssetCtrl', ['$scope', '$http', '$config', '$location', 'toaster', '$timeout', '$route', '$routeParams', '$filter', function($scope, $http, $config, $location, toaster, $timeout, $route, $routeParams, $filter) {
         $scope.assetId = $routeParams.assetId;
         $scope.currentStep = 1;
         $scope.form = {};
@@ -22,10 +22,10 @@ define(['./module'], function (controllers) {
 
         // $scope.platformOptions = ['Teradata', 'Apollo'];
         // $scope.systemOptions = ['Sojourner', 'SiteSpeed', 'Bullseye', 'PDS', 'GPS'];
-        $scope.systemOptions = $filter('strarr')('modelsystem');//['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Kafka'];
+        $scope.systemOptions = $filter('strarr')('modelsystem'); //['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Crawler'];
         $scope.assetTypeOptions = ['hdfsfile', 'hivetable'];
 
-        $scope.formatTypeOptions = ['yyyyMMdd', 'yyyy-MM-dd','HH'];
+        $scope.formatTypeOptions = ['yyyyMMdd', 'yyyy-MM-dd', 'HH'];
 
         $scope.$on('$viewContentLoaded', function() {
             $scope.$emit('initReq');
@@ -40,11 +40,11 @@ define(['./module'], function (controllers) {
         });
 
         function resizeWindow() {
-                    $('.formStep').height(window.innerHeight  -  $('.formStep').offset().top - $('#footerwrap').outerHeight());
-                    $('fieldset').height(window.innerHeight  -  $('fieldset').offset().top - $('#footerwrap').outerHeight()- $('.btn-container').height() -80);
-                    $('.y-scrollable').css({
-                        'max-height': $('fieldset').height()
-                    });
+            $('.formStep').height(window.innerHeight - $('.formStep').offset().top - $('#footerwrap').outerHeight());
+            $('fieldset').height(window.innerHeight - $('fieldset').offset().top - $('#footerwrap').outerHeight() - $('.btn-container').height() - 80);
+            $('.y-scrollable').css({
+                'max-height': $('fieldset').height()
+            });
 
         }
 
@@ -55,7 +55,7 @@ define(['./module'], function (controllers) {
         // });
 
         var assetUri = $config.uri.getdataasset + '/' + $scope.assetId;
-        $scope.getDataAsset = function(){
+        $scope.getDataAsset = function() {
             $http.get(assetUri).success(function(data) {
                 $scope.form.basic.assetName = data.assetName;
                 $scope.form.basic.path = data.assetHDFSPath;
@@ -81,7 +81,7 @@ define(['./module'], function (controllers) {
 
         $scope.getSystemIndex = function(system) {
             for (var i = 0; i < $scope.systemOptions.length; i++) {
-                if($scope.systemOptions[i] == system) {
+                if ($scope.systemOptions[i] == system) {
                     return i;
                 }
             };
@@ -96,37 +96,37 @@ define(['./module'], function (controllers) {
         //     }
         // };
 
-        $scope.updateHdfsPath = function(typeIndex){
-            if(typeIndex != 0 ){
+        $scope.updateHdfsPath = function(typeIndex) {
+            if (typeIndex != 0) {
                 $scope.form.basic.path = '';
             }
         };
 
-	    $scope.addSchema = function() {
-	        $scope.form.basic.schema.push({
-	            name: '',
-	            type: 'string',
-	            desc: '',
-	            sample: ''
-	        });
-	    };
+        $scope.addSchema = function() {
+            $scope.form.basic.schema.push({
+                name: '',
+                type: 'string',
+                desc: '',
+                sample: ''
+            });
+        };
 
-      $scope.addPatitionColumn = function() {
-	        $scope.form.basic.partitions.push({
-	            name: '',
-	            format: "yyyyMMdd"
-	        });
-	    };
+        $scope.addPatitionColumn = function() {
+            $scope.form.basic.partitions.push({
+                name: '',
+                format: "yyyyMMdd"
+            });
+        };
 
-	    $scope.deleteSchema = function(index) {
-	        $scope.form.basic.schema.splice(index, 1);
-	    };
+        $scope.deleteSchema = function(index) {
+            $scope.form.basic.schema.splice(index, 1);
+        };
 
-      $scope.deletePartition = function(index) {
-	        $scope.form.basic.partitions.splice(index, 1);
-	    };
+        $scope.deletePartition = function(index) {
+            $scope.form.basic.partitions.splice(index, 1);
+        };
 
-	    // Initial Value
+        // Initial Value
         $scope.form = {
             basic: {
                 schema: [{
@@ -139,11 +139,11 @@ define(['./module'], function (controllers) {
             },
             submit: function(form) {
                 if (!form.$valid) {
-                    var field = null
-                      , firstError = null ;
+                    var field = null,
+                        firstError = null;
                     for (field in form) {
                         if (field[0] != '$') {
-                            if (firstError === null  && !form[field].$valid) {
+                            if (firstError === null && !form[field].$valid) {
                                 firstError = form[field].$name;
                             }
 
@@ -156,9 +156,9 @@ define(['./module'], function (controllers) {
                     errorMessage($scope.currentStep);
                 } else {
                     form.$setPristine();
-                    this.data={
-                      basic: this.basic,
-                      extra: {publishUrl: this.publishUrl}
+                    this.data = {
+                        basic: this.basic,
+                        extra: { publishUrl: this.publishUrl }
                     };
 
 
@@ -176,25 +176,22 @@ define(['./module'], function (controllers) {
 
                 console.log(JSON.stringify($scope.form.basic));
                 var msg = {
-                	'system' : $scope.systemOptions[$scope.form.basic.system],
-                	'assetType' : $scope.assetTypeOptions[$scope.form.basic.type],
-                    'assetName' : $scope.form.basic.assetName,
-                	'assetHDFSPath' : $scope.form.basic.path,
-                	'platform' : $scope.form.basic.platform,
-                	'schema' : $scope.form.basic.schema,
-                    'owner' : $scope.form.basic.owner,
-                    'partitions' : $scope.form.basic.partitions
+                    'system': $scope.systemOptions[$scope.form.basic.system],
+                    'assetType': $scope.assetTypeOptions[$scope.form.basic.type],
+                    'assetName': $scope.form.basic.assetName,
+                    'assetHDFSPath': $scope.form.basic.path,
+                    'platform': $scope.form.basic.platform,
+                    'schema': $scope.form.basic.schema,
+                    'owner': $scope.form.basic.owner,
+                    'partitions': $scope.form.basic.partitions
                 }
 
                 $http.put($config.uri.updatedataasset, msg).success(function(data) {
-                	if(data.result=='success')
-                	{
-                      	$('#confirm-pu').modal('hide');
+                    if (data.result == 'success') {
+                        $('#confirm-pu').modal('hide');
+                    } else {
+                        errorMessage(0, data.result);
                     }
-                	else
-                	{
-                		errorMessage(0, data.result);
-                	}
                 });
             },
 

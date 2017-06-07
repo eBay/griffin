@@ -22,83 +22,99 @@ define(['./module'], function(controllers) {
         pageInit();
 
         function pageInit() {
-          $scope.$emit('initReq');
+            $scope.$emit('initReq');
 
-          var url_dashboard = $config.uri.dashboard + ($routeParams.sysName?('/'+$routeParams.sysName):'');
+            var url_dashboard = $config.uri.dashboard + ($routeParams.sysName ? ('/' + $routeParams.sysName) : '');
 
-          $http.get(url_dashboard, {cache:true}).success(function(res) {
-            $scope.dashboard = res;
-            // console.log(res);
-            $scope.orgs = [];
+            $http.get(url_dashboard, { cache: true }).success(function(res) {
+                $scope.dashboard = res;
+                // console.log(res);
+                $scope.orgs = [];
 
-            var orgNode = null;
-            angular.forEach(res, function(sys) {
-              orgNode = new Object();
-              $scope.orgs.push(orgNode);
-              orgNode.name = sys.name;
-              orgNode.dq = sys.dq;
+                var orgNode = null;
+                angular.forEach(res, function(sys) {
+                    orgNode = new Object();
+                    $scope.orgs.push(orgNode);
+                    orgNode.name = sys.name;
+                    orgNode.dq = sys.dq;
 
-              orgNode.assetMap = {};
+                    orgNode.assetMap = {};
 
-              angular.forEach(sys.metrics, function(metric) {
-                if(!metric.assetName){
-                  metric.assetName = 'unknown';
+                    angular.forEach(sys.metrics, function(metric) {
+                        if (!metric.assetName) {
+                            metric.assetName = 'unknown';
+                        }
+                        if (Object.getOwnPropertyNames(orgNode.assetMap).indexOf(metric.assetName) == -1) { //not existed
+                            orgNode.assetMap[metric.assetName] = {};
+
+                        }
+                        var chartData = metric.details;
+                        chartData.sort(function(a, b) {
+                            //  return a.timestamp - b.timestamp;
+                            var  important_a  =  $config.job_preorderset["job"  +  a.name],
+                                important_b  =  $config.job_preorderset["job"  +  b.name],
+                                ret;                            
+                            if  (important_a  &&  !important_b) {
+                                ret  =  -1; 
+                            } 
+                            else  if  (important_b  &&  !important_a) {
+                                ret  =  1;
+                            } 
+                            else  if  (important_a  &&  important_b)  {
+                                ret  =  important_a  -  important_b;                            
+                            } 
+                            else  {
+                                ret  =  0; 
+                            }  // keep original order if neither a or b is important                                                        
+                            return  (ret);
+                        });
+
+                        orgNode.assetMap[metric.assetName].details = chartData;
+
+
+                    });
+
+                    $scope.orgs.push(orgNode);
+                });
+                $scope.originalData = angular.copy(res);
+                // console.log($scope.originalData);
+                if ($routeParams.sysName && $scope.originalData && $scope.originalData.length > 0) {
+                    for (var i = 0; i < $scope.originalData.length; i++) {
+                        if ($scope.originalData[i].name == $routeParams.sysName) {
+                            $scope.selectedOrgIndex = i;
+                            $scope.changeOrg();
+                            $scope.orgSelectDisabled = true;
+                            break;
+                        }
+
+                    }
                 }
-                if(Object.getOwnPropertyNames(orgNode.assetMap).indexOf(metric.assetName) == -1){//not existed
-                  orgNode.assetMap[metric.assetName] = {};
 
-                }
-                var chartData = metric.details;
-                chartData.sort(function(a, b){
-                  return a.timestamp - b.timestamp;
+                $timeout(function() {
+                    redraw($scope.dashboard);
                 });
 
-                orgNode.assetMap[metric.assetName].details = chartData;
-
-
-              });
-
-                $scope.orgs.push(orgNode);
             });
-            $scope.originalData = angular.copy(res);
-            // console.log($scope.originalData);
-            if($routeParams.sysName && $scope.originalData && $scope.originalData.length > 0){
-              for(var i = 0; i < $scope.originalData.length; i ++){
-                if($scope.originalData[i].name == $routeParams.sysName){
-                  $scope.selectedOrgIndex = i;
-                  $scope.changeOrg();
-                  $scope.orgSelectDisabled = true;
-                  break;
-                }
-
-              }
-            }
-
-            $timeout(function() {
-              redraw($scope.dashboard);
-            });
-
-          });
         }
 
 
-        $scope.$watch('selectedOrgIndex', function(newValue){
-          console.log(newValue);
+        $scope.$watch('selectedOrgIndex', function(newValue) {
+            console.log(newValue);
         });
 
         var redraw = function(data) {
-          // console.log(data);
+            // console.log(data);
 
-          $scope.chartHeight = $('.chartItem:eq(0)').width()*0.8+'px';
+            $scope.chartHeight = $('.chartItem:eq(0)').width() * 0.8 + 'px';
 
             angular.forEach(data, function(sys, parentIndex) {
                 var parentIndex = parentIndex
                 angular.forEach(sys.metrics, function(metric, index) {
 
-                    $('#thumbnail'+parentIndex+'-'+index).get(0).style.width = $('#thumbnail'+parentIndex+'-'+index).parent().width()+'px';
-                    $('#thumbnail'+parentIndex+'-'+index).get(0).style.height = $scope.chartHeight;
+                    $('#thumbnail' + parentIndex + '-' + index).get(0).style.width = $('#thumbnail' + parentIndex + '-' + index).parent().width() + 'px';
+                    $('#thumbnail' + parentIndex + '-' + index).get(0).style.height = $scope.chartHeight;
 
-                    var thumbnailChart = echarts.init($('#thumbnail'+parentIndex+'-'+index).get(0), 'dark');
+                    var thumbnailChart = echarts.init($('#thumbnail' + parentIndex + '-' + index).get(0), 'dark');
                     thumbnailChart.setOption($barkChart.getOptionThum(metric));
 
                 });
@@ -108,73 +124,77 @@ define(['./module'], function(controllers) {
         $scope.assetOptions = [];
 
         $scope.changeOrg = function() {
-          $scope.selectedAssetIndex = undefined;
-          $scope.assetOptions = [];
-          $scope.dashboard = [];
-          if($scope.selectedOrgIndex === ""){
-            $scope.dashboard = angular.copy($scope.originalData);
-          } else {
-            var org = angular.copy($scope.originalData[$scope.selectedOrgIndex]);
-            $scope.dashboard.push(org);
-            angular.forEach(org.metrics, function(metric, index) {
-              if($scope.assetOptions.indexOf(metric.assetName) == -1) {
-                $scope.assetOptions.push(metric.assetName);
-              }
-            });
-          }
-          // redraw($scope.dashboard);
-          $timeout(function() {
-              redraw($scope.dashboard);
+            $scope.selectedAssetIndex = undefined;
+            $scope.assetOptions = [];
+            $scope.dashboard = [];
+            if ($scope.selectedOrgIndex === "") {
+                $scope.dashboard = angular.copy($scope.originalData);
+            } else {
+                var org = angular.copy($scope.originalData[$scope.selectedOrgIndex]);
+                $scope.dashboard.push(org);
+                angular.forEach(org.metrics, function(metric, index) {
+                    if ($scope.assetOptions.indexOf(metric.assetName) == -1) {
+                        $scope.assetOptions.push(metric.assetName);
+                    }
+                });
+            }
+            // redraw($scope.dashboard);
+            $timeout(function() {
+                redraw($scope.dashboard);
             }, 0);
         };
 
         $scope.changeAsset = function() {
-          $scope.dashboard = [];
-          if($scope.selectedOrgIndex == ""){
-            $scope.dashboard = angular.copy($scope.originalData);
-          } else {
-            var org = angular.copy($scope.originalData[$scope.selectedOrgIndex]);
-            $scope.dashboard.push(org);
-          }
-          if($scope.selectedAssetIndex != undefined && $scope.selectedAssetIndex != ''){
-            var asset = $scope.assetOptions[$scope.selectedAssetIndex];
-            angular.forEach($scope.dashboard, function(sys) {
-              var oldMetrics = sys.metrics;
-              sys.metrics = [];
-              angular.forEach(oldMetrics, function(metric, index) {
-                if(metric.assetName == asset) {
-                  sys.metrics.push(metric);
-                }
-              });
-            });
-          }
-          $timeout(function() {
-              redraw($scope.dashboard);
+            $scope.dashboard = [];
+            if ($scope.selectedOrgIndex == "") {
+                $scope.dashboard = angular.copy($scope.originalData);
+            } else {
+                var org = angular.copy($scope.originalData[$scope.selectedOrgIndex]);
+                $scope.dashboard.push(org);
+            }
+            if ($scope.selectedAssetIndex != undefined && $scope.selectedAssetIndex != '') {
+                var asset = $scope.assetOptions[$scope.selectedAssetIndex];
+                angular.forEach($scope.dashboard, function(sys) {
+                    var oldMetrics = sys.metrics;
+                    sys.metrics = [];
+                    angular.forEach(oldMetrics, function(metric, index) {
+                        if (metric.assetName == asset) {
+                            sys.metrics.push(metric);
+                        }
+                    });
+                });
+            }
+            $timeout(function() {
+                redraw($scope.dashboard);
             }, 0);
         }
 
         $scope.$on('resizeHandler', function() {
-          if($route.current.$$route.controller == 'MetricsCtrl') {
-            console.log('metrics resize');
-            redraw($scope.dashboard);
-          }
+            if ($route.current.$$route.controller == 'MetricsCtrl') {
+                console.log('metrics resize');
+                redraw($scope.dashboard);
+            }
         });
 
         /*click the chart to be bigger*/
-        $scope.showBig = function(t){
-          var metricDetailUrl = $config.uri.metricdetail + '/' + t.name;
-          // var metricDetailUrl = '/js/mock_data/anom.json';
-          $http.get(metricDetailUrl).success(function (data){
-            $rootScope.showBigChart($barkChart.getOptionBig(data));
-          });
+        $scope.showBig = function(t) {
+            //org-show all pts
+            // var metricDetailUrl = $config.uri.metricdetail + '/' + t.name;
+            // // var metricDetailUrl = '/js/mock_data/anom.json';
+            // $http.get(metricDetailUrl).success(function (data){
+            //   $rootScope.showBigChart($barkChart.getOptionBig(data));
+            // });
+
+
+            //show big- rollup pts
+            $rootScope.showBigChart($barkChart.getOptionBigRollUp(t));
 
         }
 
         $scope.getSample = function(item) {
-          $rootScope.$broadcast('downloadSample', item.name);
+            $rootScope.$broadcast('downloadSample', item.name);
         };
 
-        
-    }
-    ]);
+
+    }]);
 });

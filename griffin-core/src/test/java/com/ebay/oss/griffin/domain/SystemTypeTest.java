@@ -9,7 +9,7 @@ import com.ebay.oss.griffin.domain.SystemType;
 
 public class SystemTypeTest {
 
-    private static final String[] array = {"Bullseye", "GPS", "Hadoop", "PDS", "IDLS", "Pulsar", "Kafka", "Sojourner", "SiteSpeed", "EDW"};
+    private static final String[] array = {"Bullseye", "GPS", "Hadoop", "PDS", "IDLS", "Pulsar", "Crawler", "Sojourner", "SiteSpeed", "EDW"};
     
     @Test
     public void testIndexOf() {

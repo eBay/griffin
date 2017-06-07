@@ -29,7 +29,7 @@ public class SystemType {
 	public static final int PDS = 3;
 	public static final int IDLS = 4;
 	public static final int PULSAR = 5;
-	public static final int KAFKA = 6;
+	public static final int CRAWLER = 6;
 	public static final int SOJOURNER= 7;
 	public static final int SITESPEED = 8;
 	public static final int EDW = 9;
@@ -44,7 +44,7 @@ public class SystemType {
 //        this.desc = desc;
 //    }
 
-    private static final String[] array = {"Bullseye", "GPS", "Hadoop", "PDS", "IDLS", "Pulsar", "Kafka", "Sojourner", "SiteSpeed", "EDW"};
+    private static final String[] array = {"Bullseye", "GPS", "Hadoop", "PDS", "IDLS", "Pulsar", "Crawler", "Sojourner", "SiteSpeed", "EDW"};
 
 	public static String val(int type){
 		if(type < array.length && type >=0){

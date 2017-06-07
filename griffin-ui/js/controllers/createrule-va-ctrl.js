@@ -44,8 +44,8 @@ define(['./module'], function(controllers) {
 
 
                             if (system.assets && system.assets.length > 0) {
-                                system.assets.sort(function(a, b){
-                                  return (a.name<b.name?-1:(a.name>b.name?1:0));
+                                system.assets.sort(function(a, b) {
+                                    return (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
                                 });
                                 system.assets.forEach(function(schema) {
                                     var schemaNode = {
@@ -70,14 +70,14 @@ define(['./module'], function(controllers) {
         $scope.$watch('currentNode', function(newValue) {
             // $scope.schemaCollection = null;
             if (newValue) {
-                if(newValue.l3){//System selected
-                  var sysName = newValue.parent.name;
-                  $scope.form.basic.system = $filter('stridx')(sysName, 'modelsystem') + '';
+                if (newValue.l3) { //System selected
+                    var sysName = newValue.parent.name;
+                    $scope.form.basic.system = $filter('stridx')(sysName, 'modelsystem') + '';
 
-                  //retrieve the schema definition and display the table
-                  $http.get(schemaDefinitionUrl + '/' + newValue.id).success(function(data) {
-                      $scope.schemaCollection = data.schema;
-                  });
+                    //retrieve the schema definition and display the table
+                    $http.get(schemaDefinitionUrl + '/' + newValue.id).success(function(data) {
+                        $scope.schemaCollection = data.schema;
+                    });
                 }
 
             }
@@ -99,25 +99,25 @@ define(['./module'], function(controllers) {
         });
 
         function resizeWindow() {
-                    var stepSelection = '.formStep[id=step-' + $scope.currentStep + ']';
-                    $(stepSelection).css({
-                        height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
-                    });
-                    $('fieldset').height($(stepSelection).height() - $(stepSelection + '>.stepDesc').height() - $('.btn-container').height() - 80);
-                    console.log($('fieldset').height());
-                    $('.y-scrollable').css({
-                        'max-height': $('fieldset').height()- $('.add-dataset').outerHeight()
-                    });
-                    //error message box position
-                    $('.formula-text-mid').css({
-                        'padding-top': (($('.formula-text-up').height() - $('.formula-text-mid').height()) + $('.formula-text-mid').height() / 2) + 'px'
-                    });
+            var stepSelection = '.formStep[id=step-' + $scope.currentStep + ']';
+            $(stepSelection).css({
+                height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
+            });
+            $('fieldset').height($(stepSelection).height() - $(stepSelection + '>.stepDesc').height() - $('.btn-container').height() - 80);
+            console.log($('fieldset').height());
+            $('.y-scrollable').css({
+                'max-height': $('fieldset').height() - $('.add-dataset').outerHeight()
+            });
+            //error message box position
+            $('.formula-text-mid').css({
+                'padding-top': (($('.formula-text-up').height() - $('.formula-text-mid').height()) + $('.formula-text-mid').height() / 2) + 'px'
+            });
 
         }
 
-        $scope.ruleTypes = $filter('strarr')('modeltype');//['Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];
-        $scope.scheduleTypes = $filter('strarr')('scheduletype');//['Daily', 'Weekly', 'Monthly', 'Hourly'];
-        $scope.ruleSystems = $filter('strarr')('modelsystem');//['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Kafka'];
+        $scope.ruleTypes = $filter('strarr')('modeltype'); //['Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];
+        $scope.scheduleTypes = $filter('strarr')('scheduletype'); //['Daily', 'Weekly', 'Monthly', 'Hourly'];
+        $scope.ruleSystems = $filter('strarr')('modelsystem'); //['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Crawler'];
         $scope.vaTypes = $filter('strarr')('vatype');
         //$scope.vaTypes = ['', '', 'Null Count', 'Unique Count', 'Duplicate Count', 'Maximum', 'Minimum', 'Mean', 'Median', 'Regular Expression Matching', 'Pattern Frequency'];
 
@@ -145,11 +145,11 @@ define(['./module'], function(controllers) {
                     // form.$setPristine();
                     nextStep();
                 } else {
-                    var field = null
-                      , firstError = null ;
+                    var field = null,
+                        firstError = null;
                     for (field in form) {
                         if (field[0] != '$') {
-                            if (firstError === null  && !form[field].$valid) {
+                            if (firstError === null && !form[field].$valid) {
                                 firstError = form[field].$name;
                             }
 
@@ -175,8 +175,8 @@ define(['./module'], function(controllers) {
                 } else {
                     if (formValidation()) {
                         //   $scope.toTheTop();
-                        if(i - parseInt($scope.currentStep) == 1){
-                          goToStep(i);
+                        if (i - parseInt($scope.currentStep) == 1) {
+                            goToStep(i);
                         }
 
                     } else {
@@ -186,11 +186,11 @@ define(['./module'], function(controllers) {
             },
             submit: function(form) {
                 if (!form.$valid || form['regex'].$invalid) {
-                    var field = null
-                      , firstError = null ;
+                    var field = null,
+                        firstError = null;
                     for (field in form) {
                         if (field[0] != '$') {
-                            if (firstError === null  && !form[field].$valid) {
+                            if (firstError === null && !form[field].$valid) {
                                 firstError = form[field].$name;
                             }
 
@@ -204,14 +204,14 @@ define(['./module'], function(controllers) {
                 } else {
                     form.$setPristine();
 
-                    this.data={
-                      basic: this.basic,
-                      extra: {
-                        srcDb: $scope.currentNode.parent.parent.platform,
-                        srcDataSet: $scope.currentNode.parent.name,
-                        vaType: this.vaType,
-                        column: this.selection
-                      }
+                    this.data = {
+                        basic: this.basic,
+                        extra: {
+                            srcDb: $scope.currentNode.parent.parent.platform,
+                            srcDataSet: $scope.currentNode.parent.name,
+                            vaType: this.vaType,
+                            column: this.selection
+                        }
                     };
 
                     this.data.basic.dataaset = $scope.currentNode.name;
@@ -233,44 +233,44 @@ define(['./module'], function(controllers) {
 
                 var newModel = $config.uri.newValidityModel;
                 $http.post(newModel, this.data).success(function(data) {
-                	// if(data.status=='0')
-                	// {
-	                  $('#confirm-va').on('hidden.bs.modal', function(e) {
-	                      $('#confirm-va').off('hidden.bs.modal');
-	                      $location.path('/rules');
-	                      $scope.$apply();
-	                  });
-	                	$('#confirm-va').modal('hide');
-	                // }
-                	// else
-                	// {
-                	// 	errorMessage(0, data.result);
-                	// }
-                }).error(function(data){
-                  // errorMessage(0, 'Save model failed, please try again!');
-                  toaster.pop('error', 'Save model failed, please try again!', data.message);
+                    // if(data.status=='0')
+                    // {
+                    $('#confirm-va').on('hidden.bs.modal', function(e) {
+                        $('#confirm-va').off('hidden.bs.modal');
+                        $location.path('/rules');
+                        $scope.$apply();
+                    });
+                    $('#confirm-va').modal('hide');
+                    // }
+                    // else
+                    // {
+                    // 	errorMessage(0, data.result);
+                    // }
+                }).error(function(data) {
+                    // errorMessage(0, 'Save model failed, please try again!');
+                    toaster.pop('error', 'Save model failed, please try again!', data.message);
                 });
             },
-            testRegex : function(form) {
-                if($scope.form.basic.regex == undefined || $scope.form.basic.regex == ''){
+            testRegex: function(form) {
+                if ($scope.form.basic.regex == undefined || $scope.form.basic.regex == '') {
                     form['regex'].$invalid = true;
                     form['regex'].$valid = false;
                     return;
                 }
-                try{
+                try {
                     var re = new RegExp($scope.form.basic.regex);
                     form['regex'].$invalid = false;
                     form['regex'].$valid = true;
                     var str = $scope.form.basic.regexTestStr;
                     var m;
-                    if(str == undefined) {
+                    if (str == undefined) {
                         $scope.regexTestResult = '';
-                    }else if ((m = re.exec(str)) !== null) {
+                    } else if ((m = re.exec(str)) !== null) {
                         $scope.regexTestResult = 'Matched';
                     } else {
                         $scope.regexTestResult = 'Unmatched';
                     }
-                } catch(err) {
+                } catch (err) {
                     form['regex'].$invalid = true;
                     form['regex'].$valid = false;
                 }
@@ -279,25 +279,22 @@ define(['./module'], function(controllers) {
 
         var nextStep = function() {
             $scope.currentStep++;
-            $timeout(function(){
+            $timeout(function() {
                 resizeWindow();
             }, 0);
-        }
-        ;
+        };
         var prevStep = function() {
             $scope.currentStep--;
-            $timeout(function(){
+            $timeout(function() {
                 resizeWindow();
             }, 0);
-        }
-        ;
+        };
         var goToStep = function(i) {
             $scope.currentStep = i;
-            $timeout(function(){
+            $timeout(function() {
                 resizeWindow();
             }, 0);
-        }
-        ;
+        };
 
         //validation only happens when going forward
         var formValidation = function(step) {
@@ -306,7 +303,7 @@ define(['./module'], function(controllers) {
                 step = $scope.currentStep;
             }
             if (step == 1) {
-                return $scope.form.selection?true:false;
+                return $scope.form.selection ? true : false;
             } else if (step == 2) {
                 return true;
             } else if (step == 3) {
@@ -324,8 +321,6 @@ define(['./module'], function(controllers) {
             } else {
                 toaster.pop('error', 'Error', msg, 0);
             }
-        }
-        ;
-    }
-    ]);
+        };
+    }]);
 });

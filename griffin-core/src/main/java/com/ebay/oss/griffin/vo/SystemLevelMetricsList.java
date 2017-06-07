@@ -224,9 +224,9 @@ public class SystemLevelMetricsList {
         for (SystemLevelMetrics tempSystemLevelMetrics : result) {
             int size = tempSystemLevelMetrics.getMetrics().size();
             String system = tempSystemLevelMetrics.getName();
-            if (size >= 8) {
-                continue;
-            }
+//            if (size >= 8) {
+//                continue;
+//            }
 
             SystemLevelMetrics latestSystLvlMetrics = latestSysMetricsList.getSystemLevelMetrics(tempSystemLevelMetrics
                                             .getName());
@@ -242,8 +242,8 @@ public class SystemLevelMetricsList {
                                     latestAssMetrics.getDqfail(),
                                     false, null);
                     size++;
-                    if (size >= 8)
-                        break;
+                    // if (size >= 8)
+                    //     break;
                 }
             }
         }

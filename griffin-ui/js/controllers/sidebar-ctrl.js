@@ -19,15 +19,15 @@ define(['./module'], function(controllers) {
         var echarts = require('echarts');
 
         $rootScope.pageInit = function() {
-          var url = $config.uri.statistics;
+            var url = $config.uri.statistics;
 
-          $http.get(url).success(function(res) {
-              $scope.datasets = res.assets;
-              $scope.metrics = res.metrics;
-              renderDataAssetPie(res.status);
+            $http.get(url).success(function(res) {
+                $scope.datasets = res.assets;
+                $scope.metrics = res.metrics;
+                // renderDataAssetPie(res.status);
 
-              sideBarList();
-          });
+                sideBarList();
+            });
 
 
         };
@@ -35,122 +35,143 @@ define(['./module'], function(controllers) {
         $rootScope.pageInit();
 
         var renderDataAssetPie = function(status) {
-            resizePieChart();
+            //resizePieChart();
             $scope.dataAssetPieChart = echarts.init($('#data-asset-pie')[0], 'dark');
             $scope.dataAssetPieChart.setOption($barkChart.getOptionPie(status));
         }
 
-        $scope.$watch(function(){return $routeParams.sysName;}, function(value){
-          console.log('Watched value: ' + value);
-          if(value){
-            sideBarList(value);
-          }else{
-            $scope.briefmetrics = $scope.backup_metrics;
-          }
+        $scope.$watch(function() { return $routeParams.sysName; }, function(value) {
+            console.log('Watched value: ' + value);
+            if (value) {
+                sideBarList(value);
+            } else {
+                $scope.briefmetrics = $scope.backup_metrics;
+            }
         });
 
         $scope.draw = function(metric, parentIndex, index) {
 
             var chartId = 'chart' + parentIndex + '-' + index;
-            document.getElementById(chartId).style.width = ($('.panel-heading').innerWidth()-20)+'px';
+            document.getElementById(chartId).style.width = ($('.panel-heading').innerWidth() - 20) + 'px';
             document.getElementById(chartId).style.height = '200px';
-            var myChart = echarts.init($('#'+chartId).get(0), 'dark');
+            var myChart = echarts.init($('#' + chartId).get(0), 'dark');
             metric.myOption = $barkChart.getOptionSide(metric);
             myChart.setOption(metric.myOption);
 
-            $('#'+chartId).unbind('click');
-            $('#'+chartId).click(function() {
-              showBig($scope.briefmetrics[parentIndex].metrics[index]);
+            $('#' + chartId).unbind('click');
+            $('#' + chartId).click(function() {
+                //  showBig($scope.briefmetrics[parentIndex].metrics[index]); //all date sample every 10s
+                showBigRollUp(metric); //show big of the RollUp
             });
 
         };
 
-        var showBig = function(metric){
-          var metricDetailUrl = $config.uri.metricdetail + '/' + metric.name;
-          $http.get(metricDetailUrl).success(function (data){
-            $rootScope.showBigChart($barkChart.getOptionBig(data));
-          });
+        var showBigRollUp = function(metric) {
+            $rootScope.showBigChart($barkChart.getOptionBigRollUp(metric));
         }
 
-        function sideBarList(sysName){
-          var url_briefmetrics = $config.uri.briefmetrics + (sysName?('/'+ sysName):'');
-          $http.get(url_briefmetrics, {cache:true}).success(function(res) {
-              $scope.briefmetrics = res;
+        var showBig = function(metric) {
+            var metricDetailUrl = $config.uri.metricdetail + '/' + metric.name;
+            $http.get(metricDetailUrl).success(function(data) {
+                $rootScope.showBigChart($barkChart.getOptionBig(data));
+            });
+        }
 
-              angular.forEach(res, function(sys) {
-                if(sys.metrics && sys.metrics.length > 0){
-                  sys.metrics.sort(function(a, b){
-                    if(a.dqfail == b.dqfail){ //If it's green, sort by timestamp
-                      return b.timestamp - a.timestamp;
-                    }else{  //sort by dq
-                      return -(a.dqfail - b.dqfail);
+        function sideBarList(sysName) {
+            //var url_briefmetrics = $config.uri.briefmetrics + (sysName ? ('/' + sysName) : '');
+            var url_briefmetrics = $config.uri.rollupmetric + (sysName ? ('/' + sysName) : '');
+            $http.get(url_briefmetrics, { cache: true }).success(function(res) {
+                $scope.briefmetrics = res;
+
+                angular.forEach(res, function(sys) {
+                    if (sys.metrics && sys.metrics.length > 0) {
+                        sys.metrics.sort(function(a, b) {
+                            // if (a.dqfail == b.dqfail) { //If it's green, sort by timestamp
+                            //     return b.timestamp - a.timestamp;
+                            // } else { //sort by dq
+                            //     return -(a.dqfail - b.dqfail);
+                            // }
+
+                            // If compareFunction(a, b) is less than 0, sort a to a lower index than b.
+                            var important_a = $config.job_preorderset["job" + a.name],
+                                important_b = $config.job_preorderset["job" + b.name],
+                                ret;
+                            if (important_a && !important_b) {
+                                ret = -1;
+                            } else if (important_b && !important_a) {
+                                ret = 1;
+                            } else if (important_a && important_b) {
+                                ret = important_a - important_b;
+                            } else {
+                                ret = 0;
+                            } // keep original order if neither a or b is important
+
+                            return (ret);
+                        });
                     }
-                  });
+                });
+
+                if (!sysName) {
+                    $scope.backup_metrics = angular.copy(res);
                 }
-              });
 
-              if(!sysName){
-                $scope.backup_metrics = angular.copy(res);
-              }
-
-              $timeout(function() {
-                resizeSideChart();
-              }, 0);
-          });
+                $timeout(function() {
+                    resizeSideChart();
+                }, 0);
+            });
         }
 
 
         $(window).resize(function() {
             console.log('sidebar resize');
-            if(window.innerWidth < 992) {
-              $('#rightbar').css('display', 'none');
+            if (window.innerWidth < 992) {
+                $('#rightbar').css('display', 'none');
             } else {
-              $('#rightbar').css('display', 'block');
-              resizePieChart();
-              $scope.dataAssetPieChart.resize();
-              resizeSideChart();
+                $('#rightbar').css('display', 'block');
+                //resizePieChart();
+                //$scope.dataAssetPieChart.resize();
+                resizeSideChart();
             }
         });
 
         function resizeSideChart() {
             $('#side-bar-metrics').css({
-                height: $('#mainContent').height()-$('#side-bar-stats').outerHeight()+70
+                height: $('#mainContent').height() + 70
             });
 
             console.log($scope.briefmetrics);
             angular.forEach($scope.briefmetrics, function(sys, sysIndex) {
-              var sysIndex = sysIndex;
-              angular.forEach(sys.metrics, function(metric, index) {
-                if (!metric.tag) {
-                  $scope.draw(metric, sysIndex, index);
-                }
-              })
+                var sysIndex = sysIndex;
+                angular.forEach(sys.metrics, function(metric, index) {
+                    if (!metric.tag) {
+                        $scope.draw(metric, sysIndex, index);
+                    }
+                })
             });
 
             resetTextWidth();
         }
 
         function resizePieChart() {
-          $('#data-asset-pie').css({
-              height: $('#data-asset-pie').parent().width(),
-              width: $('#data-asset-pie').parent().width()
-          });
+            $('#data-asset-pie').css({
+                height: $('#data-asset-pie').parent().width(),
+                width: $('#data-asset-pie').parent().width()
+            });
         }
 
-        function resetTextWidth(){
-          // var h4Left = $('h4.side-metrics').position().left;
-          var h4Width = $('h4.side-metrics').width();
-          $.each($('.sb-text'), function(index, elem){
-            //console.log(elem);
-            var otherWithTotal = 0;
-            var siblings = $(elem).siblings();
-            $.each(siblings, function(idx, item){
-              otherWithTotal += item.offsetWidth;
+        function resetTextWidth() {
+            // var h4Left = $('h4.side-metrics').position().left;
+            var h4Width = $('h4.side-metrics').width();
+            $.each($('.sb-text'), function(index, elem) {
+                //console.log(elem);
+                var otherWithTotal = 0;
+                var siblings = $(elem).siblings();
+                $.each(siblings, function(idx, item) {
+                    otherWithTotal += item.offsetWidth;
+                });
+                var size = h4Width - otherWithTotal - 30;
+                $(elem).width(size);
             });
-            var size = h4Width - otherWithTotal - 30;
-            $(elem).width(size);
-          });
         }
-    }
-    ]);
+    }]);
 });

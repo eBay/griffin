@@ -5,7 +5,7 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>${project.basedir}/dist/</directory>
+			<directory>${project.basedir}</directory>
 			<outputDirectory>/</outputDirectory>
 <!--
 			<includes>

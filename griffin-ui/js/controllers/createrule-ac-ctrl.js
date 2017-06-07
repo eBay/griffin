@@ -51,8 +51,8 @@ define(['./module'], function(controllers) {
 
 
                             if (system.assets && system.assets.length > 0) {
-                                system.assets.sort(function(a, b){
-                                  return (a.name<b.name?-1:(a.name>b.name?1:0));
+                                system.assets.sort(function(a, b) {
+                                    return (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
                                 });
                                 system.assets.forEach(function(schema) {
                                     var schemaNode = {
@@ -106,8 +106,7 @@ define(['./module'], function(controllers) {
 
             //set currentNode
             $scope.currentNodeTarget = selectedNode;
-        }
-        ;
+        };
 
         //trigger after select schema
         $scope.$watch('currentNodeTarget', function(newValue) {
@@ -119,13 +118,13 @@ define(['./module'], function(controllers) {
             if (newValue) {
 
                 //retrieve the schema definition and display the table
-                if(newValue.l3){//System selected
-                  var sysName = newValue.parent.name;
-                  $scope.form.basic.system = $filter('stridx')(sysName, 'modelsystem') + '';
-                  $http.get(schemaDefinitionUrl + '/' + newValue.id).success(function(data) {
+                if (newValue.l3) { //System selected
+                    var sysName = newValue.parent.name;
+                    $scope.form.basic.system = $filter('stridx')(sysName, 'modelsystem') + '';
+                    $http.get(schemaDefinitionUrl + '/' + newValue.id).success(function(data) {
 
-                      $scope.schemaCollectionTarget = data.schema;
-                  });
+                        $scope.schemaCollectionTarget = data.schema;
+                    });
                 }
 
 
@@ -150,12 +149,10 @@ define(['./module'], function(controllers) {
                 $scope.selectedAll = false;
             }
             // is newly selected
-
             else {
                 $scope.selection.push(value);
             }
-        }
-        ;
+        };
 
         $scope.toggleAll = function() {
             if ($scope.selectedAll) {
@@ -182,12 +179,10 @@ define(['./module'], function(controllers) {
                 $scope.selectedAllTarget = false;
             }
             // is newly selected
-
             else {
                 $scope.selectionTarget.push(value);
             }
-        }
-        ;
+        };
 
         $scope.toggleAllTarget = function() {
             if ($scope.selectedAllTarget) {
@@ -214,7 +209,6 @@ define(['./module'], function(controllers) {
                 $scope.selectedAllPK = false;
             }
             // is newly selected
-
             else {
                 $scope.selectionPK.push(value);
             }
@@ -256,20 +250,20 @@ define(['./module'], function(controllers) {
 
 
         function resizeWindow() {
-                    var stepSelection = '.formStep[id=step-' + $scope.currentStep + ']';
-                    $(stepSelection).css({
-                        height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
-                    });
-                    $('fieldset').height($(stepSelection).height() - $(stepSelection + '>.stepDesc').height() - $('.btn-container').height() - 80);
-                    $('.y-scrollable').css({
-                        'max-height': $('fieldset').height()- $('.add-dataset').outerHeight()
-                    });
+            var stepSelection = '.formStep[id=step-' + $scope.currentStep + ']';
+            $(stepSelection).css({
+                height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
+            });
+            $('fieldset').height($(stepSelection).height() - $(stepSelection + '>.stepDesc').height() - $('.btn-container').height() - 80);
+            $('.y-scrollable').css({
+                'max-height': $('fieldset').height() - $('.add-dataset').outerHeight()
+            });
 
         }
 
-        $scope.ruleTypes = $filter('strarr')('modeltype');//['Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];
-        $scope.scheduleTypes = $filter('strarr')('scheduletype');//['Daily', 'Weekly', 'Monthly', 'Hourly'];
-        $scope.ruleSystems = $filter('strarr')('modelsystem');//['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Kafka'];
+        $scope.ruleTypes = $filter('strarr')('modeltype'); //['Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];
+        $scope.scheduleTypes = $filter('strarr')('scheduletype'); //['Daily', 'Weekly', 'Monthly', 'Hourly'];
+        $scope.ruleSystems = $filter('strarr')('modelsystem'); //['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Crawler'];
         $scope.matchFunctions = ['LENGTH', 'LOWER', 'UPPER', 'TRIM'];
 
         // $scope.ruleType = function(index){
@@ -296,11 +290,11 @@ define(['./module'], function(controllers) {
                     // form.$setPristine();
                     nextStep();
                 } else {
-                    var field = null
-                      , firstError = null ;
+                    var field = null,
+                        firstError = null;
                     for (field in form) {
                         if (field[0] != '$') {
-                            if (firstError === null  && !form[field].$valid) {
+                            if (firstError === null && !form[field].$valid) {
                                 firstError = form[field].$name;
                             }
 
@@ -326,8 +320,8 @@ define(['./module'], function(controllers) {
                 } else {
                     if (formValidation()) {
                         //   $scope.toTheTop();
-                        if(i - parseInt($scope.currentStep) == 1){
-                          goToStep(i);
+                        if (i - parseInt($scope.currentStep) == 1) {
+                            goToStep(i);
                         }
 
                     } else {
@@ -337,11 +331,11 @@ define(['./module'], function(controllers) {
             },
             submit: function(form) {
                 if (!form.$valid) {
-                    var field = null
-                      , firstError = null ;
+                    var field = null,
+                        firstError = null;
                     for (field in form) {
                         if (field[0] != '$') {
-                            if (firstError === null  && !form[field].$valid) {
+                            if (firstError === null && !form[field].$valid) {
                                 firstError = form[field].$name;
                             }
 
@@ -355,25 +349,27 @@ define(['./module'], function(controllers) {
                 } else {
                     //  $location.path('/rules');
                     form.$setPristine();
-                    this.data={
-                      basic: this.basic,
-                      extra: {
-                        srcDb: $scope.currentNode.parent.parent.platform,
-                        srcDataSet: $scope.currentNode.parent.name,
-                        targetDb: $scope.currentNodeTarget.parent.parent.platform,
-                        targetDataSet: $scope.currentNodeTarget.parent.name
-                      },
-                      mappings:[]
+                    this.data = {
+                        basic: this.basic,
+                        extra: {
+                            srcDb: $scope.currentNode.parent.parent.platform,
+                            srcDataSet: $scope.currentNode.parent.name,
+                            targetDb: $scope.currentNodeTarget.parent.parent.platform,
+                            targetDataSet: $scope.currentNodeTarget.parent.name
+                        },
+                        mappings: []
                     };
 
                     this.data.basic.dataaset = $scope.currentNodeTarget.name;
                     this.data.basic.dataasetId = $scope.currentNodeTarget.id;
 
-                    for(var i =0; i < $scope.selectionTarget.length; i ++){
-                      this.data.mappings.push({target:$scope.selectionTarget[i],
-                                      src:$scope.mappings[i],
-                                      matchMethod: $scope.matches[i],
-                                      isPk: ($scope.selectionPK.indexOf($scope.selectionTarget[i])>-1)?true:false});
+                    for (var i = 0; i < $scope.selectionTarget.length; i++) {
+                        this.data.mappings.push({
+                            target: $scope.selectionTarget[i],
+                            src: $scope.mappings[i],
+                            matchMethod: $scope.matches[i],
+                            isPk: ($scope.selectionPK.indexOf($scope.selectionTarget[i]) > -1) ? true : false
+                        });
                     }
 
                     $('#confirm').modal('show');
@@ -388,22 +384,22 @@ define(['./module'], function(controllers) {
 
                 var newModel = $config.uri.newAccuracyModel;
                 $http.post(newModel, this.data).success(function(data) {
-                	// if(data.status=='0')
-                	// {
-	                  $('#confirm').on('hidden.bs.modal', function(e) {
-	                      $('#confirm').off('hidden.bs.modal');
-	                      $location.path('/rules').replace();
-	                      $scope.$apply();
-	                  });
-	                	$('#confirm').modal('hide');
-	                // }
-                	// else
-                	// {
-                	// 	errorMessage(0, data.result);
-                	// }
-                }).error(function(data){
-                  // errorMessage(0, 'Save model failed, please try again!');
-                  toaster.pop('error', 'Save model failed, please try again!', data.message);
+                    // if(data.status=='0')
+                    // {
+                    $('#confirm').on('hidden.bs.modal', function(e) {
+                        $('#confirm').off('hidden.bs.modal');
+                        $location.path('/rules').replace();
+                        $scope.$apply();
+                    });
+                    $('#confirm').modal('hide');
+                    // }
+                    // else
+                    // {
+                    // 	errorMessage(0, data.result);
+                    // }
+                }).error(function(data) {
+                    // errorMessage(0, 'Save model failed, please try again!');
+                    toaster.pop('error', 'Save model failed, please try again!', data.message);
                 });
 
             },
@@ -418,14 +414,14 @@ define(['./module'], function(controllers) {
 
         var nextStep = function() {
             $scope.currentStep++;
-            $timeout(function(){
+            $timeout(function() {
                 resizeWindow();
             }, 0);
         }
 
         var prevStep = function() {
             $scope.currentStep--;
-            $timeout(function(){
+            $timeout(function() {
                 resizeWindow();
             }, 0);
         }
@@ -433,24 +429,24 @@ define(['./module'], function(controllers) {
         var goToStep = function(i) {
             $scope.currentStep = i;
 
-            $timeout(function(){
+            $timeout(function() {
                 resizeWindow();
             }, 0);
         }
 
-        $scope.$watch('currentStep', function(newValue){
-          if(newValue == 3){ //step 3
-            if($scope.selectionTarget.length < $scope.mappings.length){
-              $scope.mappings.splice($scope.selectionTarget.length);
+        $scope.$watch('currentStep', function(newValue) {
+            if (newValue == 3) { //step 3
+                if ($scope.selectionTarget.length < $scope.mappings.length) {
+                    $scope.mappings.splice($scope.selectionTarget.length);
+                }
             }
-          }
         });
 
-        var existDuplicatedElement = function(arr){
+        var existDuplicatedElement = function(arr) {
 
             for (var i = 0; i < arr.length; i++) {
-                for (var j = i+1; j < arr.length; j++) {
-                    if(arr[i] == arr[j]){
+                for (var j = i + 1; j < arr.length; j++) {
+                    if (arr[i] == arr[j]) {
                         return true;
                     }
                 };
@@ -467,12 +463,13 @@ define(['./module'], function(controllers) {
             if (step == 1) {
                 return $scope.selection && $scope.selection.length > 0;
             } else if (step == 2) {
-                return ($scope.selectionTarget && $scope.selectionTarget.length > 0)//at least one target is selected
-                        && !(($scope.currentNode.name == $scope.currentNodeTarget.name)&&($scope.currentNode.parent.name == $scope.currentNodeTarget.parent.name));//target and source should be different
+                return ($scope.selectionTarget && $scope.selectionTarget.length > 0) //at least one target is selected
+                    &&
+                    !(($scope.currentNode.name == $scope.currentNodeTarget.name) && ($scope.currentNode.parent.name == $scope.currentNodeTarget.parent.name)); //target and source should be different
             } else if (step == 3) {
-                return $scope.selectionTarget && $scope.selectionTarget.length == $scope.mappings.length
-                        && $scope.mappings.indexOf('') == -1 && !existDuplicatedElement($scope.mappings)
-                        && $scope.selectionPK && $scope.selectionPK.length>0;
+                return $scope.selectionTarget && $scope.selectionTarget.length == $scope.mappings.length &&
+                    $scope.mappings.indexOf('') == -1 && !existDuplicatedElement($scope.mappings) &&
+                    $scope.selectionPK && $scope.selectionPK.length > 0;
             } else if (step == 4) {
 
             }
@@ -487,8 +484,6 @@ define(['./module'], function(controllers) {
             } else {
                 toaster.pop('error', 'Error', msg, 0);
             }
-        }
-        ;
-    }
-    ]);
+        };
+    }]);
 });

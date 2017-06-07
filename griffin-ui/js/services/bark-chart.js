@@ -22,7 +22,8 @@ define(['./module'], function(services) {
             getOptionPie: getOptionPie,
             getOptionBig: getOptionBig,
             getOptionSide: getOptionSide,
-            getOptionThum: getOptionThum
+            getOptionThum: getOptionThum,
+            getOptionBigRollUp: getOptionBigRollUp
         };
     });
 
@@ -355,6 +356,66 @@ define(['./module'], function(services) {
         return option;
     }
 
+    function getOptionBigRollUp(metric) {
+        var data = getMetricData(metric);
+
+        var option = {
+            title: {
+                text: metric.name,
+                link: '/#/viewrule/' + metric.name,
+                target: 'self',
+                left: 'center',
+                textStyle: {
+                    fontSize: 25
+                }
+            },
+            grid: {
+                right: '2%',
+                left: '2%',
+                containLabel: true
+            },
+            tooltip: {
+                trigger: 'item',
+                axisPointer: {
+                    show: false,
+                    type: 'cross',
+                    lineStyle: {
+                        type: 'dashed',
+                        width: 5
+                    }
+                },
+                formatter: function(params) {
+                    return getTooltipCrawler(params, metric.metricType);
+                }
+            },
+            legend: {
+                "show": true,
+                "orient": "horizontal",
+                "x": "left",
+                "y": "top",
+                data: ['stable', 'unstable']
+            },
+            xAxis: {
+                type: 'time',
+                splitLine: {
+                    show: false
+                }
+            },
+            yAxis: {
+                type: 'value',
+                scale: true,
+                name: formatter_yaxis_name(metric),
+                axisLabel: {
+                    formatter: formatter_value
+                }
+            },
+            animation: true
+        };
+
+        option.series = getSeriesCrawlerBigRollUp(metric);
+        return option;
+    }
+
     function getBollingerBigSeries(series) {
         var dataLow = series[0].data;
         var data = series[2].data;
@@ -667,6 +728,78 @@ define(['./module'], function(services) {
         });
         return series;
     }
+
+    function getSeriesCrawlerBigRollUp(metric) {
+        var series = [];
+        var data = getMetricData(metric);
+
+        var data10 = data;
+        var data11 = [];
+
+        var data3 = []; //draw line for the threshold, horizontal
+        var sla_threshold = getSlaThreshold(metric);
+        for (var i = 0; i < data.length; i++) {
+            // if (data[i][1] >= sla_threshold) {
+            //     data10.push(data[i]);
+            // } else {
+            //     data11.push(data[i]);
+            // }
+
+            data3.push([data[i][0], sla_threshold, -1]);
+        }
+
+        series.push({
+            type: 'line',
+            smooth: true,
+            data: data10,
+            lineStyle: {
+                normal: {
+                    color: '#d48265'
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: '#d48265'
+                }
+            }
+        });
+        // series.push({
+        //     type: 'line',
+        //     smooth: true,
+        //     data: data11,
+        //     lineStyle: {
+        //         normal: {
+        //             color: '#00cc00'
+        //         }
+        //     },
+        //     itemStyle: {
+        //         normal: {
+        //             color: '#00cc00',
+        //             opacity: SLA_BELOW_OPACITY
+        //         }
+        //     }
+        // });
+
+        series.push({
+            animation: false,
+            type: 'line',
+            smooth: true,
+            data: data3,
+            itemStyle: {
+                normal: {
+                    opacity: '0'
+                }
+            },
+            lineStyle: {
+                normal: {
+                    color: '#00cc00'
+
+                }
+            }
+        });
+        return series;
+    }
+
     /**Add for Crawler**/
 
     function getSeriesBollinger(metric) {

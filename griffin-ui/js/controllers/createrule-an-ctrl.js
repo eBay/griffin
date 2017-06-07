@@ -43,8 +43,8 @@ define(['./module'], function(controllers) {
 
 
                             if (system.assets && system.assets.length > 0) {
-                                system.assets.sort(function(a, b){
-                                  return (a.name<b.name?-1:(a.name>b.name?1:0));
+                                system.assets.sort(function(a, b) {
+                                    return (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
                                 });
                                 system.assets.forEach(function(schema) {
                                     var schemaNode = {
@@ -97,24 +97,24 @@ define(['./module'], function(controllers) {
 
 
         function resizeWindow() {
-                    var stepSelection = '.formStep[id=step-' + $scope.currentStep + ']';
-                    $(stepSelection).css({
-                        height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
-                    });
-                    $('fieldset').height($(stepSelection).height() - $(stepSelection + '>.stepDesc').height() - $('.btn-container').height() - 80);
-                    $('.y-scrollable').css({
-                        'max-height': $('fieldset').height() - $('.add-dataset').outerHeight()
-                    });
-                    //error message box position
-                    $('.formula-text-mid').css({
-                        'padding-top': (($('.formula-text-up').height() - $('.formula-text-mid').height()) + $('.formula-text-mid').height() / 2) + 'px'
-                    });
+            var stepSelection = '.formStep[id=step-' + $scope.currentStep + ']';
+            $(stepSelection).css({
+                height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
+            });
+            $('fieldset').height($(stepSelection).height() - $(stepSelection + '>.stepDesc').height() - $('.btn-container').height() - 80);
+            $('.y-scrollable').css({
+                'max-height': $('fieldset').height() - $('.add-dataset').outerHeight()
+            });
+            //error message box position
+            $('.formula-text-mid').css({
+                'padding-top': (($('.formula-text-up').height() - $('.formula-text-mid').height()) + $('.formula-text-mid').height() / 2) + 'px'
+            });
 
         }
 
-        $scope.ruleTypes = $filter('strarr')('modeltype');//['Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];
-        $scope.scheduleTypes = $filter('strarr')('scheduletype');//['Daily', 'Weekly', 'Monthly', 'Hourly'];
-        $scope.ruleSystems = $filter('strarr')('modelsystem');//['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Kafka'];
+        $scope.ruleTypes = $filter('strarr')('modeltype'); //['Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];
+        $scope.scheduleTypes = $filter('strarr')('scheduletype'); //['Daily', 'Weekly', 'Monthly', 'Hourly'];
+        $scope.ruleSystems = $filter('strarr')('modelsystem'); //['Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Kafka'];
         $scope.anTypes = ['', 'History Trend Detection', 'Bollinger Bands Detection', 'Deviation Detection'];
         // $scope.ruleType = function(index){
         //   var types = ['', 'Accuracy', 'Validity', 'Anomaly Detection', 'Publish Metrics'];
@@ -127,7 +127,7 @@ define(['./module'], function(controllers) {
         // }
         //
         // $scope.ruleSystem = function(index){
-        //   var sys = ['', 'Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Kafka'];
+        //   var sys = ['', 'Bullseye', 'GPS', 'Hadoop', 'PDS', 'IDLS', 'Pulsar', 'Crawler'];
         //   return sys[index];
         // }
 
@@ -140,11 +140,11 @@ define(['./module'], function(controllers) {
                     // form.$setPristine();
                     nextStep();
                 } else {
-                    var field = null
-                      , firstError = null ;
+                    var field = null,
+                        firstError = null;
                     for (field in form) {
                         if (field[0] != '$') {
-                            if (firstError === null  && !form[field].$valid) {
+                            if (firstError === null && !form[field].$valid) {
                                 firstError = form[field].$name;
                             }
 
@@ -170,8 +170,8 @@ define(['./module'], function(controllers) {
                 } else {
                     if (formValidation()) {
                         //   $scope.toTheTop();
-                        if(i - parseInt($scope.currentStep) == 1){
-                          goToStep(i);
+                        if (i - parseInt($scope.currentStep) == 1) {
+                            goToStep(i);
                         }
 
                     } else {
@@ -181,11 +181,11 @@ define(['./module'], function(controllers) {
             },
             submit: function(form) {
                 if (!form.$valid) {
-                    var field = null
-                      , firstError = null ;
+                    var field = null,
+                        firstError = null;
                     for (field in form) {
                         if (field[0] != '$') {
-                            if (firstError === null  && !form[field].$valid) {
+                            if (firstError === null && !form[field].$valid) {
                                 firstError = form[field].$name;
                             }
 
@@ -198,13 +198,13 @@ define(['./module'], function(controllers) {
                     errorMessage($scope.currentStep);
                 } else {
                     form.$setPristine();
-                    this.data={
-                      basic: this.basic,
-                      extra: {
-                        srcDb: $scope.currentNode.parent.parent.platform,
-                        srcDataSet: $scope.currentNode.parent.name,
-                        anType: this.anType
-                      }
+                    this.data = {
+                        basic: this.basic,
+                        extra: {
+                            srcDb: $scope.currentNode.parent.parent.platform,
+                            srcDataSet: $scope.currentNode.parent.name,
+                            anType: this.anType
+                        }
                     };
 
                     this.data.basic.dataaset = $scope.currentNode.name;
@@ -222,22 +222,22 @@ define(['./module'], function(controllers) {
 
                 var newModel = $config.uri.newAnomalyModel;
                 $http.post(newModel, this.data).success(function(data) {
-                	// if(data.status=='0')
-                	// {
-	                  $('#confirm-an').on('hidden.bs.modal', function(e) {
-	                      $('#confirm-an').off('hidden.bs.modal');
-	                      $location.path('/rules');
-	                      $scope.$apply();
-	                  });
-	                	$('#confirm-an').modal('hide');
-                	// }
-                	// else
-                	// {
-                	// 	errorMessage(0, data.result);
-                	// }
-                }).error(function(data){
-                  // errorMessage(0, 'Save model failed, please try again!');
-                  toaster.pop('error', 'Save model failed, please try again!', data.message);
+                    // if(data.status=='0')
+                    // {
+                    $('#confirm-an').on('hidden.bs.modal', function(e) {
+                        $('#confirm-an').off('hidden.bs.modal');
+                        $location.path('/rules');
+                        $scope.$apply();
+                    });
+                    $('#confirm-an').modal('hide');
+                    // }
+                    // else
+                    // {
+                    // 	errorMessage(0, data.result);
+                    // }
+                }).error(function(data) {
+                    // errorMessage(0, 'Save model failed, please try again!');
+                    toaster.pop('error', 'Save model failed, please try again!', data.message);
                 });
             },
 
@@ -246,25 +246,22 @@ define(['./module'], function(controllers) {
 
         var nextStep = function() {
             $scope.currentStep++;
-            $timeout(function(){
+            $timeout(function() {
                 resizeWindow();
             }, 0);
-        }
-        ;
+        };
         var prevStep = function() {
             $scope.currentStep--;
-            $timeout(function(){
+            $timeout(function() {
                 resizeWindow();
             }, 0);
-        }
-        ;
+        };
         var goToStep = function(i) {
             $scope.currentStep = i;
-            $timeout(function(){
+            $timeout(function() {
                 resizeWindow();
             }, 0);
-        }
-        ;
+        };
 
         //validation only happens when going forward
         var formValidation = function(step) {
@@ -273,7 +270,7 @@ define(['./module'], function(controllers) {
                 step = $scope.currentStep;
             }
             if (step == 1) {
-                return $scope.currentNode?true:false;
+                return $scope.currentNode ? true : false;
             } else if (step == 2) {
                 return true;
             } else if (step == 3) {
@@ -285,14 +282,12 @@ define(['./module'], function(controllers) {
         }
 
         var errorMessage = function(i, msg) {
-            var errorMsgs = ['Please select one schema!','', 'please complete the form in this step before proceeding'];
+            var errorMsgs = ['Please select one schema!', '', 'please complete the form in this step before proceeding'];
             if (!msg) {
                 toaster.pop('error', 'Error', errorMsgs[i - 1], 0);
             } else {
                 toaster.pop('error', 'Error', msg, 0);
             }
-        }
-        ;
-    }
-    ]);
+        };
+    }]);
 });
