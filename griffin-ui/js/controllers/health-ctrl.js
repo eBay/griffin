@@ -161,7 +161,9 @@ define(['./module'], function (controllers) {
                     // param.event.event.preventDefault();
                     if (param.data.name) {
 
-                        showBig(param.data.name);
+                        // showBig(param.data.name);
+                        window.location.href = '/#/detailed/'+param.data.name;
+                        
                         // return false;
                     }
                 });

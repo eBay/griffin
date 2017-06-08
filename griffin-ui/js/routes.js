@@ -66,6 +66,11 @@ define(['./app'], function(app) {
             controller: 'ViewRuleCtrl'
         });
 
+        $routeProvider.when('/detailed/:modelname',{
+            templateUrl:'/pages/rules/detail.html',
+            controller:'DetailCtrl'
+        });
+
         $routeProvider.when('/metrics', {
             templateUrl: '/pages/metrics/dashboard.html',
             controller: 'MetricsCtrl'

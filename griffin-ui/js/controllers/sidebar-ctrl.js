@@ -60,7 +60,8 @@ define(['./module'], function(controllers) {
 
             $('#'+chartId).unbind('click');
             $('#'+chartId).click(function() {
-              showBig($scope.briefmetrics[parentIndex].metrics[index]);
+              // showBig($scope.briefmetrics[parentIndex].metrics[index]);
+              window.location.href = '/#/detailed/'+$scope.briefmetrics[parentIndex].metrics[index].name;
             });
 
         };

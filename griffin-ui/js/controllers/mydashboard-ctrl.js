@@ -68,11 +68,12 @@ define(['./module'], function(controllers) {
 
         /*click the chart to be bigger*/
         $scope.showBig = function(t){
-          var metricDetailUrl = $config.uri.metricdetail + '/' + t.name;
+          // var metricDetailUrl = $config.uri.metricdetail + '/' + t.name;
           // var metricDetailUrl = '/js/mock_data/anom.json';
-          $http.get(metricDetailUrl).success(function (data){
-            $rootScope.showBigChart($barkChart.getOptionBig(data));
-          });
+          // $http.get(metricDetailUrl).success(function (data){
+            // $rootScope.showBigChart($barkChart.getOptionBig(data));
+          // });
+          window.location.href = '/#/detailed/'+t.name;
 
         }
 
