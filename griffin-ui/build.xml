@@ -5,7 +5,7 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>${project.basedir}/dist/</directory>
+			<directory>${project.basedir}</directory>
 			<outputDirectory>/</outputDirectory>
 <!--
 			<includes>
@@ -20,6 +20,7 @@
 				<exclude>**/node_modules/**</exclude>
 				<exclude>**/tests/**</exclude>
 				<exclude>target/**</exclude>
+				<exclude>.settings/**</exclude>
 				<exclude>pom.xml</exclude>
 				<exclude>build.xml</exclude>
 			</excludes>
