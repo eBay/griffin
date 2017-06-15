@@ -14,7 +14,7 @@
 */
 define(['./module'], function(controllers) {
     'use strict';
-    controllers.controller('BigChartCtrl', ['$scope', '$http', '$config', '$filter', '$timeout', '$compile', '$routeParams', '$barkChart', '$rootScope', function($scope, $http, $config, $filter, $timeout, $compile, $routeParams, $barkChart, $rootScope) {
+    controllers.controller('BigChartCtrl', ['$scope', '$http', '$config', '$filter', '$timeout', '$compile', '$routeParams', '$barkChart', '$rootScope', '$location',function($scope, $http, $config, $filter, $timeout, $compile, $routeParams, $barkChart, $rootScope,$location) {
 
       var echarts = require('echarts');
 
