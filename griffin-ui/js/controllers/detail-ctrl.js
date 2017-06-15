@@ -22,6 +22,17 @@ define(['./module'], function (controllers) {
         var echarts = require('echarts');
         var formatUtil = echarts.format;
 
+        if($rootScope.showBigChart==undefined)
+        {
+            $rootScope.showBigChart = function(option) {
+                $scope.selectedModel = option.title.text;
+                $('#bigChartContainer').show();
+                // $('#mainWindow').hide();
+                $rootScope.bigChart.clear();
+                $rootScope.bigChart.setOption(option);
+            }
+        }
+
         var showBig = function(metricName){
           var metricDetailUrl = $config.uri.metricdetail + '/' + metricName;
           $http.get(metricDetailUrl).success(function (data){
