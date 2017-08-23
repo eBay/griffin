@@ -38,9 +38,9 @@ public class LoginController {
 	@Path("/authenticate")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String authenticate(@RequestBody LoginUser input) {
-		if("test".equals(input.getUsername())){
-			return "{\"status\": 0, \"ntAccount\": \"test\", \"fullName\": \"test\"}";
-		}
+//		if("test".equals(input.getUsername())){
+//			return "{\"status\": 0, \"ntAccount\": \"test\", \"fullName\": \"test\"}";
+//		}
 
 		String result = loginService.login(input.getUsername(),
 				input.getPassword());

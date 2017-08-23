@@ -18,7 +18,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ebay.oss</groupId>
     <artifactId>griffin-parent</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>eBay Griffin Parent</name>
     <modules>
@@ -42,7 +42,7 @@
         </license>
     </licenses>
 
-    <distributionManagement>
+<!--     <distributionManagement>
       <snapshotRepository>
         <id>ossrh</id>
         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -51,7 +51,8 @@
         <id>ossrh</id>
         <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
       </repository>
-    </distributionManagement>
+    </distributionManagement> -->
+
 
     <repositories>
       <repository>
@@ -84,7 +85,7 @@
     </developers>
 
     <properties>
-        <griffin.version>0.1.1-SNAPSHOT</griffin.version>
+        <griffin.version>0.1.2-SNAPSHOT</griffin.version>
         <!-- General Properties -->
         <java.version>1.7</java.version>
         <scala.version>2.10</scala.version>
